@@ -3,135 +3,178 @@ import java.util.ArrayList;
 import java.lang.Math;
 
 /**
- * Write a description of class Map here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Map
+ * CitySim
+ * v0.1
+ *
+ * Created by Felix Mo on 02-11-2012
+ *
+ * Map view, map view controller, and map data model
+ *
  */
+
 public class Map extends Actor
 {
-
-    private int moveSpeed = 10;
+	
+	// * Constants and class & instance variables *
 
     // map of 100x100 tiles
-    private final static int tileBuffer = 2; // cells | UNIMPLEMENTED
-    private final int cityColumns = 100; // cells | X
-    private final int cityRows = 100; // cells | Y
-    private Rectangle cityRect = new Rectangle(new Point(0, 0), (cityColumns * Tile.size), (cityRows * Tile.size));
+    private final int cityColumns = 100;	// cells; horizontal
+    private final int cityRows = 100;	// cells; vertical
+    private Rectangle cityRect = new Rectangle(new Point(0, 0), (cityColumns * Tile.size), (cityRows * Tile.size));		// rectangle representing the entirety of the map
 
-    private ArrayList<ArrayList<Tile>> map; 
+    private ArrayList<ArrayList<Tile>> map;		// holds map data
 
-    private Rectangle viewRect = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));
-    private GreenfootImage view = new GreenfootImage(viewRect.width(), viewRect.height());
+	// view settings
+	private final int moveSpeed = 10;		// # of px to move at a time
+    private final static int tileBuffer = 2;	// number of additional cells to draw beyond the viewport
+
+	// view
+    private Rectangle viewRect = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));	// rectangle representing the viewport
+    private GreenfootImage view = new GreenfootImage(viewRect.width(), viewRect.height());	// image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
+
+	// * END of constants and class & instance variables *
+
 
     public Map() {
-
+		
+		// Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
         generateCity();
         setImage(view);
         initalDraw();
     }
 
-    public void act() 
-    {
 
+	// * Greenfoot methods *
+
+	// This method is called at every action step in the environment; frequently
+    public void act() 
+    {	
+		// Listen for keystrokes and move accordingly, only if viewport is within bounds of map
+		 
         if (Greenfoot.isKeyDown("w")) {
+			// UP
+			
             if (viewRect.origin().y() > cityRect.origin().y()) {
                 mapDidMove(new Point(0, (moveSpeed * -1)));
             }
         }
         else if (Greenfoot.isKeyDown("s")) {
-            if (viewRect.origin().y() + viewRect.height() < cityRect.width()) {
+            // DOWN
+			
+			if (viewRect.origin().y() + viewRect.height() < cityRect.width()) {
                 mapDidMove(new Point(0, moveSpeed));
             }
         }
         else if (Greenfoot.isKeyDown("a")) {
+			// LEFT
+		
             if (viewRect.origin().x() > cityRect.origin().x()) {
                 mapDidMove(new Point(moveSpeed, 0));
             }
         }
         else if (Greenfoot.isKeyDown("d")) {
+			// RIGHT
+	
             if (viewRect.origin().x() + viewRect.width() < cityRect.width()) {
                 mapDidMove(new Point((moveSpeed * -1), 0));
             }
         }
     }    
 
+	// * END of Greenfoot methods *
+
+
     // * Helper methods *
 
-    private Point cellForCoordinate(Point coord) {
+	// Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile in the ArrayLists
+    private Point cellForCoordinatePair(Point coord) {
         return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
     }
 
-    // * END of helper methods *
+	// Translates a given indice to a coordinate for the view, in px
+	private int coordinateForCell(int cell) {
+		return (cell * Tile.size);
+	}
+	
+	// Returns the numbers of the tiles that would fit within a given width
+	private int numberOfTilesInWidth(int width) {
+		return (width / Tile.size);
+	}
 
+    // * END of helper methods *
+    
+
+	// Generates a new map into the ivar 'map'
     private void generateCity() {
 
-        System.out.print("Began generating city...");
-        long startTime = System.currentTimeMillis();
+        // System.out.print("Began generating city...");
+        // long startTime = System.currentTimeMillis();
 
-        // init. X 
+        // The columns of the map are represnted by the elements of an ArrayList
         map = new ArrayList<ArrayList<Tile>>(cityColumns);
 
-        // init. Y for each X
+        // The rows of the map are represented by the elements of an ArrayList within the ArrayList representing the columns
         for (int i = 0; i < cityColumns; i++) {
             map.add(new ArrayList<Tile>(cityRows));
         }
 
+		// Initalize each cell with a tile of randomly generated type
         for (int x = 0; x < cityColumns; x++) {
             for (int y = 0; y < cityRows; y++) {
                 map.get(x).add(new Tile(Greenfoot.getRandomNumber(4)+1));
             }
         }
 
-        System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
+        // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
+	// Does the inital draw from the origin
     private void initalDraw() {
 
-        System.out.print("Began inital draw...");
-        long startTime = System.currentTimeMillis();
+        // System.out.print("Began inital draw...");
+        // long startTime = System.currentTimeMillis();
 
-        int x = 0;
-        int y = 0;
+		Point tilePt = new Point(0, 0);		// Coordinate pair for the tile being drawn; begins at the origin of the viewport (0, 0) @ top-left corner
 
-        for (int col = viewRect.origin().x(); col < (viewRect.width() / Tile.size); col++) {
+		// Draw tiles onto the map image layer for the inital origin of the viewport
+        for (int col = viewRect.origin().x(); col < numberOfTilesInWidth(viewRect.width()); col++) {
+			
+            tilePt.setX(coordinateForCell(col));	// Update X coordinate for the next tile
 
-            x = (col * Tile.size);
+            for (int row = viewRect.origin().y(); row < numberOfTilesInWidth(viewRect.height())+1; row++) {
 
-            for (int row = viewRect.origin().y(); row < (viewRect.height() / Tile.size)+1; row++) {
-
-                view.drawImage(map.get(col).get(row).image(), x, y);
-                y = (row * Tile.size);
+                view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());
+                tilePt.setY(coordinateForCell(row));	// Update Y coordinate for the next tile
             }
         }
 
-        System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
+        // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
+	// Re-renders the map image layer upon movement
     private void mapDidMove(Point offset) {
 
+		// Shift the origin from movement offset
         viewRect.origin().setX(viewRect.origin().x() - offset.x());
         viewRect.origin().setY(viewRect.origin().y() + offset.y());
-
-        int x = viewRect.origin().x();
-        int y = viewRect.origin().y();
-
+		
+		Point tilePt = new Point(viewRect.origin().x(), viewRect.origin().y());		// Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
+		
+		// Clear the map image layer
         view.clear();
 
-        for (int col = cellForCoordinate(viewRect.origin()).x(); col < ((viewRect.width() + viewRect.origin().x()) / Tile.size); col++) {
-            for (int row = cellForCoordinate(viewRect.origin()).y(); row < ((viewRect.height() + viewRect.origin().y()) / Tile.size)+1; row++) {
+		// Draw tiles onto the map image layer for the shifted viewport
+        for (int col = cellForCoordinatePair(viewRect.origin()).x(); col < numberOfTilesInWidth(viewRect.width() + viewRect.origin().x()); col++) {
+            for (int row = cellForCoordinatePair(viewRect.origin()).y(); row < numberOfTilesInWidth(viewRect.height() + viewRect.origin().y())+1; row++) {
 
-                //                 System.out.println("Drawing tile of type " + map.get(col).get(row).type() + " at (" + col + ", " + row + ") on map, (" + x + ", " + y + ") in view");
-
-                view.drawImage(map.get(col).get(row).image(), x, y);
-
-                x = (col * Tile.size) - viewRect.origin().x();
-                y = (row * Tile.size) - viewRect.origin().y();
-
-//                 System.out.print(viewRect.origin().toString());
-//                 System.out.print(" | " + col + ", " + row + " | ");
-//                 System.out.println(x + ", " + y);
+                view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());	
+				
+				// Update the coordinates for the next tile to be drawn
+                tilePt.setX(coordinateForCell(col) - viewRect.origin().x());
+                tilePt.setY(coordinateForCell(row) - viewRect.origin().y());
             }
         }
     }
+
 }

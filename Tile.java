@@ -1,23 +1,28 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Tile
+ * Rectangle
+ * CitySim
  * v0.1
  *
- * Created by Felix Mo on 01-18-2012
+ * Created by Felix Mo on 02-11-2012
+ *
+ * Data structure for map tiles
  *
  */
 
 public class Tile 
 {
 
-    private boolean traverseable = false;
-    private int type = 0;
+	// * Constants and class & instance variables *
+	
+    private boolean traverseable = false;	// Is tile passable
+    private int type = 0;	// Type of tile
     
-    private GreenfootImage image = null;
+    private GreenfootImage image = null;	// Tile image
     
-    public static final int size = 128; // px
-    
+    public static final int size = 128;		// size of square tile; px
+
     // TILE TYPES
     public static final int TILE_TYPE_GRASS = 1;
     public static final int TILE_TYPE_SAND = 2;
@@ -30,11 +35,15 @@ public class Tile
     private static final String TILE_IMG_DIRT = "tile_dirt1.png";
     private static final String TILE_IMG_STONE = "tile_stone1.png";
    
+	// * END of constants and class & instance variables *
+
+
     public Tile(int type) {
         this.type = type;
     }
     
-    // GETTERS
+
+    // * Accessors * 
     public int type() {
         return type;
     }
@@ -51,7 +60,6 @@ public class Tile
         return image;
     }
     
-    // SETTERS
     public void setType(int value) {
         type = value;
     }
@@ -59,7 +67,11 @@ public class Tile
     public void setTraverseable(boolean value) {
         traverseable = value;
     }
+
+	// * END of accessors *
     
+	
+	// Sets the image of the tile based upon its type
     private GreenfootImage imageForType() {
         
         switch (type) {
