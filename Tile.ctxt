@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.params=type
+comment0.target=Tile(int)
+comment1.params=
+comment1.target=int\ type()
+comment2.params=
+comment2.target=boolean\ traverseable()
+comment3.params=
+comment3.target=greenfoot.GreenfootImage\ image()
+comment4.params=value
+comment4.target=void\ setType(int)
+comment5.params=value
+comment5.target=void\ setTraverseable(boolean)
+comment6.params=
+comment6.target=greenfoot.GreenfootImage\ imageForType()
+numComments=7

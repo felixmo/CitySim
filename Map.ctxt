@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.params=
+comment0.target=Map()
+comment1.params=
+comment1.target=void\ act()
+comment2.params=coord
+comment2.target=Point\ cellForCoordinate(Point)
+comment3.params=
+comment3.target=void\ generateCity()
+comment4.params=
+comment4.target=void\ initalDraw()
+comment5.params=offset
+comment5.target=void\ mapDidMove(Point)
+numComments=6
