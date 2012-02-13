@@ -33,7 +33,7 @@ public class Map extends Actor
     private Rectangle viewport = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));   // rectangle representing the viewport
     private GreenfootImage view = new GreenfootImage(viewport.width(), viewport.height());  // image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
 
-    private MouseInfo mouseInfo;
+    private MouseInfo mouseInfo = null;
 
     // * END of constants and class & instance variables *
 
@@ -166,7 +166,12 @@ public class Map extends Actor
         // Initalize each cell with a tile of randomly generated type
         for (int x = 0; x < cityColumns; x++) {
             for (int y = 0; y < cityRows; y++) {
-                map.get(x).add(new Tile(Greenfoot.getRandomNumber(4)+1));
+                if (x == 0 || y == 0 || x == cityColumns-1 || y == cityRows-1) {
+                    map.get(x).add(new Tile(0));
+                }
+                else {
+                    map.get(x).add(new Tile(Greenfoot.getRandomNumber(4)+1));
+                }
             }
         }
 
