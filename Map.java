@@ -51,35 +51,41 @@ public class Map extends Actor
     public void act() 
     {	
 		// Listen for keystrokes and move accordingly, only if viewport is within bounds of map
+		
+		Point offset = new Point(0, 0);
 		 
+		// Vertical movement
         if (Greenfoot.isKeyDown("w")) {
 			// UP
-			
             if (viewport.origin().y() > cityRect.origin().y()) {
-                viewportDidMove(new Point(0, (moveSpeed * -1)));
+				offset.setY(moveSpeed * -1);
             }
         }
         else if (Greenfoot.isKeyDown("s")) {
             // DOWN
-			
 			if (viewport.origin().y() + viewport.height() < cityRect.width()) {
-                viewportDidMove(new Point(0, moveSpeed));
+				offset.setY(moveSpeed);
             }
         }
-        else if (Greenfoot.isKeyDown("a")) {
+        
+		// Horizontal movement
+		if (Greenfoot.isKeyDown("a")) {
 			// LEFT
-		
             if (viewport.origin().x() > cityRect.origin().x()) {
-                viewportDidMove(new Point(moveSpeed, 0));
+				offset.setX(moveSpeed);
             }
         }
         else if (Greenfoot.isKeyDown("d")) {
 			// RIGHT
-	
             if (viewport.origin().x() + viewport.width() < cityRect.width()) {
-                viewportDidMove(new Point((moveSpeed * -1), 0));
+				offset.setX(moveSpeed * -1);
             }
         }
+		
+        // Only re-render map if there was movement
+		if (offset.x() != 0 || offset.y() != 0) {
+			viewportDidMove(offset);
+		}
     }    
 
 	// * END of Greenfoot methods *
