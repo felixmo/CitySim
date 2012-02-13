@@ -30,8 +30,8 @@ public class Map extends Actor
     private final static int tileBuffer = 2;	// number of additional cells to draw beyond the viewport
 
 	// view
-    private Rectangle viewRect = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));	// rectangle representing the viewport
-    private GreenfootImage view = new GreenfootImage(viewRect.width(), viewRect.height());	// image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
+    private Rectangle viewport = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));	// rectangle representing the viewport
+    private GreenfootImage view = new GreenfootImage(viewport.width(), viewport.height());	// image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
 
 	// * END of constants and class & instance variables *
 
@@ -41,7 +41,7 @@ public class Map extends Actor
 		// Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
         generateCity();
         setImage(view);
-        initalDraw();
+		viewportDidMove(viewport.origin());
     }
 
 
@@ -55,29 +55,29 @@ public class Map extends Actor
         if (Greenfoot.isKeyDown("w")) {
 			// UP
 			
-            if (viewRect.origin().y() > cityRect.origin().y()) {
-                mapDidMove(new Point(0, (moveSpeed * -1)));
+            if (viewport.origin().y() > cityRect.origin().y()) {
+                viewportDidMove(new Point(0, (moveSpeed * -1)));
             }
         }
         else if (Greenfoot.isKeyDown("s")) {
             // DOWN
 			
-			if (viewRect.origin().y() + viewRect.height() < cityRect.width()) {
-                mapDidMove(new Point(0, moveSpeed));
+			if (viewport.origin().y() + viewport.height() < cityRect.width()) {
+                viewportDidMove(new Point(0, moveSpeed));
             }
         }
         else if (Greenfoot.isKeyDown("a")) {
 			// LEFT
 		
-            if (viewRect.origin().x() > cityRect.origin().x()) {
-                mapDidMove(new Point(moveSpeed, 0));
+            if (viewport.origin().x() > cityRect.origin().x()) {
+                viewportDidMove(new Point(moveSpeed, 0));
             }
         }
         else if (Greenfoot.isKeyDown("d")) {
 			// RIGHT
 	
-            if (viewRect.origin().x() + viewRect.width() < cityRect.width()) {
-                mapDidMove(new Point((moveSpeed * -1), 0));
+            if (viewport.origin().x() + viewport.width() < cityRect.width()) {
+                viewportDidMove(new Point((moveSpeed * -1), 0));
             }
         }
     }    
@@ -129,50 +129,27 @@ public class Map extends Actor
         // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
-	// Does the inital draw from the origin
-    private void initalDraw() {
+	// Re-renders the map image layer upon movement to account for the viewport's new offset
+    private void viewportDidMove(Point offset) {
 
-        // System.out.print("Began inital draw...");
-        // long startTime = System.currentTimeMillis();
-
-		Point tilePt = new Point(0, 0);		// Coordinate pair for the tile being drawn; begins at the origin of the viewport (0, 0) @ top-left corner
-
-		// Draw tiles onto the map image layer for the inital origin of the viewport
-        for (int col = viewRect.origin().x(); col < numberOfTilesInWidth(viewRect.width()); col++) {
-			
-            tilePt.setX(coordinateForCell(col));	// Update X coordinate for the next tile
-
-            for (int row = viewRect.origin().y(); row < numberOfTilesInWidth(viewRect.height())+1; row++) {
-
-                view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());
-                tilePt.setY(coordinateForCell(row));	// Update Y coordinate for the next tile
-            }
-        }
-
-        // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
-    }
-
-	// Re-renders the map image layer upon movement
-    private void mapDidMove(Point offset) {
-
-		// Shift the origin from movement offset
-        viewRect.origin().setX(viewRect.origin().x() - offset.x());
-        viewRect.origin().setY(viewRect.origin().y() + offset.y());
+		// Shift the viewport's origin from movement offset
+        viewport.origin().setX(viewport.origin().x() - offset.x());
+        viewport.origin().setY(viewport.origin().y() + offset.y());
 		
-		Point tilePt = new Point(viewRect.origin().x(), viewRect.origin().y());		// Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
+		Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());		// Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
 		
 		// Clear the map image layer
         view.clear();
 
 		// Draw tiles onto the map image layer for the shifted viewport
-        for (int col = cellForCoordinatePair(viewRect.origin()).x(); col < numberOfTilesInWidth(viewRect.width() + viewRect.origin().x()); col++) {
-            for (int row = cellForCoordinatePair(viewRect.origin()).y(); row < numberOfTilesInWidth(viewRect.height() + viewRect.origin().y())+1; row++) {
+        for (int col = cellForCoordinatePair(viewport.origin()).x(); col < numberOfTilesInWidth(viewport.width() + viewport.origin().x()); col++) {
+            for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y())+1; row++) {
 
                 view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());	
 				
 				// Update the coordinates for the next tile to be drawn
-                tilePt.setX(coordinateForCell(col) - viewRect.origin().x());
-                tilePt.setY(coordinateForCell(row) - viewRect.origin().y());
+                tilePt.setX(coordinateForCell(col) - viewport.origin().x());
+                tilePt.setY(coordinateForCell(row) - viewport.origin().y());
             }
         }
     }
