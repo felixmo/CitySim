@@ -26,7 +26,7 @@ public class Map extends Actor
     private ArrayList<ArrayList<Tile>> map;		// holds map data
 
 	// view settings
-	private final int moveSpeed = 10;		// # of px to move at a time
+	private final int moveSpeed = 20;		// # of px to move at a time
     private final static int tileBuffer = 2;	// number of additional cells to draw beyond the viewport
 
 	// view
@@ -149,7 +149,7 @@ public class Map extends Actor
 
 		// Draw tiles onto the map image layer for the shifted viewport
         for (int col = cellForCoordinatePair(viewport.origin()).x(); col < numberOfTilesInWidth(viewport.width() + viewport.origin().x()); col++) {
-            for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y())+1; row++) {
+            for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y()); row++) {
 
                 view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());	
 				
