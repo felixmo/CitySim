@@ -42,6 +42,10 @@ public class Map extends Actor
         generateCity();
         setImage(view);
         viewportDidMove(viewport.origin());
+        
+        // db tests
+        DataSource ds = new DataSource("test");
+        ds.insertTiles(map);
     }
 
     // * Greenfoot methods *
@@ -167,10 +171,10 @@ public class Map extends Actor
         for (int x = 0; x < cityColumns; x++) {
             for (int y = 0; y < cityRows; y++) {
                 if (x == 0 || y == 0 || x == cityColumns-1 || y == cityRows-1) {
-                    map.get(x).add(new Tile(0));
+                    map.get(x).add(new Tile(new Point(x, y), 0, true));
                 }
                 else {
-                    map.get(x).add(new Tile(Greenfoot.getRandomNumber(4)+1));
+                    map.get(x).add(new Tile(new Point(x, y), Greenfoot.getRandomNumber(4)+1, true));
                 }
             }
         }

@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=dbName
+comment0.target=DataSource(java.lang.String)
+comment1.params=fileName
+comment1.target=boolean\ fileExists(java.lang.String)
+comment2.params=dbName
+comment2.target=void\ openConnection(java.lang.String)
+comment3.params=
+comment3.target=void\ createSchema()
+numComments=4
