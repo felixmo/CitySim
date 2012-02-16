@@ -1,10 +1,20 @@
 #BlueJ class context
 comment0.params=dbName
 comment0.target=DataSource(java.lang.String)
-comment1.params=fileName
-comment1.target=boolean\ fileExists(java.lang.String)
-comment2.params=dbName
-comment2.target=void\ openConnection(java.lang.String)
-comment3.params=
-comment3.target=void\ createSchema()
-numComments=4
+comment1.params=
+comment1.target=java.lang.String\ dbName()
+comment2.params=
+comment2.target=boolean\ dbIsNew()
+comment3.params=fileName
+comment3.target=boolean\ fileExists(java.lang.String)
+comment4.params=dbName
+comment4.target=void\ openConnection(java.lang.String)
+comment5.params=
+comment5.target=void\ createSchema()
+comment6.params=
+comment6.target=java.util.LinkedHashMap\ metadata()
+comment7.params=properties
+comment7.target=void\ setMetadata(java.util.LinkedHashMap)
+comment8.params=
+comment8.target=tiles()
+numComments=9

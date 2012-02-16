@@ -18,6 +18,8 @@ public class Tile
     private Point position;
     private int type = 0;   // Type of tile
     private boolean traverseable = false;   // Is tile passable
+    private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
+    private int dbID; // SQL db id
 
     private GreenfootImage image = null;    // Tile image
 
@@ -43,6 +45,7 @@ public class Tile
         this.position = position;
         this.type = type;
         this.traverseable = traverseable;
+        this.dbID = prevDbID += 1;
     }
 
     // * Accessors * 
@@ -56,6 +59,10 @@ public class Tile
 
     public boolean traverseable() {
         return traverseable;
+    }
+    
+    public int dbID() {
+        return dbID;
     }
 
     public GreenfootImage image() {
@@ -72,6 +79,10 @@ public class Tile
 
     public void setTraverseable(boolean value) {
         traverseable = value;
+    }
+    
+    public void setDbID(int value) {
+        dbID = value;
     }
 
     // * END of accessors *

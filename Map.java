@@ -1,6 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-import java.util.ArrayList;
 import java.lang.Math;
+import java.util.*;
 
 /**
  * Map
@@ -35,17 +35,37 @@ public class Map extends Actor
 
     private MouseInfo mouseInfo = null;
 
+    private DataSource dataSource;
+
     // * END of constants and class & instance variables *
 
     public Map() {
-        // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
-        generateCity();
+        
+        dataSource = new DataSource("test");
+
+        if (dataSource.dbIsNew()) {
+            // New DB
+            
+            System.out.println("New database created; generating map...");
+            
+            LinkedHashMap properties = new LinkedHashMap();
+            properties.put("rows", cityRows);
+            properties.put("columns", cityColumns);
+            dataSource.setMetadata(properties);
+            
+            // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
+            map = generateCity();
+            dataSource.insertTiles(map);
+        }
+        else {
+            // Existing DB
+            
+            System.out.println("Database exists; loading tiles...");
+            map = dataSource.tiles();
+        }
+        
         setImage(view);
         viewportDidMove(viewport.origin());
-        
-        // db tests
-        DataSource ds = new DataSource("test");
-        ds.insertTiles(map);
     }
 
     // * Greenfoot methods *
@@ -153,14 +173,14 @@ public class Map extends Actor
 
     // * END of helper methods *
 
-    // Generates a new map into the ivar 'map'
-    private void generateCity() {
+    // Generates a new map into an ArrayList a returns it
+    private ArrayList<ArrayList<Tile>> generateCity() {
 
         // System.out.print("Began generating city...");
         // long startTime = System.currentTimeMillis();
 
         // The columns of the map are represnted by the elements of an ArrayList
-        map = new ArrayList<ArrayList<Tile>>(cityColumns);
+        ArrayList<ArrayList<Tile>> map = new ArrayList<ArrayList<Tile>>(cityColumns);
 
         // The rows of the map are represented by the elements of an ArrayList within the ArrayList representing the columns
         for (int i = 0; i < cityColumns; i++) {
@@ -180,6 +200,8 @@ public class Map extends Actor
         }
 
         // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
+        
+        return map;
     }
 
     // Re-renders the map image layer upon movement to account for the viewport's new offset
