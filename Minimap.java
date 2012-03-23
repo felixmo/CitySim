@@ -13,11 +13,8 @@ public class Minimap extends Actor
 {
 
     private final Rectangle FRAME = new Rectangle(new Point(112, 658), 200, 200);
-
     private GreenfootImage image;
-
     private DataSource dataSource;
-
     private Point viewportOrigin = new Point(0, 0);
 
     public Minimap(DataSource dataSource) {

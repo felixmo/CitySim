@@ -21,8 +21,6 @@ public class Tile
     private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
     private int dbID; // SQL db id
 
-    private GreenfootImage image = null;    // Tile image
-
     public static final int size = 128;     // size of square tile; px
 
     // TILE TYPES
@@ -67,9 +65,10 @@ public class Tile
 
     public GreenfootImage image() {
 
-        // Only initalize image if needed to conserve memory usage
-        if (image != null) return image;
-        image = imageForType();
+        if (ImageCache.containsImageWithID(type)) return ImageCache.imageForID(type);
+        
+        GreenfootImage image = imageForType();
+        ImageCache.insertImageWithID(image, type);
         return image;
     }
 
@@ -89,7 +88,9 @@ public class Tile
 
     // Sets the image of the tile based upon its type
     private GreenfootImage imageForType() {
-
+        
+//         System.out.println("Initalizing new image for tile");
+        
         switch (type) {
 
             case EMPTY: return new GreenfootImage(IMG_EMPTY);
