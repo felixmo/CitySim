@@ -30,6 +30,7 @@ public class DataSource
     private boolean dbIsNew;
 
     private Connection connection;
+    private boolean connectionIsOpen;
 
     private static final String mapsDirectory = "maps";
 
@@ -59,6 +60,13 @@ public class DataSource
     public boolean dbIsNew() {
         return dbIsNew;
     }
+    
+    public boolean connectionIsOpen() {
+        
+        return connectionIsOpen;
+    }
+    
+    // END of ACCESSORS
 
     // Check if a file of a given name exists
     private boolean fileExists(String fileName) {
@@ -70,7 +78,7 @@ public class DataSource
     private void openConnection(String dbName) {
 
         System.out.println("Opening connection to db...");
-        
+
         try {
             Class.forName("org.sqlite.JDBC");
         } 
@@ -80,23 +88,46 @@ public class DataSource
 
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(true);
+            connectionIsOpen = true;
         } 
         catch (SQLException se) {
             se.printStackTrace();
         }
     }
+    
+    public void closeConnection() {
+        
+        System.out.println("Closing connection to db...");
+        
+        try {
+            connection.close();
+            connectionIsOpen = false;
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+    
+    public void resumeConnection() {
+        
+        openConnection(dbName);
+    }
 
     // Create the database's schema
     private void createSchema() {
-        
+
         System.out.println("Created schema for db...");
 
         try {
             PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type, traverseable);");
             tiles.execute();
-            PreparedStatement metadata = connection.prepareStatement("CREATE TABLE metadata (rows, columns);");
-            metadata.execute();
+            PreparedStatement mapSize = connection.prepareStatement("CREATE TABLE map_size (rows, columns);");
+            mapSize.execute();
+            PreparedStatement mapMetadata = connection.prepareStatement("CREATE TABLE map_metadata (name);");
+            mapMetadata.execute();
+            PreparedStatement cityStats = connection.prepareStatement("CREATE TABLE city_stats (minutes, hours, days, months, years, population);");
+            cityStats.execute();
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -105,18 +136,57 @@ public class DataSource
 
     // - MAP -
 
-    public LinkedHashMap metadata() {
+    public LinkedHashMap mapSize() {
 
-        System.out.println("Getting metadata from db...");
+        System.out.println("Getting map size from db...");
 
         try {
 
-            List results = (List) new QueryRunner().query(connection, "SELECT * from metadata", new MapListHandler());
-            LinkedHashMap metadata = new LinkedHashMap();
+            List results = (List) new QueryRunner().query(connection, "SELECT * from map_size", new MapListHandler());
+            LinkedHashMap mapSize = new LinkedHashMap();
             Map row = (Map)results.listIterator().next();
-            metadata.putAll(row);
+            mapSize.putAll(row);
 
-            return metadata;
+            return mapSize;
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+        
+        return null;
+    }
+
+    public void insertMapSize(LinkedHashMap mapSize) {
+
+        System.out.println("Inserting map size into db...");
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO map_size VALUES (?, ?);");
+            // 1. rows
+            // 2. columns
+
+            statement.setInt(1, (Integer)mapSize.get("rows"));
+            statement.setInt(2, (Integer)mapSize.get("columns"));
+            statement.addBatch();
+            statement.executeBatch();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public LinkedHashMap mapMetadata() {
+
+        System.out.println("Getting map metadata from db...");
+
+        try {
+            List results = (List) new QueryRunner().query(connection, "SELECT * from map_metadata", new MapListHandler());
+            LinkedHashMap mapMetadata = new LinkedHashMap();
+            Map row = (Map)results.listIterator().next();
+            mapMetadata.putAll(row);
+
+            return mapMetadata;
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -125,22 +195,17 @@ public class DataSource
         return null;
     }
 
-    public void setMetadata(LinkedHashMap properties) {
+    public void insertMapMetadata(LinkedHashMap mapMetadata) {
 
-        System.out.println("Inserting metadata into db...");
-        
+        System.out.println("Inserting map metadata into db...");
+
         try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO map_metadata VALUES (?);");
+            // 1. name
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO metadata VALUES (?, ?);");
-            // 1. rows
-            // 2. columns
-
-            statement.setInt(1, (Integer)properties.get("rows"));
-            statement.setInt(2, (Integer)properties.get("columns"));
+            statement.setString(1, (String)mapMetadata.get("name"));
             statement.addBatch();
             statement.executeBatch();
-            connection.commit();
-
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -154,9 +219,11 @@ public class DataSource
     public void insertTiles(ArrayList<ArrayList<Tile>> tiles) {
 
         System.out.println("Inserting tiles into db...");
-        
-        try {
 
+        try {
+            
+            connection.setAutoCommit(false);
+            
             PreparedStatement statement = connection.prepareStatement("INSERT INTO tiles VALUES (?, ?, ?, ?, ?);");
             // 1. id
             // 2. x
@@ -180,6 +247,8 @@ public class DataSource
 
             statement.executeBatch();
             connection.commit();
+            
+            connection.setAutoCommit(true);
         }
         catch (SQLException se) {
             se.printStackTrace(); 
@@ -189,28 +258,28 @@ public class DataSource
     public ArrayList<ArrayList<Tile>> tiles() {
 
         System.out.println("Loading tiles from db...");
-        
+
         try {
 
-            LinkedHashMap metadata = metadata();
-            Point mapSize = new Point((Integer)metadata.get("columns"), (Integer)metadata.get("rows"));
+            LinkedHashMap mapSize = mapSize();
+            Point size = new Point((Integer)mapSize.get("columns"), (Integer)mapSize.get("rows"));
 
-            ArrayList<ArrayList<Tile>> tiles = new ArrayList<ArrayList<Tile>>(mapSize.x());
-            for (int i = 0; i < mapSize.x(); i++) {
-                tiles.add(new ArrayList<Tile>(mapSize.y()));
+            ArrayList<ArrayList<Tile>> tiles = new ArrayList<ArrayList<Tile>>(size.x());
+            for (int i = 0; i < size.x(); i++) {
+                tiles.add(new ArrayList<Tile>(size.y()));
             }
 
             List results = (List) new QueryRunner().query(connection, "SELECT * from tiles", new MapListHandler());
             Point pos = new Point(0, 0);
-			for (int i = 0; i < results.size(); i++) {
+            for (int i = 0; i < results.size(); i++) {
 
                 Map row = (Map)results.get(i);
                 pos.setX((Integer)row.get("x"));
                 pos.setY((Integer)row.get("y"));
-                
+
                 tiles.get(pos.x()).add(pos.y(), new Tile(new Point((Integer)row.get("x"), (Integer)row.get("y")), (Integer)row.get("type"), (Integer)row.get("traverseable") == 0 ? false : true));
-			}
-			
+            }
+
             return tiles;
         }
         catch (SQLException se) {
@@ -218,6 +287,90 @@ public class DataSource
         }
 
         return null;
+    }
+
+    // - CITY -
+
+    public LinkedHashMap cityStats() {
+
+        System.out.println("Loading city stats from db...");
+
+        try {
+
+            List results = (List) new QueryRunner().query(connection, "SELECT * from city_stats", new MapListHandler());
+            LinkedHashMap cityStats = new LinkedHashMap();
+            Map row = (Map)results.listIterator().next();
+            cityStats.putAll(row);
+            return cityStats;
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void insertCityStats(LinkedHashMap cityStats) {
+
+        System.out.println("Inserting city stats to db...");
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO city_stats VALUES (?, ?, ?, ?, ?, ?);");
+            // 1. minutes
+            // 2. hours
+            // 3. days
+            // 4. months
+            // 5. years
+            // 6. population
+
+            statement.setInt(1, (Integer)cityStats.get("minutes"));
+            statement.setInt(2, (Integer)cityStats.get("hours"));
+            statement.setInt(3, (Integer)cityStats.get("days"));
+            statement.setInt(4, (Integer)cityStats.get("months"));
+            statement.setInt(5, (Integer)cityStats.get("years"));
+            statement.setInt(6, (Integer)cityStats.get("population"));
+            statement.addBatch();
+            statement.executeBatch();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public void updateCityStats(LinkedHashMap cityStats) {
+
+        System.out.println("Updating city stats to db...");
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("UPDATE city_stats SET minutes = ?");
+            statement.setInt(1, (Integer)cityStats.get("minutes"));
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("UPDATE city_stats SET hours = ?");
+            statement.setInt(1, (Integer)cityStats.get("hours"));
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("UPDATE city_stats SET days = ?");
+            statement.setInt(1, (Integer)cityStats.get("days"));
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("UPDATE city_stats SET months = ?");
+            statement.setInt(1, (Integer)cityStats.get("months"));
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("UPDATE city_stats SET years = ?");
+            statement.setInt(1, (Integer)cityStats.get("years"));
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement("UPDATE city_stats SET population = ?");
+            statement.setInt(1, (Integer)cityStats.get("population"));
+            statement.executeUpdate();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
     }
 
 }

@@ -1,4 +1,18 @@
 #BlueJ class context
 comment0.params=
 comment0.target=City()
-numComments=1
+comment1.params=
+comment1.target=void\ started()
+comment2.params=
+comment2.target=void\ stopped()
+comment3.params=
+comment3.target=void\ didIncrementTime()
+comment4.params=location
+comment4.target=void\ didMoveViewportTo(Point)
+comment5.params=location
+comment5.target=void\ didMoveMapTo(Point)
+comment6.params=
+comment6.target=java.util.LinkedHashMap\ valuesForHUD()
+comment7.params=
+comment7.target=java.util.LinkedHashMap\ currentCityStats()
+numComments=8

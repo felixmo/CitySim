@@ -26,18 +26,18 @@ public class Tile
     public static final int size = 128;     // size of square tile; px
 
     // TILE TYPES
-    public static final int TILE_TYPE_BLACK = 0;
-    public static final int TILE_TYPE_GRASS = 1;
-    public static final int TILE_TYPE_SAND = 2;
-    public static final int TILE_TYPE_DIRT = 3;
-    public static final int TILE_TYPE_STONE = 4;
+    public static final int EMPTY = 0;
+    public static final int GRASS = 1;
+    public static final int SAND = 2;
+    public static final int DIRT = 3;
+    public static final int STONE = 4;
 
     // FILES
-    private static final String TILE_IMG_BLACK = "tile_black.png";
-    private static final String TILE_IMG_GRASS = "tile_grass2.png";
-    private static final String TILE_IMG_SAND = "tile_sand2.png";
-    private static final String TILE_IMG_DIRT = "tile_dirt1.png";
-    private static final String TILE_IMG_STONE = "tile_stone1.png";
+    private static final String IMG_EMPTY = "tile_black.png";
+    private static final String IMG_GRASS = "tile_grass2.png";
+    private static final String IMG_SAND = "tile_sand2.png";
+    private static final String IMG_DIRT = "tile_dirt1.png";
+    private static final String IMG_STONE = "tile_stone1.png";
 
     // * END of constants and class & instance variables *
 
@@ -92,11 +92,11 @@ public class Tile
 
         switch (type) {
 
-            case TILE_TYPE_BLACK: return new GreenfootImage(TILE_IMG_BLACK);
-            case TILE_TYPE_GRASS: return new GreenfootImage(TILE_IMG_GRASS);
-            case TILE_TYPE_SAND: return new GreenfootImage(TILE_IMG_SAND);
-            case TILE_TYPE_DIRT: return new GreenfootImage(TILE_IMG_DIRT);
-            case TILE_TYPE_STONE: return new GreenfootImage(TILE_IMG_STONE);
+            case EMPTY: return new GreenfootImage(IMG_EMPTY);
+            case GRASS: return new GreenfootImage(IMG_GRASS);
+            case SAND: return new GreenfootImage(IMG_SAND);
+            case DIRT: return new GreenfootImage(IMG_DIRT);
+            case STONE: return new GreenfootImage(IMG_STONE);
 
             default: return null;
         }

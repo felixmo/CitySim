@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.params=frame
+comment0.target=Label(Rectangle)
+comment1.params=value
+comment1.target=void\ setText(java.lang.String)
+comment2.params=
+comment2.target=Rectangle\ frame()
+numComments=3

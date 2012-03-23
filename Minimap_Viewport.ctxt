@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=origin
+comment0.target=Minimap_Viewport(Point)
+comment1.params=
+comment1.target=void\ act()
+comment2.params=
+comment2.target=void\ draw()
+comment3.params=location
+comment3.target=void\ didMoveViewportToCell(Point)
+numComments=4

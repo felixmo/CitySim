@@ -1,6 +1,6 @@
 #BlueJ class context
-comment0.params=
-comment0.target=Map()
+comment0.params=dataSource
+comment0.target=Map(DataSource)
 comment1.params=
 comment1.target=void\ act()
 comment2.params=coord
@@ -13,4 +13,6 @@ comment5.params=
 comment5.target=generateCity()
 comment6.params=offset
 comment6.target=void\ viewportDidMove(Point)
-numComments=7
+comment7.params=location
+comment7.target=void\ viewportDidMoveTo(Point)
+numComments=8

@@ -26,7 +26,7 @@ public class Map extends Actor
     private ArrayList<ArrayList<Tile>> map;     // holds map data
 
     // view settings
-    private final int moveSpeed = 20;       // # of px to move at a time
+    private final int moveSpeed = 30;       // # of px to move at a time
     private final static int tileBuffer = 2;    // number of additional cells to draw beyond the viewport
 
     // view
@@ -39,31 +39,29 @@ public class Map extends Actor
 
     // * END of constants and class & instance variables *
 
-    public Map() {
-        
-        dataSource = new DataSource("test");
+    public Map(DataSource dataSource) {
 
         if (dataSource.dbIsNew()) {
             // New DB
-            
+
             System.out.println("New database created; generating map...");
-            
-            LinkedHashMap properties = new LinkedHashMap();
-            properties.put("rows", cityRows);
-            properties.put("columns", cityColumns);
-            dataSource.setMetadata(properties);
-            
+
+            LinkedHashMap mapSize = new LinkedHashMap();
+            mapSize.put("rows", cityRows);
+            mapSize.put("columns", cityColumns);
+            dataSource.insertMapSize(mapSize);
+
             // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
             map = generateCity();
             dataSource.insertTiles(map);
         }
         else {
             // Existing DB
-            
+
             System.out.println("Database exists; loading tiles...");
             map = dataSource.tiles();
         }
-        
+
         setImage(view);
         viewportDidMove(viewport.origin());
     }
@@ -83,7 +81,7 @@ public class Map extends Actor
         }
 
         if (mouseInfo != null) {
-
+/*
             mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
             // Vertical movement
@@ -93,7 +91,7 @@ public class Map extends Actor
                     offset.setY(moveSpeed * -1);
                 }
             }
-            else if (mouse.y() <= 768 && mouse.y() >= 738) {
+            else if (mouse.y() <= 548 && mouse.y() >= 518) {
                 // BOTTOM
                 if (viewport.origin().y() + viewport.height() < cityRect.width()) {
                     offset.setY(moveSpeed);
@@ -113,8 +111,9 @@ public class Map extends Actor
                     offset.setX(moveSpeed * -1);
                 }
             }
+            */
         }
-
+        
         // Only get keyboard input if there was no moues input
         if (offset.x() == 0 && offset.y() == 0) {
 
@@ -158,7 +157,8 @@ public class Map extends Actor
     // * Helper methods *
     // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile in the ArrayLists
     private Point cellForCoordinatePair(Point coord) {
-        return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
+//         return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
+        return new Point((coord.x() / Tile.size), (coord.y() / Tile.size));
     }
 
     // Translates a given indice to a coordinate for the view, in px
@@ -187,20 +187,22 @@ public class Map extends Actor
             map.add(new ArrayList<Tile>(cityRows));
         }
 
-        // Initalize each cell with a tile of randomly generated type
+        // Initalize each cell with the default initial type of grass
         for (int x = 0; x < cityColumns; x++) {
             for (int y = 0; y < cityRows; y++) {
-                if (x == 0 || y == 0 || x == cityColumns-1 || y == cityRows-1) {
-                    map.get(x).add(new Tile(new Point(x, y), 0, true));
+                if (x < 3 || y < 3 || x > cityColumns-4 || y > cityRows-4) {
+                    // Set the outter tiles to be empty
+                    map.get(x).add(new Tile(new Point(x, y), Tile.EMPTY, true));
                 }
                 else {
                     map.get(x).add(new Tile(new Point(x, y), Greenfoot.getRandomNumber(4)+1, true));
+                    //                        map.get(x).add(new Tile(new Point(x, y), Tile.GRASS, true));
                 }
             }
         }
 
         // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
-        
+
         return map;
     }
 
@@ -210,6 +212,34 @@ public class Map extends Actor
         // Shift the viewport's origin from movement offset
         viewport.origin().setX(viewport.origin().x() - offset.x());
         viewport.origin().setY(viewport.origin().y() + offset.y());
+        
+        Point cell = cellForCoordinatePair(viewport.origin());
+        
+        if (getWorld() != null) ((City)getWorld()).didMoveMapTo(new Point(cellForCoordinatePair(viewport.origin()).x(), cellForCoordinatePair(viewport.origin()).y()));
+        
+        Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
+
+        // Clear the map image layer
+        view.clear();
+
+        // Draw tiles onto the map image layer for the shifted viewport
+        for (int col = cellForCoordinatePair(viewport.origin()).x(); col < numberOfTilesInWidth(viewport.width() + viewport.origin().x()); col++) {
+            for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y()); row++) {
+
+                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tilePt.x(), tilePt.y());  
+
+                // Update the coordinates for the next tile to be drawn
+                tilePt.setX(coordinateForCell(col) - viewport.origin().x());
+                tilePt.setY(coordinateForCell(row) - viewport.origin().y());
+            }
+        }
+    }
+    
+    public void viewportDidMoveTo(Point location) {
+
+        // Shift the viewport's origin from movement offset
+        viewport.origin().setX(coordinateForCell((location.x() / 2)));
+        viewport.origin().setY(coordinateForCell((location.y() / 2)));
 
         Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
 
@@ -220,7 +250,7 @@ public class Map extends Actor
         for (int col = cellForCoordinatePair(viewport.origin()).x(); col < numberOfTilesInWidth(viewport.width() + viewport.origin().x()); col++) {
             for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y()); row++) {
 
-                view.drawImage(map.get(col).get(row).image(), tilePt.x(), tilePt.y());  
+                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tilePt.x(), tilePt.y());  
 
                 // Update the coordinates for the next tile to be drawn
                 tilePt.setX(coordinateForCell(col) - viewport.origin().x());
