@@ -21,7 +21,7 @@ public class Tile
     private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
     private int dbID; // SQL db id
 
-    public static final int size = 128;     // size of square tile; px
+    public static final int size = 64;     // size of square tile; px
 
     // TILE TYPES
     public static final int EMPTY = 0;
@@ -93,6 +93,14 @@ public class Tile
         
         switch (type) {
 
+            case EMPTY: return new GreenfootImage("64_0.png");
+            case GRASS: return new GreenfootImage("64.png");
+
+            default: return new GreenfootImage("64_2.png");
+        }
+/*
+        switch (type) {
+
             case EMPTY: return new GreenfootImage(IMG_EMPTY);
             case GRASS: return new GreenfootImage(IMG_GRASS);
             case SAND: return new GreenfootImage(IMG_SAND);
@@ -101,7 +109,7 @@ public class Tile
 
             default: return null;
         }
-        
+        */
     }
 }
 

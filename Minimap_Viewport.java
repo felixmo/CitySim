@@ -53,7 +53,7 @@ public class Minimap_Viewport extends Actor
         image.clear();
 
         image.setColor(Color.RED);
-        image.drawRect(origin.x(), origin.y(), 20, 10);
+        image.drawRect(origin.x(), origin.y(), 40, 25);
     }
     
     public void didMoveViewportToCell(Point location) {

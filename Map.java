@@ -26,11 +26,11 @@ public class Map extends Actor
     private ArrayList<ArrayList<Tile>> map;     // holds map data
 
     // view settings
-    private final int moveSpeed = 30;       // # of px to move at a time
-    private final static int tileBuffer = 2;    // number of additional cells to draw beyond the viewport
+    private final int moveSpeed = 15;       // # of px to move at a time
+    private final static int tileBuffer = 4;    // number of additional cells to draw beyond the viewport
 
     // view
-    private Rectangle viewport = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size));   // rectangle representing the viewport
+    private Rectangle viewport = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size) - 230);   // rectangle representing the viewport | NOTE: remember to subtract HUD and other OSD elements from height/width
     private GreenfootImage view = new GreenfootImage(viewport.width(), viewport.height());  // image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
 
     private MouseInfo mouseInfo = null;

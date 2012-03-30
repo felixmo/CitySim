@@ -53,7 +53,7 @@ public class City extends World
 
         // Create and add a new map for the city
         map = new Map(dataSource);
-        addObject(map, 640, 512);   // Arbitrary values to place map at origin (top-left corner)
+        addObject(map, 512, 333);   // Arbitrary values to place map at origin (top-left corner)
 
         // Create and add HUD
         hud = new HUD(dataSource);
