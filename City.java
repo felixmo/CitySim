@@ -18,7 +18,6 @@ public class City extends World
 {
 
     private Map map;    // Map of the city
-    private Time time;
     private Date date;
     private HUD hud;
     private Minimap_Viewport minimap_viewport;
@@ -41,10 +40,8 @@ public class City extends World
             dataSource.insertMapMetadata(mapMetadata);
 
             LinkedHashMap cityStats = new LinkedHashMap();
-            cityStats.put("minutes", 0);
-            cityStats.put("hours", 0);
             cityStats.put("days", 0);
-            cityStats.put("months", 0);
+            cityStats.put("months", 1);
             cityStats.put("years", 0);
             cityStats.put("population", 0);
             dataSource.insertCityStats(cityStats);
@@ -52,8 +49,7 @@ public class City extends World
 
         // Start tracking time from the last saved time in DB
         LinkedHashMap cityStats = dataSource.cityStats();
-        time = new Time(this, (Integer)cityStats.get("minutes"), (Integer)cityStats.get("hours"), (Integer)cityStats.get("days"), (Integer)cityStats.get("months"), (Integer)cityStats.get("years"));
-        date = time.date();
+        date = new Date(this, (Integer)cityStats.get("days"), (Integer)cityStats.get("months"), (Integer)cityStats.get("years"));
 
         // Create and add a new map for the city
         map = new Map(dataSource);
@@ -76,7 +72,7 @@ public class City extends World
         }
 
         // TO DO: start timer when game has actually started (i.e. not in menu)
-        time.start();
+        date.start();
     }
 
     // Called when game is paused in Greenfoot
@@ -84,7 +80,7 @@ public class City extends World
         System.out.println("Game has stopped.");
 
         // TO DO: pause timer when in menu
-        time.stop();
+        date.stop();
 
         dataSource.closeConnection();
     }
@@ -92,7 +88,7 @@ public class City extends World
     // EVENTS
     
     // Call when time has incremented by 1 second
-    public void didIncrementTime() {
+    public void didIncrementDate() {
         dataSource.updateCityStats(currentCityStats());
         hud.refresh(valuesForHUD());   
     }
@@ -113,7 +109,6 @@ public class City extends World
 
         values.put("name", "Toronto");  // TESTING
         values.put("population", 0);    // TESTING
-        values.put("time", time.toString());
         values.put("date", date.toString());
 
         return values;
@@ -123,8 +118,6 @@ public class City extends World
 
         LinkedHashMap stats = new LinkedHashMap();
 
-        stats.put("minutes", time.minutes());
-        stats.put("hours", time.hours());
         stats.put("days", date.days());
         stats.put("months", date.months());
         stats.put("years", date.years());

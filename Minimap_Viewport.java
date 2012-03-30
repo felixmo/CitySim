@@ -3,11 +3,16 @@ import java.awt.Color;
 import java.lang.Math;
 
 /**
- * Write a description of class Minimap_Viewport here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Minimap_Viewport
+ * CitySim
+ * v0.1
+ *
+ * Created by Felix Mo on 03-06-2012
+ *
+ *
+ *
  */
+
 public class Minimap_Viewport extends Actor
 {
     private GreenfootImage image;
@@ -36,8 +41,6 @@ public class Minimap_Viewport extends Actor
             Point location = new Point((mouseInfo.getX() - 12), (mouseInfo.getY() - 558));
             // X | Subtract distance from left edge of HUD to left edge of minimap from X
             // Y | Subtract distance from the top of the game to the top of the minimap from Y
-            
-//             System.out.println("Minimap was clicked @ " + location.x() + ", " + location.y());
             
             origin = location;
             draw();

@@ -17,7 +17,6 @@ public class HUD extends Actor {
 
     private static final Rectangle CITYNAME_RECT = new Rectangle(new Point(345, 615), 135, 48);
     private static final Rectangle POPNUM_RECT = new Rectangle(new Point(370, 685), 135, 48);
-    private static final Rectangle TIME_RECT = new Rectangle(new Point(430, 735), 135, 48);
     private static final Rectangle DATE_RECT = new Rectangle(new Point(320, 735), 135, 48);
 
     private LinkedHashMap labels = new LinkedHashMap();
@@ -34,7 +33,6 @@ public class HUD extends Actor {
         // init labels
         labels.put("name", new Label(CITYNAME_RECT));
         labels.put("population", new Label(POPNUM_RECT));
-        labels.put("time", new Label(TIME_RECT));
         labels.put("date", new Label(DATE_RECT));
     }
     

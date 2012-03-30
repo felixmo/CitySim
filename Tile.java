@@ -32,7 +32,7 @@ public class Tile
 
     // FILES
     private static final String IMG_EMPTY = "tile_black.png";
-    private static final String IMG_GRASS = "tile_grass2.png";
+    private static final String IMG_GRASS = "tile_grass1.png";
     private static final String IMG_SAND = "tile_sand2.png";
     private static final String IMG_DIRT = "tile_dirt1.png";
     private static final String IMG_STONE = "tile_stone1.png";
@@ -101,6 +101,7 @@ public class Tile
 
             default: return null;
         }
+        
     }
 }
 

@@ -4,15 +4,22 @@ import java.util.LinkedHashMap;
 import java.util.ArrayList;
 
 /**
- * Write a description of class Minimap here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Minimap
+ * CitySim
+ * v0.1
+ *
+ * Created by Felix Mo on 03-06-2012
+ *
+ * Minimap view for HUD
+ *
  */
+
 public class Minimap extends Actor
 {
 
     private final Rectangle FRAME = new Rectangle(new Point(112, 658), 200, 200);
+    private final int tileSize = 2; // px
+    
     private GreenfootImage image;
     private DataSource dataSource;
     private Point viewportOrigin = new Point(0, 0);
@@ -30,35 +37,40 @@ public class Minimap extends Actor
 
     public void act() 
     {
-//         MouseInfo mouseInfo = Greenfoot.getMouseInfo();
-        
-//         if (mouseInfo != null && 
-
-        if (Greenfoot.mouseClicked(this)) System.out.println("Clicked");
+        // Do nothing
     }    
 
     private void draw() {
-
+        
+        // Clear minimap
         image.clear();
 
         // Draw minimap
 
+        // Get all tiles
         ArrayList<ArrayList<Tile>> map = dataSource.tiles();
 
+        // Determine the size of the map
         LinkedHashMap mapSize = dataSource.mapSize();
         int cityColumns = (Integer)mapSize.get("columns");
         int cityRows = (Integer)mapSize.get("rows");
 
+        // Position of the minimap tile being drawn
         int x = 0;
         int y = 0;
+        
+        // Iterate through every map tile and draw it onto minimap, adjusting the position for the next tile with each iteration
+        // Minimap is drawn column by column
         for (int i = 0; i < cityColumns; i++) {
             for (int j = 0; j < cityRows; j++) {
                 image.setColor(colorForTileOfType(((Tile)map.get(i).get(j)).type()));
-                image.fillRect(x, y, 2, 2);
-                y+=2;
+                image.fillRect(x, y, tileSize, tileSize); // Minimap tiles are 2px * 2px
+                y+=tileSize;
             }
+            // Reset Y to top of the column 
             y = 0;
-            x+=2;
+                
+            x+=tileSize;
         }
     }
 
@@ -70,6 +82,7 @@ public class Minimap extends Actor
 
     // HELPERS
 
+    // Returns the color that represents each type of tile
     private Color colorForTileOfType(int type) {
         switch (type) {
             case Tile.EMPTY: return Color.BLACK;

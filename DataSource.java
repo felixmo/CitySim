@@ -126,7 +126,7 @@ public class DataSource
             mapSize.execute();
             PreparedStatement mapMetadata = connection.prepareStatement("CREATE TABLE map_metadata (name);");
             mapMetadata.execute();
-            PreparedStatement cityStats = connection.prepareStatement("CREATE TABLE city_stats (minutes, hours, days, months, years, population);");
+            PreparedStatement cityStats = connection.prepareStatement("CREATE TABLE city_stats (days, months, years, population);");
             cityStats.execute();
         }
         catch (SQLException se) {
@@ -316,20 +316,16 @@ public class DataSource
 
         try {
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO city_stats VALUES (?, ?, ?, ?, ?, ?);");
-            // 1. minutes
-            // 2. hours
-            // 3. days
-            // 4. months
-            // 5. years
-            // 6. population
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO city_stats VALUES (?, ?, ?, ?);");
+            // 1. days
+            // 2. months
+            // 3. years
+            // 4. population
 
-            statement.setInt(1, (Integer)cityStats.get("minutes"));
-            statement.setInt(2, (Integer)cityStats.get("hours"));
-            statement.setInt(3, (Integer)cityStats.get("days"));
-            statement.setInt(4, (Integer)cityStats.get("months"));
-            statement.setInt(5, (Integer)cityStats.get("years"));
-            statement.setInt(6, (Integer)cityStats.get("population"));
+            statement.setInt(1, (Integer)cityStats.get("days"));
+            statement.setInt(2, (Integer)cityStats.get("months"));
+            statement.setInt(3, (Integer)cityStats.get("years"));
+            statement.setInt(4, (Integer)cityStats.get("population"));
             statement.addBatch();
             statement.executeBatch();
         }
@@ -344,15 +340,7 @@ public class DataSource
 
         try {
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE city_stats SET minutes = ?");
-            statement.setInt(1, (Integer)cityStats.get("minutes"));
-            statement.executeUpdate();
-
-            statement = connection.prepareStatement("UPDATE city_stats SET hours = ?");
-            statement.setInt(1, (Integer)cityStats.get("hours"));
-            statement.executeUpdate();
-
-            statement = connection.prepareStatement("UPDATE city_stats SET days = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE city_stats SET days = ?");
             statement.setInt(1, (Integer)cityStats.get("days"));
             statement.executeUpdate();
 

@@ -195,8 +195,8 @@ public class Map extends Actor
                     map.get(x).add(new Tile(new Point(x, y), Tile.EMPTY, true));
                 }
                 else {
-//                     map.get(x).add(new Tile(new Point(x, y), Greenfoot.getRandomNumber(4)+1, true));
-                       map.get(x).add(new Tile(new Point(x, y), Tile.GRASS, true));
+                    map.get(x).add(new Tile(new Point(x, y), Greenfoot.getRandomNumber(4)+1, true));
+//                        map.get(x).add(new Tile(new Point(x, y), Tile.GRASS, true));
                 }
             }
         }

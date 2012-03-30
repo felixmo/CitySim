@@ -13,5 +13,13 @@ import greenfoot.*;
 
 public class Selection extends Actor 
 {
+
+    private MouseInfo mouseInfo = null;
     
+    public void act() {
+        
+        mouseInfo = Greenfoot.getMouseInfo();
+        
+        
+    }
 }
