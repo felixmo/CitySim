@@ -14,41 +14,71 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Tile 
 {
 
-    // * Constants and class & instance variables *
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * INSTANCE VARIABLES *
+     */
+    
     private Point position;
+    private static int prevType = 1; // prevent crowding of same grass tiles when map is generated
     private int type = 0;   // Type of tile
     private boolean traverseable = false;   // Is tile passable
     private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
     private int dbID; // SQL db id
 
+    /*
+     * CONSTANTS *
+     */
+    
     public static final int size = 64;     // size of square tile; px
 
-    // TILE TYPES
+    /*
+     * TILE TYPES *
+     */
+    
     public static final int EMPTY = 0;
-    public static final int GRASS = 1;
-    public static final int SAND = 2;
-    public static final int DIRT = 3;
-    public static final int STONE = 4;
+    public static final int GRASS_1 = 10;
+    public static final int GRASS_2 = 11;
+    public static final int GRASS_3 = 12;
+    public static final int GRASS_4 = 13;
+    public static final int SAND = 20;
+    public static final int DIRT = 30;
+    public static final int STONE = 40;
 
-    // FILES
-    private static final String IMG_EMPTY = "tile_black.png";
-    private static final String IMG_GRASS = "tile_grass1.png";
-    private static final String IMG_SAND = "tile_sand2.png";
-    private static final String IMG_DIRT = "tile_dirt1.png";
-    private static final String IMG_STONE = "tile_stone1.png";
+    /*
+     * IMAGE FILES *
+     */
+    
+    private static final String IMG_EMPTY = "tiles/black.png";
+    private static final String IMG_GRASS_1 = "tiles/grass_1.png";
+    private static final String IMG_GRASS_2 = "tiles/grass_2.png";
+    private static final String IMG_GRASS_3 = "tiles/grass_3.png";
+    private static final String IMG_GRASS_4 = "tiles/grass_4.png";
+    private static final String IMG_SAND = "tiles/tile_sand2.png";
+    private static final String IMG_DIRT = "tiles/tile_dirt1.png";
+    private static final String IMG_STONE = "tiles/tile_stone1.png";
 
-    // * END of constants and class & instance variables *
+    // ---------------------------------------------------------------------------------------------------------------------
 
     public Tile(Point position, int type, boolean traverseable) {
         this.position = position;
+        this.prevType = type;
         this.type = type;
         this.traverseable = traverseable;
         this.dbID = prevDbID += 1;
     }
 
-    // * Accessors * 
+    /*
+     * ACCESSORS *
+     */
+    
     public Point position() {
         return position;
+    }
+
+    public static int prevType() {
+        return prevType;
     }
 
     public int type() {
@@ -58,7 +88,7 @@ public class Tile
     public boolean traverseable() {
         return traverseable;
     }
-    
+
     public int dbID() {
         return dbID;
     }
@@ -66,7 +96,7 @@ public class Tile
     public GreenfootImage image() {
 
         if (ImageCache.containsImageWithID(type)) return ImageCache.imageForID(type);
-        
+
         GreenfootImage image = imageForType();
         ImageCache.insertImageWithID(image, type);
         return image;
@@ -79,37 +109,38 @@ public class Tile
     public void setTraverseable(boolean value) {
         traverseable = value;
     }
-    
+
     public void setDbID(int value) {
         dbID = value;
     }
 
-    // * END of accessors *
+    /*
+     * HELPERS *
+     */
 
     // Sets the image of the tile based upon its type
     private GreenfootImage imageForType() {
-        
-//         System.out.println("Initalizing new image for tile");
-        
-        switch (type) {
 
-            case EMPTY: return new GreenfootImage("64_0.png");
-            case GRASS: return new GreenfootImage("64.png");
+        //         System.out.println("Initalizing new image for tile");
 
-            default: return new GreenfootImage("64_2.png");
-        }
-/*
         switch (type) {
 
             case EMPTY: return new GreenfootImage(IMG_EMPTY);
-            case GRASS: return new GreenfootImage(IMG_GRASS);
+
+            // Grass
+            case GRASS_1 : return new GreenfootImage(IMG_GRASS_1);
+            case GRASS_2 : return new GreenfootImage(IMG_GRASS_2);
+            case GRASS_3 : return new GreenfootImage(IMG_GRASS_3);
+            case GRASS_4 : return new GreenfootImage(IMG_GRASS_4);
+
+            // Unimplemented
             case SAND: return new GreenfootImage(IMG_SAND);
             case DIRT: return new GreenfootImage(IMG_DIRT);
             case STONE: return new GreenfootImage(IMG_STONE);
 
             default: return null;
         }
-        */
+
     }
 }
 

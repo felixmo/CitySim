@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.params=value
+comment0.target=Cash(int)
+comment1.params=change
+comment1.target=void\ addValue(int)
+comment2.params=change
+comment2.target=void\ subtractValue(int)
+comment3.params=
+comment3.target=java.lang.String\ toString()
+comment4.params=
+comment4.target=int\ value()
+comment4.text=\ ACCESSORS\ *\n
+numComments=5

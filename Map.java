@@ -1,6 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.lang.Math;
-import java.util.*;
+import java.util.logging.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Map
@@ -16,52 +18,61 @@ import java.util.*;
 public class Map extends Actor
 {
 
-    // * Constants and class & instance variables *
+    // ---------------------------------------------------------------------------------------------------------------------
 
-    // map of 100x100 tiles
+    /*
+     * INSTANCE VARIABLES & CONSTANTS *
+     */
+
+    // Shared logger
+    private Logger logger = LogManager.getLogManager().getLogger("com.felixmo.CitySim.logger");
+
+    // Map properties
     private final int cityColumns = 100;    // cells; horizontal
     private final int cityRows = 100;   // cells; vertical
     private Rectangle cityRect = new Rectangle(new Point(0, 0), (cityColumns * Tile.size), (cityRows * Tile.size));     // rectangle representing the entirety of the map
 
-    private ArrayList<ArrayList<Tile>> map;     // holds map data
+    private ArrayList<ArrayList<Tile>> map;     // Holds map data
 
-    // view settings
+    // View configuration
     private final int moveSpeed = 15;       // # of px to move at a time
     private final static int tileBuffer = 4;    // number of additional cells to draw beyond the viewport
 
-    // view
+    // Map view
     private Rectangle viewport = new Rectangle(new Point(0, 0), 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size) - 230);   // rectangle representing the viewport | NOTE: remember to subtract HUD and other OSD elements from height/width
     private GreenfootImage view = new GreenfootImage(viewport.width(), viewport.height());  // image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
 
+    // Ref. to mouse info. provided by Greenfoot
     private MouseInfo mouseInfo = null;
 
-    private DataSource dataSource;
+    // ---------------------------------------------------------------------------------------------------------------------
 
-    // * END of constants and class & instance variables *
+    public Map() {
 
-    public Map(DataSource dataSource) {
-
-        if (dataSource.dbIsNew()) {
+        if (Data.dbIsNew()) {
             // New DB
 
-            System.out.println("New database created; generating map...");
+            logger.info("New database created; generating map...");
 
+            // Insert specified map properties into DB
             LinkedHashMap mapSize = new LinkedHashMap();
-            mapSize.put("rows", cityRows);
-            mapSize.put("columns", cityColumns);
-            dataSource.insertMapSize(mapSize);
+            mapSize.put(Data.MAPSIZE_ROWS, cityRows);
+            mapSize.put(Data.MAPSIZE_COLUMNS, cityColumns);
+            Data.insertMapSize(mapSize);
 
             // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
             map = generateCity();
-            dataSource.insertTiles(map);
+            Data.insertTiles(map);
         }
         else {
             // Existing DB
 
-            System.out.println("Database exists; loading tiles...");
-            map = dataSource.tiles();
+            // Get map data from DB
+            logger.info("Database exists; loading tiles...");
+            map = Data.tiles();
         }
 
+        // Draw map on screen
         setImage(view);
         viewportDidMove(viewport.origin());
     }
@@ -73,47 +84,48 @@ public class Map extends Actor
         // Listen for keystrokes and mouse movement and move accordingly, only if viewport is within bounds of map
 
         Point offset = new Point(0, 0); // movement offset
+        /*
         Point mouse = null; // cursor position
 
         // Update mouse info if mouse has moved
         if (Greenfoot.getMouseInfo() != null) {
-            mouseInfo = Greenfoot.getMouseInfo();
+        mouseInfo = Greenfoot.getMouseInfo();
         }
 
         if (mouseInfo != null) {
-/*
-            mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
-            // Vertical movement
-            if (mouse.y() >= 0 && mouse.y() <= 30) {
-                // TOP
-                if (viewport.origin().y() > cityRect.origin().y()) {
-                    offset.setY(moveSpeed * -1);
-                }
-            }
-            else if (mouse.y() <= 548 && mouse.y() >= 518) {
-                // BOTTOM
-                if (viewport.origin().y() + viewport.height() < cityRect.width()) {
-                    offset.setY(moveSpeed);
-                }
-            }
+        mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
-            // Horizontal movement
-            if (mouse.x() >= 0 && mouse.x() < 30) {
-                // LEFT
-                if (viewport.origin().x() > cityRect.origin().x()) {
-                    offset.setX(moveSpeed);
-                }
-            }
-            else if (mouse.x() <= 1024 && mouse.x() >= 994) {
-                // RIGHT
-                if (viewport.origin().x() + viewport.width() < cityRect.width()) {
-                    offset.setX(moveSpeed * -1);
-                }
-            }
-            */
+        // Vertical movement
+        if (mouse.y() >= 0 && mouse.y() <= 30) {
+        // TOP
+        if (viewport.origin().y() > cityRect.origin().y()) {
+        offset.setY(moveSpeed * -1);
         }
-        
+        }
+        else if (mouse.y() <= 548 && mouse.y() >= 518) {
+        // BOTTOM
+        if (viewport.origin().y() + viewport.height() < cityRect.width()) {
+        offset.setY(moveSpeed);
+        }
+        }
+
+        // Horizontal movement
+        if (mouse.x() >= 0 && mouse.x() < 30) {
+        // LEFT
+        if (viewport.origin().x() > cityRect.origin().x()) {
+        offset.setX(moveSpeed);
+        }
+        }
+        else if (mouse.x() <= 1024 && mouse.x() >= 994) {
+        // RIGHT
+        if (viewport.origin().x() + viewport.width() < cityRect.width()) {
+        offset.setX(moveSpeed * -1);
+        }
+        }
+        }
+         */
+
         // Only get keyboard input if there was no moues input
         if (offset.x() == 0 && offset.y() == 0) {
 
@@ -157,7 +169,7 @@ public class Map extends Actor
     // * Helper methods *
     // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile in the ArrayLists
     private Point cellForCoordinatePair(Point coord) {
-//         return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
+        //         return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
         return new Point((coord.x() / Tile.size), (coord.y() / Tile.size));
     }
 
@@ -176,7 +188,7 @@ public class Map extends Actor
     // Generates a new map into an ArrayList a returns it
     private ArrayList<ArrayList<Tile>> generateCity() {
 
-        // System.out.print("Began generating city...");
+        logger.info("Began generating city...");
         // long startTime = System.currentTimeMillis();
 
         // The columns of the map are represnted by the elements of an ArrayList
@@ -195,13 +207,20 @@ public class Map extends Actor
                     map.get(x).add(new Tile(new Point(x, y), Tile.EMPTY, true));
                 }
                 else {
-                    map.get(x).add(new Tile(new Point(x, y), Greenfoot.getRandomNumber(4)+1, true));
-//                        map.get(x).add(new Tile(new Point(x, y), Tile.GRASS, true));
+
+                    // Initally fill map with grass
+                    int randomizer = Greenfoot.getRandomNumber(4)+10;
+                    while (randomizer == Tile.prevType()) {
+                        randomizer = Greenfoot.getRandomNumber(4)+10;
+                    }
+
+                    map.get(x).add(new Tile(new Point(x, y), randomizer, true));
                 }
             }
         }
 
         // System.out.println("completed in " + (System.currentTimeMillis() - startTime) + " ms");
+        logger.info("Finished generating city.");
 
         return map;
     }
@@ -212,11 +231,11 @@ public class Map extends Actor
         // Shift the viewport's origin from movement offset
         viewport.origin().setX(viewport.origin().x() - offset.x());
         viewport.origin().setY(viewport.origin().y() + offset.y());
-        
+
         Point cell = cellForCoordinatePair(viewport.origin());
-        
+
         if (getWorld() != null) ((City)getWorld()).didMoveMapTo(new Point(cellForCoordinatePair(viewport.origin()).x(), cellForCoordinatePair(viewport.origin()).y()));
-        
+
         Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
 
         // Clear the map image layer
@@ -234,7 +253,7 @@ public class Map extends Actor
             }
         }
     }
-    
+
     public void viewportDidMoveTo(Point location) {
 
         // Shift the viewport's origin from movement offset

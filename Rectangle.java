@@ -11,49 +11,51 @@
 
 public class Rectangle  
 {
-	
-	// * Instance variables *
-	
+
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * INSTANCE VARIABLES
+     */
+    
+    // Rectangle properties
     private Point origin;	// Point of origin for the rectangle
     private int width;		// Width of the rectangle
     private int height;		// Height of the rectangle
-    
-	// * END of instance variables *
 
+    // ---------------------------------------------------------------------------------------------------------------------
 
     public Rectangle(Point origin, int width, int height) {
         this.origin = origin;
         this.width = width;
         this.height = height;
     }
-    
-	
-	// * Accsssors *
 
+    /*
+     * ACCESSORS *
+     */
+    
     public Point origin() {
         return origin;
     }
-    
+
     public int width() {
         return width;
     }
-    
+
     public int height() {
         return height;
     }
-    
+
     public void setOrigin(Point value) {
         origin = value;
     }
-    
+
     public void setWidth(int value) {
         width = value;
     }
-    
+
     public void setHeight(int value) {
         height = value;
     }
-
-	// * END of accessors *
-	
 }

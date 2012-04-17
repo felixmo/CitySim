@@ -11,42 +11,46 @@
 
 public class Point  
 {
-	// * Instance variables *
-	
-	// Coordinates
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * INSTANCE VARIABLES *
+     */
+
+    // Coordinate values
     private int x;
     private int y;
 
-	// * END of instance variables *
-	
-    
+    // ---------------------------------------------------------------------------------------------------------------------
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
-	// * Accessors *
+
+    /*
+     * ACCESSORS *
+     */
 
     public int x() {
         return x;
     }
-    
+
     public int y() {
         return y;
     }
-    
+
     public void setX(int value) {
         x = value;
     }
-    
+
     public void setY(int value) {
         y = value;
     }
 
-	// * END of accessors *
-    
+    // ---------------------------------------------------------------------------------------------------------------------
 
-	// Returns a string representation of the point
+    // Returns a string representation of the point
     public String toString() {
         return "(" + x + ", " + y + ")";
     }

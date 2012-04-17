@@ -17,16 +17,24 @@ import java.util.ArrayList;
 public class Minimap extends Actor
 {
 
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * MINIMAP PROPERTIES *
+     */
     private final Rectangle FRAME = new Rectangle(new Point(112, 658), 200, 200);
     private final int tileSize = 2; // px
-    
-    private GreenfootImage image;
-    private DataSource dataSource;
-    private Point viewportOrigin = new Point(0, 0);
 
-    public Minimap(DataSource dataSource) {
+    /*
+     * INSTANCE VARIABLES
+     */
+ 
+    private GreenfootImage image;                       // Minimap view
+    private Point viewportOrigin = new Point(0, 0);     // Viewport origin
 
-        this.dataSource = dataSource;
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    public Minimap() {
 
         this.image = new GreenfootImage(FRAME.width(), FRAME.height());
         this.image.setTransparency(150);
@@ -40,25 +48,26 @@ public class Minimap extends Actor
         // Do nothing
     }    
 
+    // Draws the minimap
     private void draw() {
-        
+
         // Clear minimap
         image.clear();
 
         // Draw minimap
 
         // Get all tiles
-        ArrayList<ArrayList<Tile>> map = dataSource.tiles();
+        ArrayList<ArrayList<Tile>> map = Data.tiles();
 
         // Determine the size of the map
-        LinkedHashMap mapSize = dataSource.mapSize();
-        int cityColumns = (Integer)mapSize.get("columns");
-        int cityRows = (Integer)mapSize.get("rows");
+        LinkedHashMap mapSize = Data.mapSize();
+        int cityColumns = (Integer)mapSize.get(Data.MAPSIZE_COLUMNS);
+        int cityRows = (Integer)mapSize.get(Data.MAPSIZE_ROWS);
 
         // Position of the minimap tile being drawn
         int x = 0;
         int y = 0;
-        
+
         // Iterate through every map tile and draw it onto minimap, adjusting the position for the next tile with each iteration
         // Minimap is drawn column by column
         for (int i = 0; i < cityColumns; i++) {
@@ -69,24 +78,31 @@ public class Minimap extends Actor
             }
             // Reset Y to top of the column 
             y = 0;
-                
+
             x+=tileSize;
         }
     }
 
-    // ACCESSORS
+    /*
+     * ACCESSORS *
+     */
 
     public Rectangle frame() {
         return FRAME;
     }
 
-    // HELPERS
+    /*
+     * HELPERS *
+     */
 
     // Returns the color that represents each type of tile
     private Color colorForTileOfType(int type) {
         switch (type) {
             case Tile.EMPTY: return Color.BLACK;
-            case Tile.GRASS: return new Color(76, 114, 62);
+            case Tile.GRASS_1: return new Color(76, 114, 62);
+            case Tile.GRASS_2: return new Color(76, 114, 62);
+            case Tile.GRASS_3: return new Color(76, 114, 62);
+            case Tile.GRASS_4: return new Color(76, 114, 62);
             case Tile.SAND: return new Color(199, 188, 146);
             case Tile.DIRT: return new Color(112, 73, 54);
             case Tile.STONE: return new Color(164, 155, 155);

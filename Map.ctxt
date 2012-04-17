@@ -1,6 +1,6 @@
 #BlueJ class context
-comment0.params=dataSource
-comment0.target=Map(DataSource)
+comment0.params=
+comment0.target=Map()
 comment1.params=
 comment1.target=void\ act()
 comment2.params=coord

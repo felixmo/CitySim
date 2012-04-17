@@ -13,12 +13,21 @@ import java.util.TimerTask;
 
 public class DateIncrementor extends TimerTask
 {
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    
+    /*
+     * INSTANCE VARIABLES *
+     */
+    
     private Date date;
     
+    // ---------------------------------------------------------------------------------------------------------------------
+
     public DateIncrementor(Date date) {
         this.date = date;
     }
-   
+
     public void run() {
         date.increment();
     }

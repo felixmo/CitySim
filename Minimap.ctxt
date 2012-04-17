@@ -1,12 +1,14 @@
 #BlueJ class context
-comment0.params=dataSource
-comment0.target=Minimap(DataSource)
+comment0.params=
+comment0.target=Minimap()
 comment1.params=
 comment1.target=void\ act()
 comment2.params=
 comment2.target=void\ draw()
 comment3.params=
 comment3.target=Rectangle\ frame()
+comment3.text=\ ACCESSORS\ *\n
 comment4.params=type
 comment4.target=java.awt.Color\ colorForTileOfType(int)
+comment4.text=\ HELPERS\ *\n
 numComments=5

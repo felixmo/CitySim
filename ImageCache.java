@@ -14,16 +14,26 @@ import java.util.Hashtable;
 
 public class ImageCache  
 {
-    private static Hashtable<Integer, GreenfootImage> cache = new Hashtable();
+    // ---------------------------------------------------------------------------------------------------------------------
     
+    /*
+     * INSTANCE VARIABLES *
+     */
+    private static Hashtable<Integer, GreenfootImage> cache = new Hashtable();  // Image cache
+    
+    // ---------------------------------------------------------------------------------------------------------------------
+
+    // Inserts an image into cache
     public static void insertImageWithID (GreenfootImage image, int id) {
         cache.put((Integer)id, image);
     }
     
+    // Returns an cached image
     public static GreenfootImage imageForID(int id) {
         return cache.get((Integer)id);
     }
-    
+
+    // Checks if an image is in the cache
     public static boolean containsImageWithID(int id) {
         return cache.containsKey((Integer)id);
     }
