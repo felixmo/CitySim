@@ -3,6 +3,7 @@ comment0.params=origin\ width\ height
 comment0.target=Rectangle(Point,\ int,\ int)
 comment1.params=
 comment1.target=Point\ origin()
+comment1.text=\ ACCESSORS\ *\n
 comment2.params=
 comment2.target=int\ width()
 comment3.params=

@@ -3,6 +3,7 @@ comment0.params=x\ y
 comment0.target=Point(int,\ int)
 comment1.params=
 comment1.target=int\ x()
+comment1.text=\ ACCESSORS\ *\n
 comment2.params=
 comment2.target=int\ y()
 comment3.params=value

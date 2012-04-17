@@ -3,6 +3,17 @@ import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.logging.*;
 
+/**
+ * Data
+ * CitySim
+ * v0.1
+ * 
+ * Created by Felix Mo on 04-16-2012
+ * 
+ * A higher level interface to the game's DB (on top of 'DataSource') that provides caching of data.
+ * 
+ */
+
 public class Data  
 {
 

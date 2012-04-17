@@ -132,9 +132,9 @@ public class City extends World
     // Called when date is incremented (every 1 sec)
     public void didIncrementDate() {
 
-        // Write to DB every 5 secs
+        // Write to DB every 10 secs
         timeForUpdate++;
-        if (timeForUpdate == 5) {
+        if (timeForUpdate == 10) {
             Data.updateCityStats(currentCityStats());  
             timeForUpdate = 0;
         }
