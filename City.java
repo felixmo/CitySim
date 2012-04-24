@@ -1,7 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.logging.*;
-
 
 /**
  * City
@@ -36,7 +36,7 @@ public class City extends World
     private int timeForUpdate = 0;                  // Counter to ensure that write to DB happen every 5 seconds 
 
     // ---------------------------------------------------------------------------------------------------------------------
-    
+
     public City() {
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
@@ -44,17 +44,17 @@ public class City extends World
         // Configure logger
         LogManager manager = LogManager.getLogManager();
         manager.reset();
-        
+
         ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(new LogFormatter());
-        
+
         logger = Logger.getLogger("com.felixmo.CitySim.logger");
         logger.addHandler(handler);
         logger.setLevel(Level.FINE);    // Only show events: Fine +
         manager.addLogger(logger);
-    
+
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(MenuBar.class, Selection.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Map.class);
+        setPaintOrder(MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Selection.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Map.class);
 
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
@@ -93,20 +93,35 @@ public class City extends World
         // Create and add the representation of the viewport into the minimap
         minimap_viewport = new Minimap_Viewport(new Point(0, 0));
         addObject(minimap_viewport, 112, 658);
+
+        // Create and add the menubar
+
+        menuBar = new MenuBar();
+        addObject(menuBar, 512, 14);
+
+        // Menu bar items
+        ArrayList<String> menuBarItems = new ArrayList();
+        menuBarItems.add("Zone");
+        menuBarItems.add("Roads");
+        menuBarItems.add("Power");
+        menuBarItems.add("Protection");
+        menuBar.setItems(menuBarItems);
         
-        // Create and add the minimap
-//         menuBar = new MenuBar();
-//         addObject(menuBar, 512, 14);
+        ArrayList<String> zoneItems = new ArrayList();
+        zoneItems.add("Res.");
+        zoneItems.add("Comm.");
+        zoneItems.add("Indus.");
+        menuBar.setMenuItemsForItem("Zone", zoneItems);
 
         // Initalize the cash store from the last known value in the DB
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
     }
-    
+
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * EVENTS *
      */
-    
+
     // Called when game is started
     public void started() {
         logger.info("Game has started...");
@@ -154,7 +169,7 @@ public class City extends World
         // Move the representation of the viewport in the minimap
         minimap_viewport.didMoveViewportToCell(location);
     }
-    
+
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * HELPERS *

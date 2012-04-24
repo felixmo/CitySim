@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.params=title\ menu\ origin
+comment0.target=MenuItem(java.lang.String,\ Menu,\ Point)
+comment1.params=world
+comment1.target=void\ addedToWorld(greenfoot.World)
+comment2.params=
+comment2.target=void\ act()
+comment3.params=active
+comment3.target=void\ setActive(boolean)
+comment4.params=
+comment4.target=Rectangle\ frame()
+comment4.text=\ ACCESSORS\ *\n
+numComments=5

@@ -1,6 +1,17 @@
 #BlueJ class context
-comment0.params=items
-comment0.target=MenuBar(java.util.ArrayList)
-comment1.params=
-comment1.target=void\ populate()
-numComments=2
+comment0.params=
+comment0.target=MenuBar()
+comment1.params=world
+comment1.target=void\ addedToWorld(greenfoot.World)
+comment2.params=
+comment2.target=void\ draw()
+comment3.params=
+comment3.target=void\ act()
+comment4.params=menuBarItem\ active
+comment4.target=void\ setActive(MenuBarItem,\ boolean)
+comment5.params=item\ items
+comment5.target=void\ setMenuItemsForItem(java.lang.String,\ java.util.ArrayList)
+comment6.params=values
+comment6.target=void\ setItems(java.util.ArrayList)
+comment6.text=\ ACCESSORS\ *\n
+numComments=7

@@ -15,4 +15,6 @@ comment6.params=offset
 comment6.target=void\ viewportDidMove(Point)
 comment7.params=location
 comment7.target=void\ viewportDidMoveTo(Point)
-numComments=8
+comment8.params=
+comment8.target=void\ draw()
+numComments=9

@@ -236,22 +236,7 @@ public class Map extends Actor
 
         if (getWorld() != null) ((City)getWorld()).didMoveMapTo(new Point(cellForCoordinatePair(viewport.origin()).x(), cellForCoordinatePair(viewport.origin()).y()));
 
-        Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
-
-        // Clear the map image layer
-        view.clear();
-
-        // Draw tiles onto the map image layer for the shifted viewport
-        for (int col = cellForCoordinatePair(viewport.origin()).x(); col < numberOfTilesInWidth(viewport.width() + viewport.origin().x()); col++) {
-            for (int row = cellForCoordinatePair(viewport.origin()).y(); row < numberOfTilesInWidth(viewport.height() + viewport.origin().y()); row++) {
-
-                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tilePt.x(), tilePt.y());  
-
-                // Update the coordinates for the next tile to be drawn
-                tilePt.setX(coordinateForCell(col) - viewport.origin().x());
-                tilePt.setY(coordinateForCell(row) - viewport.origin().y());
-            }
-        }
+        draw();
     }
 
     public void viewportDidMoveTo(Point location) {
@@ -259,6 +244,11 @@ public class Map extends Actor
         // Shift the viewport's origin from movement offset
         viewport.origin().setX(coordinateForCell((location.x() / 2)));
         viewport.origin().setY(coordinateForCell((location.y() / 2)));
+
+        draw();
+    }
+
+    private void draw() {
 
         Point tilePt = new Point(viewport.origin().x(), viewport.origin().y());     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
 
