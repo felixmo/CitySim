@@ -108,9 +108,9 @@ public class City extends World
         menuBar.setItems(menuBarItems);
         
         ArrayList<String> zoneItems = new ArrayList();
-        zoneItems.add("Res.");
-        zoneItems.add("Comm.");
-        zoneItems.add("Indus.");
+        zoneItems.add("Residential");
+        zoneItems.add("Commerical");
+        zoneItems.add("Industrial");
         menuBar.setMenuItemsForItem("Zone", zoneItems);
 
         // Initalize the cash store from the last known value in the DB

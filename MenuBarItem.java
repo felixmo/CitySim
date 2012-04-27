@@ -27,7 +27,7 @@ public class MenuBarItem extends Actor
     private static final Color FONT_COLOR = new Color(55, 55, 55);                  // Default font colour
     private static final String FONT_CABIN = "fonts/cabin/Cabin-Regular-TTF.ttf";   // Default font
     private static Font font;
-    
+
     /*
      * INSTANCE VARIABLES
      */
@@ -35,6 +35,8 @@ public class MenuBarItem extends Actor
     private String text;
     private Rectangle frame;
     private MenuBar menuBar;
+    private Menu menu;
+    private World world;
     private int index;
     private boolean active;
 
@@ -44,8 +46,12 @@ public class MenuBarItem extends Actor
 
         this.text = text;
         this.menuBar = menuBar;
-        
+
         MenuBarItem.setFont(loadFont(FONT_CABIN).deriveFont((float)14.0));
+    }
+
+    protected void addedToWorld(World world) {
+        this.world = world;
     }
 
     private void draw() {
@@ -60,13 +66,13 @@ public class MenuBarItem extends Actor
     public void act() {
         if (Greenfoot.mouseClicked(this)) {
 
-            menuBar.setActive(this, !active);
+            menuBar.changeItemStateTo(this, !active);
         }
     }
 
-    public void setActive(boolean active) { 
+    public void changeStateTo(boolean state) {
 
-        this.active = active;
+        this.active = state;
 
         this.image.clear();
 
@@ -77,12 +83,36 @@ public class MenuBarItem extends Actor
             this.image.setColor(Color.WHITE);
             this.image.drawString(this.text, 8, 16);
 
+            if (this.menu != null) {
+                this.menu.setActive(true);
+                world.addObject(menu, this.frame.origin().x()+(int)this.menu.frame().width()/2, this.frame.origin().y()+(int)this.menu.frame().height()/2+(int)this.frame.height()/2);
+            }
         }
         else {
 
             this.image.setColor(Color.BLACK);
             this.image.drawString(this.text, 8, 16);
+
+            if (this.menu != null) {
+                this.menu.setActive(false);
+                world.removeObjects(menu.menuItems());
+                world.removeObject(menu);
+            }
         }
+    }
+
+    public void setOrigin(Point value) {
+
+        // Create frame based on dimensions derived from font metrics
+        FontMetrics fontMetrics = new GreenfootImage(1024, 28).getAwtImage().getGraphics().getFontMetrics(MenuBarItem.font()); 
+        int width = fontMetrics.stringWidth(text);
+        this.frame = new Rectangle(value, width+16, 22);
+
+        // Set image
+        this.image = new GreenfootImage(this.frame.width(), this.frame.height());
+        setImage(image);
+
+        draw();
     }
 
     /*
@@ -111,20 +141,6 @@ public class MenuBarItem extends Actor
         return frame;
     }
 
-    public void setOrigin(Point value) {
-
-        // Create frame based on dimensions derived from font metrics
-        FontMetrics fontMetrics = new GreenfootImage(1024, 28).getAwtImage().getGraphics().getFontMetrics(MenuBarItem.font()); 
-        int width = fontMetrics.stringWidth(text);
-        this.frame = new Rectangle(value, width+16, 22);
-        
-        // Set image
-        this.image = new GreenfootImage(this.frame.width(), this.frame.height());
-        setImage(image);
-
-        draw();
-    }
-
     public int index() {
         return index;
     }
@@ -136,12 +152,16 @@ public class MenuBarItem extends Actor
     public boolean active() {
         return active;
     }
-    
+
     public static Font font() {
         return font;
     }
-    
+
     public static void setFont(Font value) {
         font = value;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

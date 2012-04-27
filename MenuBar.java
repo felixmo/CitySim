@@ -28,6 +28,7 @@ public class MenuBar extends Actor
     private GreenfootImage base; 
     private LinkedHashMap<String, MenuBarItem> menuBarItems;
     private ArrayList<MenuBarItem> items;
+    private LinkedHashMap<String, Menu> menus;
     private int activeIndex = -1;
 
     private MouseInfo mouseInfo;
@@ -43,6 +44,7 @@ public class MenuBar extends Actor
         setImage("menu.png");   
 //         this.items = items;
         this.menuBarItems = new LinkedHashMap<String, MenuBarItem>();
+        this.menus = new LinkedHashMap<String, Menu>();
     }
 
     protected void addedToWorld(World world) {
@@ -96,7 +98,7 @@ public class MenuBar extends Actor
 
                         if (items.indexOf(menuBarItem) != this.activeIndex) {
 
-                            setActive(menuBarItem, !menuBarItem.active());
+                            changeItemStateTo(menuBarItem, !menuBarItem.active());
                         }
                     }
                 }
@@ -104,17 +106,22 @@ public class MenuBar extends Actor
         }
     }
 
-    public void setActive(MenuBarItem menuBarItem, boolean active) {
+    public void changeItemStateTo(MenuBarItem menuBarItem, boolean state) {
 
         for (MenuBarItem item : items) {
-            item.setActive(item == menuBarItem ? (active ? true : false) : false);
+            item.changeStateTo(item == menuBarItem ? (state ? true : false) : false);
         }
 
-        this.activeIndex = active ? menuBarItem.index() : -1;
+        this.activeIndex = state ? menuBarItem.index() : -1;
     }
     
     public void setMenuItemsForItem(String item, ArrayList<String> items) {
 
+        MenuBarItem menuBarItem = menuBarItems.get(item);
+        
+        Menu menu = new Menu(menuBarItem, items);
+        menus.put(item, menu);
+        menuBarItem.setMenu(menu);
     }
 
     /*
