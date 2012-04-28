@@ -54,7 +54,7 @@ public class City extends World
         manager.addLogger(logger);
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Selection.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Map.class);
+        setPaintOrder(MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES

@@ -44,6 +44,8 @@ public class Map extends Actor
 
     // Ref. to mouse info. provided by Greenfoot
     private MouseInfo mouseInfo = null;
+    
+    private Selection selection = new Selection(new Point(viewport.width(), viewport.height()));
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -78,53 +80,69 @@ public class Map extends Actor
     }
 
     // * Greenfoot methods *
+    
+    protected void addedToWorld(World world) {
+        this.selection.setViewport(this.viewport);
+        world.addObject(this.selection, 512, 333);
+    }
+    
     // This method is called at every action step in the environment; frequently
     public void act() 
     {   
+
         // Listen for keystrokes and mouse movement and move accordingly, only if viewport is within bounds of map
 
         Point offset = new Point(0, 0); // movement offset
-        /*
+
         Point mouse = null; // cursor position
 
         // Update mouse info if mouse has moved
         if (Greenfoot.getMouseInfo() != null) {
-        mouseInfo = Greenfoot.getMouseInfo();
+            mouseInfo = Greenfoot.getMouseInfo();
         }
 
         if (mouseInfo != null) {
 
-        mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
+            mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
-        // Vertical movement
-        if (mouse.y() >= 0 && mouse.y() <= 30) {
-        // TOP
-        if (viewport.origin().y() > cityRect.origin().y()) {
-        offset.setY(moveSpeed * -1);
-        }
-        }
-        else if (mouse.y() <= 548 && mouse.y() >= 518) {
-        // BOTTOM
-        if (viewport.origin().y() + viewport.height() < cityRect.width()) {
-        offset.setY(moveSpeed);
-        }
-        }
+            this.selection.setSelectedTile(tileForCoordinatePair(cellForCoordinatePairInView(mouse)));
+            
+            // FOR TESTING
+            if (Greenfoot.mouseClicked(this)) {
+                
+                System.out.println(cellForCoordinatePairInView(mouse).toString());
+            }
 
-        // Horizontal movement
-        if (mouse.x() >= 0 && mouse.x() < 30) {
-        // LEFT
-        if (viewport.origin().x() > cityRect.origin().x()) {
-        offset.setX(moveSpeed);
+            /*
+            // Vertical movement
+            if (mouse.y() >= 0 && mouse.y() <= 30) {
+            // TOP
+            if (viewport.origin().y() > cityRect.origin().y()) {
+            offset.setY(moveSpeed * -1);
+            }
+            }
+            else if (mouse.y() <= 548 && mouse.y() >= 518) {
+            // BOTTOM
+            if (viewport.origin().y() + viewport.height() < cityRect.width()) {
+            offset.setY(moveSpeed);
+            }
+            }
+
+            // Horizontal movement
+            if (mouse.x() >= 0 && mouse.x() < 30) {
+            // LEFT
+            if (viewport.origin().x() > cityRect.origin().x()) {
+            offset.setX(moveSpeed);
+            }
+            }
+            else if (mouse.x() <= 1024 && mouse.x() >= 994) {
+            // RIGHT
+            if (viewport.origin().x() + viewport.width() < cityRect.width()) {
+            offset.setX(moveSpeed * -1);
+            }
+            }
+             */
         }
-        }
-        else if (mouse.x() <= 1024 && mouse.x() >= 994) {
-        // RIGHT
-        if (viewport.origin().x() + viewport.width() < cityRect.width()) {
-        offset.setX(moveSpeed * -1);
-        }
-        }
-        }
-         */
 
         // Only get keyboard input if there was no moues input
         if (offset.x() == 0 && offset.y() == 0) {
@@ -167,10 +185,18 @@ public class Map extends Actor
     // * END of Greenfoot methods *
 
     // * Helper methods *
-    // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile in the ArrayLists
+    // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile
     private Point cellForCoordinatePair(Point coord) {
-        //         return new Point(((coord.x() - (coord.x() % Tile.size)) / Tile.size), ((coord.y() - (coord.y() % Tile.size)) / Tile.size));
         return new Point((coord.x() / Tile.size), (coord.y() / Tile.size));
+    }
+
+    // Translate a given pair of coordinates (within the bounds of the view) to indices for the representing map tile 
+    private Point cellForCoordinatePairInView(Point coord) {
+        return cellForCoordinatePair(new Point((viewport.origin().x() + coord.x()), (viewport.origin().y() + coord.y())));   
+    }
+    
+    private Tile tileForCoordinatePair(Point coord) {
+        return (Tile)map.get(Math.min(coord.x()+2, cityColumns-1)).get(Math.min(coord.y()+1, cityRows-1));
     }
 
     // Translates a given indice to a coordinate for the view, in px
@@ -236,6 +262,8 @@ public class Map extends Actor
 
         if (getWorld() != null) ((City)getWorld()).didMoveMapTo(new Point(cellForCoordinatePair(viewport.origin()).x(), cellForCoordinatePair(viewport.origin()).y()));
 
+        this.selection.setViewport(this.viewport);
+        
         draw();
     }
 
@@ -245,6 +273,8 @@ public class Map extends Actor
         viewport.origin().setX(coordinateForCell((location.x() / 2)));
         viewport.origin().setY(coordinateForCell((location.y() / 2)));
 
+        this.selection.setViewport(this.viewport);
+        
         draw();
     }
 
@@ -267,5 +297,4 @@ public class Map extends Actor
             }
         }
     }
-
 }

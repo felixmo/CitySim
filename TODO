@@ -1,0 +1,3 @@
+- notifications / events manager
+	- class specific (MenuItems, Buttons, etc.) or global? 
+- recognize cell that cursor is hovering over

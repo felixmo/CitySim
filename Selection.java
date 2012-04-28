@@ -1,25 +1,60 @@
 import greenfoot.*;
+import java.awt.Color;
 
 /**
- * Selection
- * CitySim
- * v0.1
+ * Write a description of class Selection here.
  * 
- * Created by Felix Mo on 02-17-2012
- * 
- * 
- * 
+ * @author (your name) 
+ * @version (a version number or a date)
  */
-
-public class Selection extends Actor 
+public class Selection extends Actor
 {
 
-    private MouseInfo mouseInfo = null;
+    private Tile selectedTile;
+    private Rectangle viewport;
+    private boolean active = true;
     
-    public void act() {
+    private GreenfootImage image;
+
+    public Selection(Point viewportSize) {
+        this.image = new GreenfootImage(viewportSize.x(), viewportSize.y());
+        this.image.setTransparency(100);
+        setImage(this.image);
+    }
+
+    private void draw() {
         
-        mouseInfo = Greenfoot.getMouseInfo();
+        if (selectedTile == null || viewport == null || !active) return;
         
-        
+        this.image.clear();
+        this.image.setColor(Color.WHITE);
+        this.image.drawRect((selectedTile.position().x() * Tile.size) - viewport.origin().x(), (selectedTile.position().y() * Tile.size) - viewport.origin().y(), Tile.size, Tile.size);
+    }
+
+    /*
+     * ACCESSORS *
+     */
+    
+    public boolean active() {
+        return this.active;
+    }
+    
+    public void setActive(boolean value) {
+        this.active = value;
+    }
+    
+    public Tile selectedTile() {
+        return this.selectedTile;
+    }
+
+    public void setSelectedTile(Tile tile) {
+        this.selectedTile = tile;
+//         System.out.println("Tile @ " + tile.position().toString() + " selected.");
+        draw();
+    }
+
+    public void setViewport(Rectangle viewport) {
+        this.viewport = viewport;
+        draw();
     }
 }
