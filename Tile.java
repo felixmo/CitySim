@@ -109,28 +109,7 @@ public class Tile
 
     public static GreenfootImage imageForType(Integer type) {
 
-        //         System.out.println("Initalizing new image for tile");
-
         return new GreenfootImage("images/tiles/" + type + ".png");
-        /*
-        switch (type.intValue()) {
-
-        case EMPTY: return new GreenfootImage(IMG_EMPTY);
-
-        // Grass
-        case GRASS_1 : return new GreenfootImage(IMG_GRASS_1);
-        case GRASS_2 : return new GreenfootImage(IMG_GRASS_2);
-        case GRASS_3 : return new GreenfootImage(IMG_GRASS_3);
-        case GRASS_4 : return new GreenfootImage(IMG_GRASS_4);
-
-        // Unimplemented
-        case SAND: return new GreenfootImage(IMG_SAND);
-        case DIRT: return new GreenfootImage(IMG_DIRT);
-        case STONE: return new GreenfootImage(IMG_STONE);
-
-        default: return null;
-        }
-         */
     }
 }
 

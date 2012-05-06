@@ -1,4 +1,6 @@
-import java.util.Hashtable;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 
@@ -22,8 +24,17 @@ public class Data
      * INSTANCE VARIABLES * 
      */
 
-    private static Hashtable<String, Object> cache = new Hashtable();                                   // Data cache
     private static DataSource dataSource;                                                               // Data source; interface to DB
+    private static LoadingCache<String, Object> cache = CacheBuilder.newBuilder()
+        .maximumSize(1000)
+        .build(
+            new CacheLoader<String, Object>() {
+                public Object load(String key) throws Exception {
+                    CSLogger.sharedLogger().info("Caching data for key: " + key);
+                    return dataForKey(key);
+                }
+            }
+        );
 
     /*
      * IDENTIFIERS *
@@ -76,13 +87,16 @@ public class Data
     public static void closeConnection() {
         CSLogger.sharedLogger().info("Asking data source to close connection...");
         dataSource.closeConnection();
-        cache.clear();
+        cache.invalidateAll();
+        cache.cleanUp();
         CSLogger.sharedLogger().info("Data cache has been cleared.");
     }
 
+    //
+
     public static LinkedHashMap mapSize() {
         CSLogger.sharedLogger().info("Returning map size");
-        return (LinkedHashMap)dataForKey(MAPSIZE);
+        return (LinkedHashMap)get(MAPSIZE);
     }
 
     public static void insertMapSize(LinkedHashMap mapSize) {
@@ -90,9 +104,11 @@ public class Data
         dataSource.insertMapSize(mapSize);
     }
 
+    //
+
     public static LinkedHashMap mapMetadata() {
         CSLogger.sharedLogger().info("Returning map size");
-        return (LinkedHashMap)dataForKey(METADATA);
+        return (LinkedHashMap)get(METADATA);
     }
 
     public static void insertMapMetadata(LinkedHashMap metadata) {
@@ -100,9 +116,11 @@ public class Data
         dataSource.insertMapMetadata(metadata);
     }
 
+    //
+
     public static ArrayList<ArrayList<Tile>> tiles() {
         CSLogger.sharedLogger().info("Returning map tiles");
-        return (ArrayList<ArrayList<Tile>>)dataForKey(Data.TILES);
+        return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 
     public static void insertTiles(ArrayList<ArrayList<Tile>> tiles) {
@@ -110,9 +128,11 @@ public class Data
         dataSource.insertTiles(tiles);
     }
 
+    //
+
     public static LinkedHashMap cityStats() {
         CSLogger.sharedLogger().info("Returning city stats");
-        return (LinkedHashMap)dataForKey(CITYSTATS);
+        return (LinkedHashMap)get(CITYSTATS);
     }
 
     public static void insertCityStats(LinkedHashMap cityStats) {
@@ -127,29 +147,35 @@ public class Data
 
     // ---------------------------------------------------------------------------------------------------------------------
 
+    private static Object get(String key) {
+        try {
+            return cache.get(key);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static Object dataForKey(String key) {
 
         Object data = null;
-        if (!cache.containsKey(key)) {
 
-            CSLogger.sharedLogger().info(key + " not found; retrieving data from DB and caching it.");
-
-            if (key.equals(MAPSIZE)) {
-                data = dataSource.mapSize();
-            }
-            else if (key.equals(METADATA)) {
-                data = dataSource.mapMetadata();
-            }
-            else if (key.equals(TILES)) {
-                data = dataSource.tiles();
-            }
-            else if (key.equals(CITYSTATS)) {
-                data = dataSource.cityStats();
-            }
-
-            cache.put(key, data);
+        if (key.equals(MAPSIZE)) {
+            data = dataSource.mapSize();
+        }
+        else if (key.equals(METADATA)) {
+            data = dataSource.mapMetadata();
+        }
+        else if (key.equals(TILES)) {
+            data = dataSource.tiles();
+        }
+        else if (key.equals(CITYSTATS)) {
+            data = dataSource.cityStats();
         }
 
-        return data != null ? data : cache.get(key);
+        cache.put(key, data);
+
+        return data;
     }
 }
