@@ -1,4 +1,5 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import java.awt.Point;
 
 /**
  * Rectangle
@@ -19,60 +20,61 @@ public class Tile
     /*
      * INSTANCE VARIABLES *
      */
-    
+
     private Point position;
     private static int prevType = 1; // prevent crowding of same grass tiles when map is generated
-    private int type = 0;   // Type of tile
-    private boolean traverseable = false;   // Is tile passable
+    private Integer type = 0;   // Type of tile
     private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
     private int dbID; // SQL db id
 
     /*
      * CONSTANTS *
      */
-    
-    public static final int size = 64;     // size of square tile; px
+
+    public static final int size = 32;     // size of square tile; px
 
     /*
      * TILE TYPES *
      */
-    
+
     public static final int EMPTY = 0;
-    public static final int GRASS_1 = 10;
-    public static final int GRASS_2 = 11;
-    public static final int GRASS_3 = 12;
-    public static final int GRASS_4 = 13;
-    public static final int SAND = 20;
-    public static final int DIRT = 30;
-    public static final int STONE = 40;
+    public static final int GROUND = 100;
+    public static final int WATER = 200;
+    public static final int BEACH_TOP = 201;
+    public static final int BEACH_TOP_LEFT = 202;
+    public static final int BEACH_TOP_RIGHT = 203;
+    public static final int BEACH_BOTTOM = 204;
+    public static final int BEACH_BOTTOM_LEFT = 205;
+    public static final int BEACH_BOTTOM_RIGHT = 206;
+    public static final int BEACH_LEFT = 207;
+    public static final int BEACH_RIGHT = 208;
+    public static final int GRASS_1 = 301;
+    public static final int GRASS_2 = 302;
+    public static final int GRASS_3 = 303;
+    public static final int GRASS_4 = 304;
+    public static final int GRASS_5 = 305;
+    public static final int GRASS_TOP_LEFT = 306;
+    public static final int GRASS_TOP = 307;
+    public static final int GRASS_TOP_RIGHT = 308;
+    public static final int GRASS_LEFT = 309;
 
     /*
      * IMAGE FILES *
      */
-    
-    private static final String IMG_EMPTY = "tiles/black.png";
-    private static final String IMG_GRASS_1 = "tiles/grass_1.png";
-    private static final String IMG_GRASS_2 = "tiles/grass_2.png";
-    private static final String IMG_GRASS_3 = "tiles/grass_3.png";
-    private static final String IMG_GRASS_4 = "tiles/grass_4.png";
-    private static final String IMG_SAND = "tiles/tile_sand2.png";
-    private static final String IMG_DIRT = "tiles/tile_dirt1.png";
-    private static final String IMG_STONE = "tiles/tile_stone1.png";
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Tile(Point position, int type, boolean traverseable) {
+    public Tile(Point position, int type) {
         this.position = position;
         this.prevType = type;
-        this.type = type;
-        this.traverseable = traverseable;
+        this.type = new Integer(type);
         this.dbID = prevDbID += 1;
     }
 
     /*
      * ACCESSORS *
      */
-    
+
     public Point position() {
         return position;
     }
@@ -81,66 +83,54 @@ public class Tile
         return prevType;
     }
 
-    public int type() {
+    public Integer type() {
         return type;
     }
 
-    public boolean traverseable() {
-        return traverseable;
+    public void setType(Integer value) {
+        type = value;
     }
 
     public int dbID() {
         return dbID;
     }
 
-    public GreenfootImage image() {
-
-        if (ImageCache.containsImageWithID(type)) return ImageCache.imageForID(type);
-
-        GreenfootImage image = imageForType();
-        ImageCache.insertImageWithID(image, type);
-        return image;
-    }
-
-    public void setType(int value) {
-        type = value;
-    }
-
-    public void setTraverseable(boolean value) {
-        traverseable = value;
-    }
-
     public void setDbID(int value) {
         dbID = value;
+    }
+
+    public GreenfootImage image() {
+        return ImageCache.get(type);
     }
 
     /*
      * HELPERS *
      */
 
-    // Sets the image of the tile based upon its type
-    private GreenfootImage imageForType() {
+    public static GreenfootImage imageForType(Integer type) {
 
         //         System.out.println("Initalizing new image for tile");
 
-        switch (type) {
+        return new GreenfootImage("images/tiles/" + type + ".png");
+        /*
+        switch (type.intValue()) {
 
-            case EMPTY: return new GreenfootImage(IMG_EMPTY);
+        case EMPTY: return new GreenfootImage(IMG_EMPTY);
 
-            // Grass
-            case GRASS_1 : return new GreenfootImage(IMG_GRASS_1);
-            case GRASS_2 : return new GreenfootImage(IMG_GRASS_2);
-            case GRASS_3 : return new GreenfootImage(IMG_GRASS_3);
-            case GRASS_4 : return new GreenfootImage(IMG_GRASS_4);
+        // Grass
+        case GRASS_1 : return new GreenfootImage(IMG_GRASS_1);
+        case GRASS_2 : return new GreenfootImage(IMG_GRASS_2);
+        case GRASS_3 : return new GreenfootImage(IMG_GRASS_3);
+        case GRASS_4 : return new GreenfootImage(IMG_GRASS_4);
 
-            // Unimplemented
-            case SAND: return new GreenfootImage(IMG_SAND);
-            case DIRT: return new GreenfootImage(IMG_DIRT);
-            case STONE: return new GreenfootImage(IMG_STONE);
+        // Unimplemented
+        case SAND: return new GreenfootImage(IMG_SAND);
+        case DIRT: return new GreenfootImage(IMG_DIRT);
+        case STONE: return new GreenfootImage(IMG_STONE);
 
-            default: return null;
+        default: return null;
         }
-
+         */
     }
 }
 

@@ -1,9 +1,9 @@
 import greenfoot.*;
 import java.util.ArrayList;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
-import java.io.InputStream;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * Menu
@@ -16,28 +16,18 @@ import java.io.InputStream;
  * 
  */
 
-public class Menu extends Actor
+public class Menu extends MenuElement
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
 
     /*
-     * FONT *
-     */
-    private static final Color FONT_COLOR = new Color(55, 55, 55);                  // Default font colour
-    private static final String FONT_CABIN = "fonts/cabin/Cabin-Regular-TTF.ttf";   // Default font
-    private static Font font;
-
-    /*
      * INSTANCE VARIABLES
      */
-    private World world;
+    
     private MenuBarItem menuBarItem;
     private ArrayList<String> items;
     private ArrayList<MenuItem> menuItems;
-    private Rectangle frame;
-    private GreenfootImage image;
-    private boolean active;
     private int activeIndex = -1;
 
     private MouseInfo mouseInfo;
@@ -46,39 +36,37 @@ public class Menu extends Actor
 
     public Menu(MenuBarItem barItem, ArrayList<String> items) {
 
+        super("", 0);
+
         this.menuBarItem = barItem;
         this.menuItems = new ArrayList<MenuItem>();
-
-        // Configure font
-        Menu.setFont(loadFont(FONT_CABIN).deriveFont((float)14.0));
 
         setItems(items);
     }
 
     protected void addedToWorld(World world) {
-
-        this.world = world;
+        this.world = world;   
         if (this.image != null) draw();
     }
 
     private void draw() {
 
-        Point origin = this.frame.origin();
+        Point origin = this.frame.getLocation();
 
         this.image.clear();
 
         this.image.setColor(Color.WHITE);
-        this.image.fillRect(0, 0, this.frame.width(), this.frame.height());
+        this.image.fillRect(0, 0, this.frame.width, this.frame.height);
         this.image.setColor(Color.BLACK);
-        this.image.drawRect(0, 0, this.frame.width(), this.frame.height());
+        this.image.drawRect(0, 0, this.frame.width, this.frame.height);
 
         for (MenuItem menuItem : menuItems) {
-            world.addObject(menuItem, menuItem.frame().origin().x()+(int)menuItem.frame().width()/2, menuItem.frame().origin().y());
+            this.world.addObject(menuItem, menuItem.frame().x+(int)menuItem.frame().width/2, menuItem.frame().y);
         }
     }
 
     public void act() {
-        
+
         Point mouse = null;
 
         if (Greenfoot.getMouseInfo() != null) {
@@ -89,21 +77,23 @@ public class Menu extends Actor
 
             if (mouseInfo != null) {
                 mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
-                
-//                 System.out.println("MOUSE: " + mouse.toString());
 
-                if (mouse.y() <= this.frame.height() + this.frame.origin().y() && mouse.y() >= menuBarItem.frame().height()) {
+                //                 System.out.println("MOUSE: " + mouse.toString());
 
-                    for (MenuItem item : menuItems) {
+                if (mouse.x <= this.frame.width + this.frame.x && mouse.x >= menuBarItem.frame().x) {
+                    if (mouse.y <= this.frame.height + this.frame.y && mouse.y >= menuBarItem.frame().height) {
 
-                        Rectangle frame = item.frame();
-                        Point origin = item.frame().origin();
+                        for (MenuItem item : menuItems) {
 
-                        if (mouse.y() >= origin.y() && mouse.y() <= origin.y() + frame.height()) {
+                            Rectangle frame = item.frame();
+                            Point origin = item.frame().getLocation();
 
-                            if (menuItems.indexOf(item) != this.activeIndex) {
+                            if (mouse.y >= origin.y && mouse.y <= origin.y + frame.height) {
 
-                                didHighlightMenuItem(item);
+                                if (menuItems.indexOf(item) != this.activeIndex) {
+
+                                    didHighlightMenuItem(item);
+                                }
                             }
                         }
                     }
@@ -120,45 +110,10 @@ public class Menu extends Actor
 
         this.activeIndex = menuItem.index();
     }
-    
-    public void didSelectMenuItem(MenuItem menuItem) {
-        
-//         System.out.println(menuItem.text() + " was selected.");
-    }
-
-    /*
-     * HELPERS *
-     */
-
-    // Loads a TTF font from the specified path and creates a 'Font' object from it
-    private Font loadFont(String path) {
-
-        try {
-            InputStream is = Label.class.getResourceAsStream(path);
-            return Font.createFont(Font.TRUETYPE_FONT, is);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     /*
      * ACCESSORS *
      */
-
-    public Rectangle frame() {
-        return this.frame;
-    }
-
-    public static Font font() {
-        return font;
-    }
-
-    public static void setFont(Font value) {
-        font = value;
-    }
 
     public ArrayList<MenuItem> menuItems() {
         return this.menuItems;
@@ -169,7 +124,7 @@ public class Menu extends Actor
         this.items = items;
 
         // Create frame based on dimensions derived from font metrics
-        FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(Menu.font()); 
+        FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(font); 
         int width = 0;
         int index = 0;
         // Find the widest menu item and use it's width + padding as the menu width
@@ -179,28 +134,20 @@ public class Menu extends Actor
                 width = fontMetrics.stringWidth(item)+28;
             }
         }
-        
+
         // Create the 'MenuItem' actors 
         for (String item : this.items) {
             MenuItem menuItem = new MenuItem(item, this, index);
-            Rectangle miFrame = new Rectangle(new Point(menuBarItem.frame().origin().x(), (menuBarItem.frame().origin().y()+14)+10+index*24), width, 22);
+            Rectangle miFrame = new Rectangle(menuBarItem.frame().x, menuBarItem.frame().y+14+10+index*24, width, 22);
             menuItem.setFrame(miFrame);
             this.menuItems.add(menuItem);
             index++;
         }
-        
+
         int height = items.size() * 24;     // 14px + 4px padding
-        this.frame = new Rectangle(new Point(menuBarItem.frame().origin().x(), menuBarItem.frame().origin().y()+14), width, height);
+        this.frame = new Rectangle(menuBarItem.frame().x, menuBarItem.frame().y+14, width, height);
 
         this.image = new GreenfootImage(width, height);
         setImage(this.image);
-    }
-    
-    public boolean active() {
-        return this.active;
-    }
-    
-    public void setActive(boolean value) {
-        this.active = value;
     }
 }

@@ -1,7 +1,6 @@
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import java.util.logging.*;
 
 /**
  * Data
@@ -25,7 +24,6 @@ public class Data
 
     private static Hashtable<String, Object> cache = new Hashtable();                                   // Data cache
     private static DataSource dataSource;                                                               // Data source; interface to DB
-    private static Logger logger = LogManager.getLogManager().getLogger("com.felixmo.CitySim.logger");  // Shared logger
 
     /*
      * IDENTIFIERS *
@@ -53,7 +51,7 @@ public class Data
 
     public static void setDataSource(DataSource ds) {
         dataSource = ds;
-        logger.info("Data source has been set.");
+        CSLogger.sharedLogger().info("Data source has been set.");
     }
 
     /*
@@ -61,69 +59,69 @@ public class Data
      */
 
     public static boolean dbIsNew() {
-        logger.info("Asking data source if DB is new...");
+        CSLogger.sharedLogger().info("Asking data source if DB is new...");
         return dataSource.dbIsNew();
     }
 
     public static boolean connectionIsOpen() {
-        logger.info("Asking data source if connection is open...");
+        CSLogger.sharedLogger().info("Asking data source if connection is open...");
         return dataSource.connectionIsOpen();
     }
 
     public static void resumeConnection() {
-        logger.info("Asking data source to resume connection...");
+        CSLogger.sharedLogger().info("Asking data source to resume connection...");
         dataSource.resumeConnection();
     }
 
     public static void closeConnection() {
-        logger.info("Asking data source to close connection...");
+        CSLogger.sharedLogger().info("Asking data source to close connection...");
         dataSource.closeConnection();
         cache.clear();
-        logger.info("Data cache has been cleared.");
+        CSLogger.sharedLogger().info("Data cache has been cleared.");
     }
 
     public static LinkedHashMap mapSize() {
-        logger.info("Returning map size");
+        CSLogger.sharedLogger().info("Returning map size");
         return (LinkedHashMap)dataForKey(MAPSIZE);
     }
 
     public static void insertMapSize(LinkedHashMap mapSize) {
-        logger.info("Inserting map size");
+        CSLogger.sharedLogger().info("Inserting map size");
         dataSource.insertMapSize(mapSize);
     }
 
     public static LinkedHashMap mapMetadata() {
-        logger.info("Returning map size");
+        CSLogger.sharedLogger().info("Returning map size");
         return (LinkedHashMap)dataForKey(METADATA);
     }
 
     public static void insertMapMetadata(LinkedHashMap metadata) {
-        logger.info("Inserting map metadata");
+        CSLogger.sharedLogger().info("Inserting map metadata");
         dataSource.insertMapMetadata(metadata);
     }
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        logger.info("Returning map tiles");
+        CSLogger.sharedLogger().info("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)dataForKey(Data.TILES);
     }
 
     public static void insertTiles(ArrayList<ArrayList<Tile>> tiles) {
-        logger.info("Inserting map tiles");
+        CSLogger.sharedLogger().info("Inserting map tiles");
         dataSource.insertTiles(tiles);
     }
 
     public static LinkedHashMap cityStats() {
-        logger.info("Returning city stats");
+        CSLogger.sharedLogger().info("Returning city stats");
         return (LinkedHashMap)dataForKey(CITYSTATS);
     }
 
     public static void insertCityStats(LinkedHashMap cityStats) {
-        logger.info("Inserting city stats");
+        CSLogger.sharedLogger().info("Inserting city stats");
         dataSource.insertCityStats(cityStats);
     }
 
     public static void updateCityStats(LinkedHashMap cityStats) {
-        logger.info("Updating city stats");
+        CSLogger.sharedLogger().info("Updating city stats");
         dataSource.updateCityStats(cityStats);
     }
 
@@ -134,7 +132,7 @@ public class Data
         Object data = null;
         if (!cache.containsKey(key)) {
 
-            logger.info(key + " not found; retrieving data from DB and caching it.");
+            CSLogger.sharedLogger().info(key + " not found; retrieving data from DB and caching it.");
 
             if (key.equals(MAPSIZE)) {
                 data = dataSource.mapSize();

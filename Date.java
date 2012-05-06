@@ -1,5 +1,4 @@
 import java.util.Timer;
-import java.util.logging.*;
 
 /**
  * Date
@@ -30,8 +29,6 @@ public class Date
     private int days;
     private int months;
     private int years;
-
-    private Logger logger = LogManager.getLogManager().getLogger("com.felixmo.CitySim.logger");     // Shared logger
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -70,7 +67,7 @@ public class Date
     
     // Starts tracking time
     public void start() {
-        logger.info("Timer has begun...");
+        CSLogger.sharedLogger().info("Timer has begun...");
 
         timer = new Timer();
         timer.schedule(new DateIncrementor(this), 0, 1000);
@@ -78,7 +75,7 @@ public class Date
 
     // Stops tracking time
     public void stop() {
-        logger.info("Timer has stopped.");
+        CSLogger.sharedLogger().info("Timer has stopped.");
 
         timer.cancel();
         timer = null;

@@ -1,6 +1,7 @@
 import greenfoot.*;
 import java.awt.Color;
 import java.lang.Math;
+import java.awt.Point;
 
 /**
  * Minimap_Viewport
@@ -26,7 +27,7 @@ public class Minimap_Viewport extends Actor
 
     private Point origin;   // Origin of the viewport
     private boolean move;   // Allows the viewport to move; used to regulate movement 
-    private int scale = 2;  // Scale of the minimap; default: 2 (100x100 cells * 2 = 200x200 px)
+    private float scale = 1.0f;  // Scale of the minimap; default: 2 (100x100 cells * 2 = 200x200 px)
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -60,8 +61,7 @@ public class Minimap_Viewport extends Actor
 
     // Moves the minimap viewport to the specified location and redraws it there
     public void didMoveViewportToCell(Point location) {
-        origin.setX(location.x() * scale);
-        origin.setY(location.y() * scale);
+        origin.setLocation((int)(location.x * scale), (int)(location.y * scale));
 
         move = true;
         draw();
@@ -73,6 +73,6 @@ public class Minimap_Viewport extends Actor
         image.clear();
 
         image.setColor(Color.RED);
-        image.drawRect(origin.x(), origin.y(), 40, 25);
+        image.drawRect(origin.x, origin.y, 35, 18);
     }
 }

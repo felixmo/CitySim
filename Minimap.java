@@ -2,6 +2,8 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.awt.Rectangle;
+import java.awt.Point;
 
 /**
  * Minimap
@@ -22,13 +24,13 @@ public class Minimap extends Actor
     /*
      * MINIMAP PROPERTIES *
      */
-    private final Rectangle FRAME = new Rectangle(new Point(112, 658), 200, 200);
-    private final int tileSize = 2; // px
+    private final Rectangle FRAME = new Rectangle(112, 658, 200, 200);
+    private final int tileSize = 1; // px
 
     /*
      * INSTANCE VARIABLES
      */
- 
+
     private GreenfootImage image;                       // Minimap view
     private Point viewportOrigin = new Point(0, 0);     // Viewport origin
 
@@ -36,7 +38,7 @@ public class Minimap extends Actor
 
     public Minimap() {
 
-        this.image = new GreenfootImage(FRAME.width(), FRAME.height());
+        this.image = new GreenfootImage(FRAME.width, FRAME.height);
         this.image.setTransparency(150);
         setImage(this.image);
 
@@ -99,13 +101,13 @@ public class Minimap extends Actor
     private Color colorForTileOfType(int type) {
         switch (type) {
             case Tile.EMPTY: return Color.BLACK;
+            case Tile.WATER: return Color.BLUE;
+            case Tile.GROUND: return new Color(216, 146, 125);
             case Tile.GRASS_1: return new Color(76, 114, 62);
             case Tile.GRASS_2: return new Color(76, 114, 62);
             case Tile.GRASS_3: return new Color(76, 114, 62);
             case Tile.GRASS_4: return new Color(76, 114, 62);
-            case Tile.SAND: return new Color(199, 188, 146);
-            case Tile.DIRT: return new Color(112, 73, 54);
-            case Tile.STONE: return new Color(164, 155, 155);
+            case Tile.GRASS_5: return new Color(76, 114, 62);
 
             default: return Color.BLACK;
         }

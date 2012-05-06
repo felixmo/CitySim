@@ -1,7 +1,8 @@
 import greenfoot.*;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
-import java.util.logging.*;
+import java.awt.Rectangle;
+import java.awt.Point;
 
 /**
  * HUD
@@ -22,7 +23,6 @@ public class HUD extends Actor {
      * INSTANCE VARIABLES
      */
 
-    private Logger logger = LogManager.getLogManager().getLogger("com.felixmo.CitySim.logger");     // Shared logger
     private LinkedHashMap labels = new LinkedHashMap();                                             // Holds references to all labels for easy access
     private Minimap minimap;                                                                        // The minimap
 
@@ -30,10 +30,10 @@ public class HUD extends Actor {
      * LABEL RECTS. *
      */
 
-    private static final Rectangle CITYNAME_RECT = new Rectangle(new Point(418, 594), 135, 58);
-    private static final Rectangle POPNUM_RECT = new Rectangle(new Point(530, 650), 135, 48);
-    private static final Rectangle DATE_RECT = new Rectangle(new Point(320, 650), 135, 48);
-    private static final Rectangle CASH_RECT = new Rectangle(new Point(530, 695), 135, 48);
+    private static final Rectangle CITYNAME_RECT = new Rectangle(418, 594, 135, 58);
+    private static final Rectangle POPNUM_RECT = new Rectangle(530, 650, 135, 48);
+    private static final Rectangle DATE_RECT = new Rectangle(320, 650, 135, 48);
+    private static final Rectangle CASH_RECT = new Rectangle(530, 695, 135, 48);
 
     /*
      * IDENTIFIERS *
@@ -63,7 +63,7 @@ public class HUD extends Actor {
     protected void addedToWorld(World world) {
 
         // Add minimap to HUD
-        world.addObject(minimap, minimap.frame().origin().x(), minimap.frame().origin().y());   
+        world.addObject(minimap, minimap.frame().x, minimap.frame().y);   
     }
 
     // Refreshes the values on the HUD with the values provided
@@ -92,12 +92,12 @@ public class HUD extends Actor {
     // Changes the values in individual labels
     private void refreshLabel(String key, String value) {
 
-        logger.finest("Updating label (\"" + key + "\")" + " in HUD with value: " + value);
+        CSLogger.sharedLogger().finest("Updating label (\"" + key + "\")" + " in HUD with value: " + value);
 
         Label label = (Label)labels.get(key);
 
         if (label.getWorld() == null) {
-            getWorld().addObject(label, label.frame().origin().x(), label.frame().origin().y());
+            getWorld().addObject(label, label.frame().x, label.frame().y);
         }
 
         label.setText(value);

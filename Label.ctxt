@@ -1,12 +1,9 @@
 #BlueJ class context
 comment0.params=frame
-comment0.target=Label(Rectangle)
-comment1.params=path
-comment1.target=java.awt.Font\ loadFont(java.lang.String)
-comment1.text=\ HELPERS\ *\n
-comment2.params=value
-comment2.target=void\ setText(java.lang.String)
-comment2.text=\ ACCESSORS\ *\n
-comment3.params=
-comment3.target=Rectangle\ frame()
-numComments=4
+comment0.target=Label(java.awt.Rectangle)
+comment1.params=value
+comment1.target=void\ setText(java.lang.String)
+comment1.text=\ ACCESSORS\ *\n
+comment2.params=
+comment2.target=java.awt.Rectangle\ frame()
+numComments=3

@@ -1,7 +1,8 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import java.util.logging.*;
+import java.io.File;
+import java.awt.Point;
 
 /**
  * City
@@ -22,7 +23,6 @@ public class City extends World
     /*
      * REFERENCES *
      */
-    private Logger logger;                          // Holds reference to global shared instance of Logger
     private Map map;                                // Map of the city
     private Date date;                              // Current date (in-game) / time elapsed
     private HUD hud;                                // HUD display containing game info and controls
@@ -41,21 +41,13 @@ public class City extends World
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
 
-        // Configure logger
-        LogManager manager = LogManager.getLogManager();
-        manager.reset();
-
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setFormatter(new LogFormatter());
-
-        logger = Logger.getLogger("com.felixmo.CitySim.logger");
-        logger.addHandler(handler);
-        logger.setLevel(Level.FINE);    // Only show events: Fine +
-        manager.addLogger(logger);
-
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
+        // FOR TESTING ONLY 
+        // Delete the DB so that map re-generates each run
+        new File("maps/test.db").delete();
+        
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
 
@@ -106,7 +98,7 @@ public class City extends World
         menuBarItems.add("Power");
         menuBarItems.add("Protection");
         menuBar.setItems(menuBarItems);
-        
+
         ArrayList<String> zoneItems = new ArrayList();
         zoneItems.add("Residential");
         zoneItems.add("Commerical");
@@ -115,6 +107,9 @@ public class City extends World
 
         // Initalize the cash store from the last known value in the DB
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
+        
+        // Run Java garbage collector to cleanup
+        System.gc();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -124,7 +119,7 @@ public class City extends World
 
     // Called when game is started
     public void started() {
-        logger.info("Game has started...");
+        CSLogger.sharedLogger().info("Game has started...");
 
         if (!Data.connectionIsOpen()) {
             Data.resumeConnection();
@@ -136,7 +131,7 @@ public class City extends World
 
     // Called when game is paused in Greenfoot
     public void stopped() {
-        logger.info("Game has stopped.");
+        CSLogger.sharedLogger().info("Game has stopped.");
 
         // TO DO: pause timer when in menu
         date.stop();

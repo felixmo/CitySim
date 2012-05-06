@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.params=title\ index
+comment0.target=MenuElement(java.lang.String,\ int)
+comment1.params=
+comment1.target=java.awt.Rectangle\ frame()
+comment1.text=\ ACCESSORS\ *\n
+comment2.params=frame
+comment2.target=void\ setFrame(java.awt.Rectangle)
+comment3.params=
+comment3.target=boolean\ active()
+comment4.params=active
+comment4.target=void\ setActive(boolean)
+comment5.params=
+comment5.target=int\ index()
+numComments=6

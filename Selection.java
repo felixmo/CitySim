@@ -1,5 +1,7 @@
 import greenfoot.*;
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Point;
 
 /**
  * Write a description of class Selection here.
@@ -17,8 +19,8 @@ public class Selection extends Actor
     private GreenfootImage image;
 
     public Selection(Point viewportSize) {
-        this.image = new GreenfootImage(viewportSize.x(), viewportSize.y());
-        this.image.setTransparency(100);
+        this.image = new GreenfootImage(viewportSize.x, viewportSize.y);
+        this.image.setTransparency(255);
         setImage(this.image);
     }
 
@@ -28,7 +30,7 @@ public class Selection extends Actor
         
         this.image.clear();
         this.image.setColor(Color.WHITE);
-        this.image.drawRect((selectedTile.position().x() * Tile.size) - viewport.origin().x(), (selectedTile.position().y() * Tile.size) - viewport.origin().y(), Tile.size, Tile.size);
+        this.image.drawRect(((selectedTile.position().x * Tile.size) - viewport.x), ((selectedTile.position().y * Tile.size) - viewport.y), Tile.size, Tile.size);
     }
 
     /*
@@ -48,8 +50,10 @@ public class Selection extends Actor
     }
 
     public void setSelectedTile(Tile tile) {
+        
+        if (this.selectedTile == tile) return;
+        
         this.selectedTile = tile;
-//         System.out.println("Tile @ " + tile.position().toString() + " selected.");
         draw();
     }
 

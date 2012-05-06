@@ -1,8 +1,6 @@
 import greenfoot.*;
-import java.awt.Font;
 import java.awt.Color;
-import java.io.File;
-import java.io.InputStream;
+import java.awt.Rectangle;
 
 /**
  * Label
@@ -25,9 +23,7 @@ public class Label extends Actor
      */
 
     // Font and font properties
-    private static final Color FONT_COLOR = new Color(55, 55, 55);                  // Default font colour
-    private static final String FONT_CABIN = "fonts/cabin/Cabin-Regular-TTF.ttf";   // Default font
-    private static Font font;                                                       // Font obj. containing the font itself and the default font properties
+    private static final Color FONTCOLOR = new Color(55, 55, 55);                  // Default font colour
 
     // Label properties
     private Rectangle frame;    // Location and dimensions of the label
@@ -41,28 +37,10 @@ public class Label extends Actor
 
         this.frame = frame;
 
-        image = new GreenfootImage(frame.width(), frame.height());
-        image.setFont(loadFont(FONT_CABIN).deriveFont((float)frame.height()/2));
-        image.setColor(FONT_COLOR);
+        image = new GreenfootImage(frame.width, frame.height);
+        image.setFont(CSFont.cabin((float)frame.height/2));
+        image.setColor(FONTCOLOR);
         setImage(image);
-    }
-
-    /*
-     * HELPERS *
-     */
-    
-    // Loads a TTF font from the specified path and creates a 'Font' object from it
-    private Font loadFont(String path) {
-
-        try {
-            InputStream is = Label.class.getResourceAsStream(path);
-            return Font.createFont(Font.TRUETYPE_FONT, is);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     /*
@@ -74,7 +52,7 @@ public class Label extends Actor
         this.text = value;
 
         image.clear();
-        image.drawString(this.text, 1, frame.height()/2);
+        image.drawString(this.text, 1, frame.height/2);
     }
 
     public Rectangle frame() {

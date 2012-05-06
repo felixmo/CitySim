@@ -1,13 +1,17 @@
 #BlueJ class context
 comment0.params=viewportSize
-comment0.target=Selection(Point)
+comment0.target=Selection(java.awt.Point)
 comment1.params=
 comment1.target=void\ draw()
 comment2.params=
-comment2.target=Tile\ selectedTile()
+comment2.target=boolean\ active()
 comment2.text=\ ACCESSORS\ *\n
-comment3.params=tile
-comment3.target=void\ setSelectedTile(Tile)
-comment4.params=viewport
-comment4.target=void\ setViewport(Rectangle)
-numComments=5
+comment3.params=value
+comment3.target=void\ setActive(boolean)
+comment4.params=
+comment4.target=Tile\ selectedTile()
+comment5.params=tile
+comment5.target=void\ setSelectedTile(Tile)
+comment6.params=viewport
+comment6.target=void\ setViewport(java.awt.Rectangle)
+numComments=7
