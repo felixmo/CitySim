@@ -45,7 +45,7 @@ public class Map extends Actor
     // Ref. to mouse info. provided by Greenfoot
     private MouseInfo mouseInfo = null;
 
-    private Selection selection = new Selection(new Point(viewport.width, viewport.height));
+    private Selection selection = new Selection(viewport.width, viewport.height);
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +76,8 @@ public class Map extends Actor
 
         // Draw map on screen
         setImage(view);
-        viewportDidMove(viewport.getLocation());
+        Point viewportLoc = viewport.getLocation();
+        viewportDidMove(viewportLoc.x, viewportLoc.y);
 
         this.instance = this;
     }
@@ -94,9 +95,10 @@ public class Map extends Actor
 
         // Listen for keystrokes and mouse movement and move accordingly, only if viewport is within bounds of map
 
-        Point offset = new Point(0, 0); // movement offset
-
-        Point mouse = null; // cursor position
+        int offset_x = 0;
+        int offset_y = 0;
+        int mouse_x = 0;
+        int mouse_y = 0;
 
         // Update mouse info if mouse has moved
         if (Greenfoot.getMouseInfo() != null) {
@@ -105,12 +107,14 @@ public class Map extends Actor
 
         if (mouseInfo != null) {
 
-            mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
+            mouse_x = mouseInfo.getX();
+            mouse_y = mouseInfo.getY();
 
-            this.selection.setActiveTile(tileForCoordinatePair(cellForCoordinatePairInView(mouse)));
+            Point cell = cellForCoordinatePairInView(mouse_x, mouse_y);
+            this.selection.setActiveTile(tileForCoordinatePair(cell.x, cell.y));
 
             // If selection view is NOT in selection mode; deactivate the view when cursor is out of bounds
-            if (mouse.y <= 28 || mouse.y >= 538 || mouse.x < 10 || mouse.x >= 1014) {
+            if (mouse_y <= 28 || mouse_y >= 538 || mouse_x < 10 || mouse_x >= 1014) {
                 // TOP
                 if (!this.selection.selectionMode()) this.selection.setActive(false);
             }
@@ -119,41 +123,37 @@ public class Map extends Actor
             }
         }
 
-        // Only get keyboard input if there was no moues input
-        if (offset.x == 0 && offset.y == 0) {
+        // Vertical movement
+        if (Greenfoot.isKeyDown("w")) {
+            // UP
+            if (viewport.y > cityRect.y) {
+                offset_y = moveSpeed * -1;
+            }
+        }
+        else if (Greenfoot.isKeyDown("s")) {
+            // DOWN
+            if (viewport.y + viewport.height < cityRect.width) {
+                offset_y = moveSpeed;
+            }
+        }
 
-            // Vertical movement
-            if (Greenfoot.isKeyDown("w")) {
-                // UP
-                if (viewport.y > cityRect.y) {
-                    offset.y = moveSpeed * -1;
-                }
+        // Horizontal movement
+        if (Greenfoot.isKeyDown("a")) {
+            // LEFT
+            if (viewport.x > cityRect.x) {
+                offset_x = moveSpeed;
             }
-            else if (Greenfoot.isKeyDown("s")) {
-                // DOWN
-                if (viewport.y + viewport.height < cityRect.width) {
-                    offset.y = moveSpeed;
-                }
-            }
-
-            // Horizontal movement
-            if (Greenfoot.isKeyDown("a")) {
-                // LEFT
-                if (viewport.x > cityRect.x) {
-                    offset.x = moveSpeed;
-                }
-            }
-            else if (Greenfoot.isKeyDown("d")) {
-                // RIGHT
-                if (viewport.x + viewport.width < cityRect.width) {
-                    offset.x = moveSpeed * -1;
-                }
+        }
+        else if (Greenfoot.isKeyDown("d")) {
+            // RIGHT
+            if (viewport.x + viewport.width < cityRect.width) {
+                offset_x = moveSpeed * -1;
             }
         }
 
         // Only re-render map if there was movement
-        if (offset.x != 0 || offset.y != 0) {
-            viewportDidMove(offset);
+        if (offset_x != 0 || offset_y != 0) {
+            viewportDidMove(offset_x, offset_y);
         }
     }    
 
@@ -161,17 +161,17 @@ public class Map extends Actor
 
     // * Helper methods *
     // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile
-    private Point cellForCoordinatePair(Point coord) {
-        return new Point((coord.x / Tile.size), (coord.y / Tile.size));
+    private Point cellForCoordinatePair(int x, int y) {
+        return new Point((x / Tile.size), (y / Tile.size));
     }
 
     // Translate a given pair of coordinates (within the bounds of the view) to indices for the representing map tile 
-    private Point cellForCoordinatePairInView(Point coord) {
-        return cellForCoordinatePair(new Point((viewport.x + coord.x), (viewport.y + coord.y)));   
+    private Point cellForCoordinatePairInView(int x, int y) {
+        return cellForCoordinatePair((viewport.x + x), (viewport.y + y));   
     }
 
-    private Tile tileForCoordinatePair(Point coord) {
-        return (Tile)map.get(Math.min(coord.x+2, cityColumns-1)).get(Math.min(coord.y, cityRows-1));
+    private Tile tileForCoordinatePair(int x, int y) {
+        return (Tile)map.get(Math.min(x+2, cityColumns-1)).get(Math.min(y, cityRows-1));
     }
 
     // Translates a given indice to a coordinate for the view, in px
@@ -221,24 +221,25 @@ public class Map extends Actor
     }
 
     // Re-renders the map image layer upon movement to account for the viewport's new offset
-    private void viewportDidMove(Point offset) {
+    private void viewportDidMove(int dx, int dy) {
 
         // Shift the viewport's origin from movement offset
-        viewport.setLocation((viewport.x - offset.x), (viewport.y + offset.y));
+        viewport.setLocation((viewport.x - dx), (viewport.y + dy));
 
-        Point cell = cellForCoordinatePair(viewport.getLocation());
+        Point viewportLoc = viewport.getLocation();
+        Point cell = cellForCoordinatePair(viewportLoc.x, viewportLoc.y);
 
-        if (getWorld() != null) ((City)getWorld()).didMoveMapTo(new Point(cellForCoordinatePair(viewport.getLocation()).x, cellForCoordinatePair(viewport.getLocation()).y));
+        if (getWorld() != null) ((City)getWorld()).didMoveMapTo(cell.x, cell.y);
 
         this.selection.setViewport(this.viewport);
 
         draw();
     }
 
-    public void viewportDidMoveTo(Point location) {
+    public void viewportDidMoveTo(int x, int y) {
 
         // Shift the viewport's origin from movement offset
-        viewport.setLocation(coordinateForCell(location.x), coordinateForCell(location.y));
+        viewport.setLocation(coordinateForCell(x), coordinateForCell(y));
 
         this.selection.setViewport(this.viewport);
 
@@ -246,20 +247,26 @@ public class Map extends Actor
     }
 
     public void draw() {
+        
+        // Coordinates for the tile being drawn; set at the origin of the shifted viewport
+        int tile_x = viewport.x;
+        int tile_y = viewport.y;
 
-        Point tilePt = new Point(viewport.x, viewport.y);     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
+        Point vpLoc = viewport.getLocation();
+        Point cell = cellForCoordinatePair(vpLoc.x, vpLoc.y);
 
         // Clear the map image layer
         view.clear();
 
         // Draw tiles onto the map image layer for the shifted viewport
-        for (int col = cellForCoordinatePair(viewport.getLocation()).x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
-            for (int row = cellForCoordinatePair(viewport.getLocation()).y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
+        for (int col = cell.x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
+            for (int row = cell.y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
 
-                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tilePt.x, tilePt.y);  
+                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tile_x, tile_y);  
 
                 // Update the coordinates for the next tile to be drawn
-                tilePt.setLocation((coordinateForCell(col) - viewport.x), (coordinateForCell(row) - viewport.y));
+                tile_x = coordinateForCell(col) - viewport.x;
+                tile_y = coordinateForCell(row) - viewport.y;
             }
         }
     }

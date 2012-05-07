@@ -18,7 +18,6 @@ public class Date
     /*
      * REFERENCES *
      */
-    private City city;
     private Timer timer;
 
     /*
@@ -32,8 +31,7 @@ public class Date
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Date(City city, int days, int months, int years) {
-        this.city = city;
+    public Date(int days, int months, int years) {
 
         this.days = days;
         this.months = months;
@@ -58,7 +56,7 @@ public class Date
             months = 0;
         }
 
-        city.didIncrementDate();
+        City.getInstance().didIncrementDate();
     }
 
     /*

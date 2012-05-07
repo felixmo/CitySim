@@ -27,7 +27,7 @@ public class Minimap_Viewport extends Actor
 
     private Point origin;   // Origin of the viewport
     private boolean move;   // Allows the viewport to move; used to regulate movement 
-    private float scale = 1.0f;  // Scale of the minimap; default: 2 (100x100 cells * 2 = 200x200 px)
+//     private float scale = 1.0f;  // Scale of the minimap; default: 2 (100x100 cells * 2 = 200x200 px)
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -49,19 +49,20 @@ public class Minimap_Viewport extends Actor
             MouseInfo mouseInfo = Greenfoot.getMouseInfo();
 
             // Coordinates of the cursor, relative to the minimap
-            Point location = new Point((mouseInfo.getX() - 12), (mouseInfo.getY() - 558));
+            int x = mouseInfo.getX() - 12;
+            int y = mouseInfo.getY() - 558;
             // X | Subtract distance from left edge of HUD to left edge of minimap from X
             // Y | Subtract distance from the top of the game to the top of the minimap from Y
 
-            origin = location;
+            origin.setLocation(x, y);
             draw();
-            ((City)getWorld()).didMoveViewportTo(location);
+            ((City)getWorld()).didMoveViewportTo(x, y);
         }
     }
 
     // Moves the minimap viewport to the specified location and redraws it there
-    public void didMoveViewportToCell(Point location) {
-        origin.setLocation((int)(location.x * scale), (int)(location.y * scale));
+    public void didMoveViewportToCell(int x, int y) {
+        origin.setLocation(x, y);
 
         move = true;
         draw();

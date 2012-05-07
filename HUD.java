@@ -23,7 +23,7 @@ public class HUD extends Actor {
      * INSTANCE VARIABLES
      */
 
-    private LinkedHashMap labels = new LinkedHashMap();                                             // Holds references to all labels for easy access
+    private LinkedHashMap labels = new LinkedHashMap(4);                                             // Holds references to all labels for easy access
     private Minimap minimap;                                                                        // The minimap
 
     /*

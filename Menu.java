@@ -26,7 +26,7 @@ public class Menu extends MenuElement
      */
 
     private MenuBarItem menuBarItem;
-    private ArrayList<String> items;
+//     private ArrayList<String> items;
     private ArrayList<MenuItem> menuItems;
     private int activeIndex = -1;
 
@@ -39,7 +39,6 @@ public class Menu extends MenuElement
         super("", 0);
 
         this.menuBarItem = barItem;
-        this.menuItems = new ArrayList<MenuItem>();
 
         setItems(items);
     }
@@ -122,14 +121,14 @@ public class Menu extends MenuElement
 
     public void setItems(ArrayList<String> items) {
 
-        this.items = items;
+//         this.items = items;
 
         // Create frame based on dimensions derived from font metrics
         FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(font); 
         int width = 0;
         int index = 0;
         // Find the widest menu item and use it's width + padding as the menu width
-        for (String item : this.items) {
+        for (String item : items) {
 
             if (fontMetrics.stringWidth(item) > width) {
                 width = fontMetrics.stringWidth(item)+28;
@@ -137,7 +136,10 @@ public class Menu extends MenuElement
         }
 
         // Create the 'MenuItem' actors 
-        for (String item : this.items) {
+
+        this.menuItems = new ArrayList<MenuItem>(items.size());
+
+        for (String item : items) {
             MenuItem menuItem = new MenuItem(item, this, index);
             Rectangle miFrame = new Rectangle(menuBarItem.frame().x, menuBarItem.frame().y+14+10+index*24, width, 22);
             menuItem.setFrame(miFrame);
@@ -158,8 +160,8 @@ public class Menu extends MenuElement
         if (!active) {
             this.activeIndex = -1;
             this.menuBarItem.menuBar().changeItemStateTo(this.menuBarItem, false);
-//             this.world.removeObjects(menuItems);
-//             this.world.removeObject(this);
+            //             this.world.removeObjects(menuItems);
+            //             this.world.removeObject(this);
         }
     }
 }

@@ -23,7 +23,7 @@ public class Tile
 
     private Point position;
     private static int prevType = 1; // prevent crowding of same grass tiles when map is generated
-    private Integer type = 0;   // Type of tile
+    private int type = 0;   // Type of tile
     private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
     private int dbID; // SQL db id
 

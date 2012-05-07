@@ -1,6 +1,6 @@
 #BlueJ class context
-comment0.params=viewportSize
-comment0.target=Selection(java.awt.Point)
+comment0.params=width\ height
+comment0.target=Selection(int,\ int)
 comment1.params=
 comment1.target=void\ draw()
 comment10.params=tile

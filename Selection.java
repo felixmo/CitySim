@@ -21,9 +21,9 @@ public class Selection extends Actor
 
     private GreenfootImage image;
 
-    public Selection(Point viewportSize) {
+    public Selection(int width, int height) {
 
-        this.image = new GreenfootImage(viewportSize.x, viewportSize.y);
+        this.image = new GreenfootImage(width, height);
         //         this.image.setTransparency(255);
         setImage(this.image);
     }

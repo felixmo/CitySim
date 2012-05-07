@@ -71,12 +71,12 @@ public class City extends World
         if (Data.dbIsNew()) {
 
             // Metadata
-            LinkedHashMap mapMetadata = new LinkedHashMap();
+            LinkedHashMap mapMetadata = new LinkedHashMap(1);
             mapMetadata.put(Data.METADATA_NAME, "Toronto"); // FOR TESTING PURPOSES
             Data.insertMapMetadata(mapMetadata);
 
             // City stats
-            LinkedHashMap cityStats = new LinkedHashMap();
+            LinkedHashMap cityStats = new LinkedHashMap(5);
             cityStats.put(Data.CITYSTATS_DAYS, INITIAL_DATE_DAYS);
             cityStats.put(Data.CITYSTATS_MONTHS, INITIAL_DATE_MONTHS);
             cityStats.put(Data.CITYSTATS_YEARS, INITIAL_DATE_YEARS);
@@ -87,7 +87,7 @@ public class City extends World
 
         // Resume tracking date from last saved date
         LinkedHashMap cityStats = Data.cityStats();
-        date = new Date(this, (Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
+        date = new Date((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
 
         // Create and add a new map for the city
         map = new Map();
@@ -106,7 +106,7 @@ public class City extends World
         addObject(menuBar, 512, 14);
 
         // Menu bar items
-        ArrayList<String> menuBarItems = new ArrayList();
+        ArrayList<String> menuBarItems = new ArrayList(4);
         menuBarItems.add("Zone");
         menuBarItems.add("Roads");
         menuBarItems.add("Power");
@@ -118,7 +118,7 @@ public class City extends World
          * NOTE *
          * Menu items need to be declared in 'MenuItemEvent' as well and implemented in 'MenuItemEventListener'.
          */
-        ArrayList<String> zoneItems = new ArrayList();
+        ArrayList<String> zoneItems = new ArrayList(3);
         zoneItems.add("Residential");
         zoneItems.add("Commercial");
         zoneItems.add("Industrial");
@@ -179,15 +179,15 @@ public class City extends World
     }
 
     // Called when the minimap viewport has been moved (i.e. minimap has been clicked on)
-    public void didMoveViewportTo(Point location) {
+    public void didMoveViewportTo(int x, int y) {
         // Move the map
-        map.viewportDidMoveTo(location);
+        map.viewportDidMoveTo(x, y);
     }
 
     // Called when the map is moved
-    public void didMoveMapTo(Point location) {
+    public void didMoveMapTo(int x, int y) {
         // Move the representation of the viewport in the minimap
-        minimap_viewport.didMoveViewportToCell(location);
+        minimap_viewport.didMoveViewportToCell(x, y);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -198,7 +198,7 @@ public class City extends World
     // Returns formatted values for the HUD labels
     private LinkedHashMap valuesForHUD() {
 
-        LinkedHashMap values = new LinkedHashMap();
+        LinkedHashMap values = new LinkedHashMap(4);
 
         values.put(HUD.NAME, "Toronto");  // TESTING
         values.put(HUD.POPULATION, 0);    // TESTING
@@ -211,7 +211,7 @@ public class City extends World
     // Returns the city stats. w/o formatting (i.e. for writing the values to the DB)
     private LinkedHashMap currentCityStats() {
 
-        LinkedHashMap stats = new LinkedHashMap();
+        LinkedHashMap stats = new LinkedHashMap(5);
 
         stats.put(Data.CITYSTATS_DAYS, date.days());
         stats.put(Data.CITYSTATS_MONTHS, date.months());

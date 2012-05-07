@@ -174,7 +174,7 @@ public class DataSource
         try {
 
             List results = (List) new QueryRunner().query(connection, "SELECT * from map_size", new MapListHandler());
-            LinkedHashMap mapSize = new LinkedHashMap();
+            LinkedHashMap mapSize = new LinkedHashMap(2);
             Map row = (Map)results.listIterator().next();
             mapSize.putAll(row);
 
@@ -217,7 +217,7 @@ public class DataSource
 
         try {
             List results = (List) new QueryRunner().query(connection, "SELECT * from map_metadata", new MapListHandler());
-            LinkedHashMap mapMetadata = new LinkedHashMap();
+            LinkedHashMap mapMetadata = new LinkedHashMap(1);
             Map row = (Map)results.listIterator().next();
             mapMetadata.putAll(row);
 
@@ -333,7 +333,7 @@ public class DataSource
                 Map row = (Map)results.get(i);
                 pos.setLocation((Integer)row.get("x"), (Integer)row.get("y"));
 
-                tiles.get(pos.x).add(pos.y, new Tile(new Point((Integer)row.get("x"), (Integer)row.get("y")), (Integer)row.get("type")));
+                tiles.get(pos.x).add(pos.y, new Tile(new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue()));
             }
 
             CSLogger.sharedLogger().info("Finished retrieving map tiles from DB (\"" + dbName + "\")");
@@ -356,7 +356,7 @@ public class DataSource
         try {
 
             List results = (List) new QueryRunner().query(connection, "SELECT * from city_stats", new MapListHandler());
-            LinkedHashMap cityStats = new LinkedHashMap();
+            LinkedHashMap cityStats = new LinkedHashMap(5);
             Map row = (Map)results.listIterator().next();
             cityStats.putAll(row);
 
