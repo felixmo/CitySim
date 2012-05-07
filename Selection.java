@@ -33,6 +33,10 @@ public class Selection extends Actor
         this.image.drawRect(((selectedTile.position().x * Tile.size) - viewport.x), ((selectedTile.position().y * Tile.size) - viewport.y), Tile.size, Tile.size);
     }
 
+    public act() {
+        
+    }
+    
     /*
      * ACCESSORS *
      */

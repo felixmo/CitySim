@@ -25,7 +25,7 @@ public class DataSource
 {
 
     // ---------------------------------------------------------------------------------------------------------------
-    
+
     /*
      * INSTANCE VARIABLES *
      */
@@ -76,7 +76,7 @@ public class DataSource
 
         return connectionIsOpen;
     }
-    
+
     /*
      * HELPERS *
      */
@@ -90,12 +90,12 @@ public class DataSource
     /*
      * CONNECTION *
      */
-    
+
     // Open a connection to the database, create it if necessary
     private void openConnection(String dbName) {
 
         CSLogger.sharedLogger().info("Opening connection to DB named: \"" + dbName + "\"...");
-       
+
         try {
             Class.forName("org.sqlite.JDBC");
         } 
@@ -134,7 +134,7 @@ public class DataSource
 
         openConnection(dbName);
     }
-    
+
     /*
      * DB. OPS. *
      */
@@ -268,7 +268,6 @@ public class DataSource
             // 2. x
             // 3. y
             // 4. type
-            // 5. traverseable
 
             for (int x = 0; x < tiles.size(); x++) {
 
@@ -292,6 +291,24 @@ public class DataSource
         }
         catch (SQLException se) {
             se.printStackTrace(); 
+        }
+    }
+
+    public void updateTile(Tile tile) {
+
+        CSLogger.sharedLogger().info("Updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ? WHERE id = ?");
+            statement.setInt(1, tile.type());
+            statement.setInt(2, tile.dbID());
+            statement.executeUpdate();
+            
+            CSLogger.sharedLogger().info("Finished updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
         }
     }
 

@@ -127,6 +127,11 @@ public class Data
         CSLogger.sharedLogger().info("Inserting map tiles");
         dataSource.insertTiles(tiles);
     }
+    
+    public static void updateTile(Tile tiles) {
+        CSLogger.sharedLogger().info("Updating map tile");
+        dataSource.updateTile(tile);
+    }
 
     //
 
