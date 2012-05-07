@@ -49,6 +49,7 @@ public class MenuItem extends MenuElement
         if (Greenfoot.mouseClicked(this)) {
             
             CSEventBus.post(new MenuItemEvent(this.title));
+            menu.setActive(false);
         }
     }
 

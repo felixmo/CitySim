@@ -14,4 +14,6 @@ comment5.target=java.util.ArrayList\ menuItems()
 comment5.text=\ ACCESSORS\ *\n
 comment6.params=items
 comment6.target=void\ setItems(java.util.ArrayList)
-numComments=7
+comment7.params=value
+comment7.target=void\ setActive(boolean)
+numComments=8

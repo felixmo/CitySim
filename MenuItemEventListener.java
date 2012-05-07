@@ -13,12 +13,18 @@ import com.google.common.eventbus.Subscribe;
 
 public class MenuItemEventListener extends CSEventListener
 {
-    
+
     @Subscribe
     public void listen(MenuItemEvent event) {
         CSLogger.sharedLogger().finer("\"" + event.message() + "\" was selected.");
-        
-        if (event.message().equals("Residential")) {
+
+        if (event.message().equals(MenuItemEvent.RESIDENTIAL)) {
+            Map.getInstance().selection().setSelectionMode(true);
+        }
+        else if (event.message().equals(MenuItemEvent.INDUSTRIAL)) {
+            Map.getInstance().selection().setSelectionMode(true);
+        }
+        else if (event.message().equals(MenuItemEvent.COMMERCIAL)) {
             Map.getInstance().selection().setSelectionMode(true);
         }
     }

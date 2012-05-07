@@ -22,9 +22,9 @@ public class Selection extends Actor
     private GreenfootImage image;
 
     public Selection(Point viewportSize) {
-        
+
         this.image = new GreenfootImage(viewportSize.x, viewportSize.y);
-//         this.image.setTransparency(255);
+        //         this.image.setTransparency(255);
         setImage(this.image);
     }
 
@@ -35,13 +35,13 @@ public class Selection extends Actor
         if (!selectionMode) {
 
             // HOVER
-            
+
             this.image.clear();
             this.image.setColor(Color.WHITE);
             this.image.drawRect(((activeTile.position().x * Tile.size) - viewport.x), ((activeTile.position().y * Tile.size) - viewport.y), Tile.size, Tile.size);
         }
         else {
-            
+
             // SELECTION
 
             if (initalTile == null || endTile == null) return;
@@ -55,7 +55,7 @@ public class Selection extends Actor
     public void act() {
 
         if (!selectionMode) return;
-        
+
         this.image.clear(); // Clear previous selection
 
         if (Greenfoot.mousePressed(this)) {
@@ -66,9 +66,17 @@ public class Selection extends Actor
         if (Greenfoot.mouseDragged(this)) {
             this.endTile = this.activeTile;
         }       
-        
+
         if (Greenfoot.mouseDragEnded(this)) {
-//             System.out.println("done");
+            //             System.out.println("done");
+        }
+
+        if (Greenfoot.isKeyDown("escape")) {
+            // Clear selection
+            this.initalTile = null;
+            this.endTile = null;
+            
+            setSelectionMode(false);
         }
 
         draw();
@@ -115,7 +123,7 @@ public class Selection extends Actor
     }
 
     public void setEndTile(Tile tile) {
-        
+
         this.endTile = tile;
     }
 

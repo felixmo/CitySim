@@ -1,13 +1,23 @@
 /**
- * Write a description of class MenuItemEvent here.
+ * MenuItemEvent
+ * CitySim
+ * v0.1
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Created by Felix Mo on 05-01-2012
+ * 
+ * The message sent to 'MenuItemEventListener' via 'CSEventBus'
+ * 
  */
 public class MenuItemEvent extends CSEvent
 {
     
-    public static final String RESIDENTIAL = "RESIDENTIAL";
+    /*                       
+     * MESSAGES / MENU ITEMS *
+     */                      
+    // Zoning
+    public static final String RESIDENTIAL = "Residential";
+    public static final String INDUSTRIAL = "Industrial";
+    public static final String COMMERCIAL = "Commercial";
 
     public MenuItemEvent(String message) {
         super(message);

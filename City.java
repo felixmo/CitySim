@@ -24,7 +24,18 @@ public class City extends World
      * STATIC VARIABLES *
      */
     private static City instance;
-    
+
+    /*
+     * CONSTANTS *
+     */
+    private final int FREQ_WRITE = 10;               // # of secs before updated data is written to DB
+    // Initial values
+    private final int INITIAL_CASH = 100000;         // amount of $ to start with
+    private final int INITIAL_POP = 0;               // # of people in the population to start with
+    private final int INITIAL_DATE_DAYS = 1;         
+    private final int INITIAL_DATE_MONTHS = 1;
+    private final int INITIAL_DATE_YEARS = 0;
+
     /*
      * REFERENCES *
      */
@@ -38,7 +49,7 @@ public class City extends World
     /*
      * INSTANCE VARIABLES *
      */
-    private int timeForUpdate = 0;                  // Counter to ensure that write to DB happen every 5 seconds 
+    private int writeCountdown = 0;                  // Countdown until updated data is written to DB
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -51,8 +62,8 @@ public class City extends World
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
-//         new File("maps/test.db").delete();
-        
+        //         new File("maps/test.db").delete();
+
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
 
@@ -66,12 +77,11 @@ public class City extends World
 
             // City stats
             LinkedHashMap cityStats = new LinkedHashMap();
-            // Start with inital date of 01/01/00 (DD/MM/YY)
-            cityStats.put(Data.CITYSTATS_DAYS, 1);
-            cityStats.put(Data.CITYSTATS_MONTHS, 1);
-            cityStats.put(Data.CITYSTATS_YEARS, 0);
-            cityStats.put(Data.CITYSTATS_POPULATION, 0);
-            cityStats.put(Data.CITYSTATS_CASH, 100000);
+            cityStats.put(Data.CITYSTATS_DAYS, INITIAL_DATE_DAYS);
+            cityStats.put(Data.CITYSTATS_MONTHS, INITIAL_DATE_MONTHS);
+            cityStats.put(Data.CITYSTATS_YEARS, INITIAL_DATE_YEARS);
+            cityStats.put(Data.CITYSTATS_POPULATION, INITIAL_POP);
+            cityStats.put(Data.CITYSTATS_CASH, INITIAL_CASH);
             Data.insertCityStats(cityStats);
         }
 
@@ -81,7 +91,7 @@ public class City extends World
 
         // Create and add a new map for the city
         map = new Map();
-        addObject(map, 512, 333);   // Arbitrary values to place map at origin (top-left corner)
+        addObject(map, 512, 333);
 
         // Create and add HUD
         hud = new HUD();
@@ -92,7 +102,6 @@ public class City extends World
         addObject(minimap_viewport, 112, 658);
 
         // Create and add the menubar
-
         menuBar = new MenuBar();
         addObject(menuBar, 512, 14);
 
@@ -104,25 +113,30 @@ public class City extends World
         menuBarItems.add("Protection");
         menuBar.setItems(menuBarItems);
 
+        // Menu items
+        /*
+         * NOTE *
+         * Menu items need to be declared in 'MenuItemEvent' as well and implemented in 'MenuItemEventListener'.
+         */
         ArrayList<String> zoneItems = new ArrayList();
         zoneItems.add("Residential");
-        zoneItems.add("Commerical");
+        zoneItems.add("Commercial");
         zoneItems.add("Industrial");
         menuBar.setMenuItemsForItem("Zone", zoneItems);
 
         // Initalize the cash store from the last known value in the DB
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
-        
+
+        instance = this;
+
         // Run Java garbage collector to cleanup
         System.gc();
-        
-        instance = this;
     }
 
     public static City getInstance() {
         return instance;
     }
-    
+
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * EVENTS *
@@ -153,11 +167,11 @@ public class City extends World
     // Called when date is incremented (every 1 sec)
     public void didIncrementDate() {
 
-        // Write to DB every 10 secs
-        timeForUpdate++;
-        if (timeForUpdate == 10) {
+        // Write to DB
+        writeCountdown++;
+        if (writeCountdown == FREQ_WRITE) {
             Data.updateCityStats(currentCityStats());  
-            timeForUpdate = 0;
+            writeCountdown = 0;
         }
 
         // Refresh values for HUD every 1 sec

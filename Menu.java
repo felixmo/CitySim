@@ -24,7 +24,7 @@ public class Menu extends MenuElement
     /*
      * INSTANCE VARIABLES
      */
-    
+
     private MenuBarItem menuBarItem;
     private ArrayList<String> items;
     private ArrayList<MenuItem> menuItems;
@@ -46,6 +46,7 @@ public class Menu extends MenuElement
 
     protected void addedToWorld(World world) {
         this.world = world;   
+        this.active = true;
         if (this.image != null) draw();
     }
 
@@ -109,7 +110,7 @@ public class Menu extends MenuElement
         }
 
         this.activeIndex = menuItem.index();
-    }
+    } 
 
     /*
      * ACCESSORS *
@@ -149,5 +150,16 @@ public class Menu extends MenuElement
 
         this.image = new GreenfootImage(width, height);
         setImage(this.image);
+    }
+
+    public void setActive(boolean value) {
+
+        this.active = value;
+        if (!active) {
+            this.activeIndex = -1;
+            this.menuBarItem.menuBar().changeItemStateTo(this.menuBarItem, false);
+//             this.world.removeObjects(menuItems);
+//             this.world.removeObject(this);
+        }
     }
 }

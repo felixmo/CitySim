@@ -24,7 +24,7 @@ public class Map extends Actor
     /*
      * INSTANCE VARIABLES & CONSTANTS *
      */
-    
+
     private static Map instance;
 
     // Map properties
@@ -77,7 +77,7 @@ public class Map extends Actor
         // Draw map on screen
         setImage(view);
         viewportDidMove(viewport.getLocation());
-        
+
         this.instance = this;
     }
 
@@ -109,16 +109,10 @@ public class Map extends Actor
 
             this.selection.setActiveTile(tileForCoordinatePair(cellForCoordinatePairInView(mouse)));
 
-            // FOR TESTING
-//             if (Greenfoot.mouseClicked(this)) {
-// 
-//                 System.out.println(cellForCoordinatePairInView(mouse).toString());
-//             }
-
-            // Vertical movement
+            // If selection view is NOT in selection mode; deactivate the view when cursor is out of bounds
             if (mouse.y <= 28 || mouse.y >= 538 || mouse.x < 10 || mouse.x >= 1014) {
                 // TOP
-                this.selection.setActive(false);
+                if (!this.selection.selectionMode()) this.selection.setActive(false);
             }
             else {
                 this.selection.setActive(true);
@@ -269,15 +263,15 @@ public class Map extends Actor
             }
         }
     }
-    
+
     /*
      * ACCESSORS *
      */
-    
+
     public static Map getInstance() {
         return instance;
     }
-    
+
     public Selection selection() {
         return this.selection;
     }

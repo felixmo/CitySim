@@ -79,7 +79,7 @@ public class MenuBarItem extends MenuElement
             this.image.drawString(this.title, 8, 16);
 
             if (this.menu != null) {
-                this.menu.setActive(false);
+                if (this.menu.active()) this.menu.setActive(false); // Check! Otherwise infinite loop occurs when selecting menu item
                 world.removeObjects(menu.menuItems());
                 world.removeObject(menu);
             }
@@ -106,5 +106,9 @@ public class MenuBarItem extends MenuElement
 
     public void setMenu(Menu menu) {
         this.menu = menu;
+    }
+    
+    public MenuBar menuBar() {
+        return this.menuBar;
     }
 }
