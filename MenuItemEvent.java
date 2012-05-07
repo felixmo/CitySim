@@ -6,6 +6,9 @@
  */
 public class MenuItemEvent extends CSEvent
 {
+    
+    public static final String RESIDENTIAL = "RESIDENTIAL";
+
     public MenuItemEvent(String message) {
         super(message);
     }

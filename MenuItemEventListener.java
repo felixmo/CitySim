@@ -11,11 +11,15 @@ import com.google.common.eventbus.Subscribe;
  * 
  */
 
-public class MenuItemEventListener  extends CSEventListener
+public class MenuItemEventListener extends CSEventListener
 {
     
     @Subscribe
     public void listen(MenuItemEvent event) {
         CSLogger.sharedLogger().finer("\"" + event.message() + "\" was selected.");
+        
+        if (event.message().equals("Residential")) {
+            Map.getInstance().selection().setSelectionMode(true);
+        }
     }
 }

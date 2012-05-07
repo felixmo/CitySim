@@ -89,6 +89,9 @@ public class Tile
 
     public void setType(Integer value) {
         type = value;
+        
+        // Update value in DB
+        Data.updateTile(this);
     }
 
     public int dbID() {

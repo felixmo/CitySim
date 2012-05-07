@@ -24,6 +24,8 @@ public class Map extends Actor
     /*
      * INSTANCE VARIABLES & CONSTANTS *
      */
+    
+    private static Map instance;
 
     // Map properties
     private final int cityColumns = 200;    // cells; horizontal
@@ -75,6 +77,8 @@ public class Map extends Actor
         // Draw map on screen
         setImage(view);
         viewportDidMove(viewport.getLocation());
+        
+        this.instance = this;
     }
 
     // * Greenfoot methods *
@@ -103,13 +107,13 @@ public class Map extends Actor
 
             mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
-            this.selection.setSelectedTile(tileForCoordinatePair(cellForCoordinatePairInView(mouse)));
+            this.selection.setActiveTile(tileForCoordinatePair(cellForCoordinatePairInView(mouse)));
 
             // FOR TESTING
-            if (Greenfoot.mouseClicked(this)) {
-
-                System.out.println(cellForCoordinatePairInView(mouse).toString());
-            }
+//             if (Greenfoot.mouseClicked(this)) {
+// 
+//                 System.out.println(cellForCoordinatePairInView(mouse).toString());
+//             }
 
             // Vertical movement
             if (mouse.y <= 28 || mouse.y >= 538 || mouse.x < 10 || mouse.x >= 1014) {
@@ -247,7 +251,7 @@ public class Map extends Actor
         draw();
     }
 
-    private void draw() {
+    public void draw() {
 
         Point tilePt = new Point(viewport.x, viewport.y);     // Coordinate pair for the tile being drawn; set at the origin of the shifted viewport
 
@@ -264,5 +268,17 @@ public class Map extends Actor
                 tilePt.setLocation((coordinateForCell(col) - viewport.x), (coordinateForCell(row) - viewport.y));
             }
         }
+    }
+    
+    /*
+     * ACCESSORS *
+     */
+    
+    public static Map getInstance() {
+        return instance;
+    }
+    
+    public Selection selection() {
+        return this.selection;
     }
 }

@@ -21,6 +21,11 @@ public class City extends World
     // ---------------------------------------------------------------------------------------------------------------------
 
     /*
+     * STATIC VARIABLES *
+     */
+    private static City instance;
+    
+    /*
      * REFERENCES *
      */
     private Map map;                                // Map of the city
@@ -46,7 +51,7 @@ public class City extends World
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
-        new File("maps/test.db").delete();
+//         new File("maps/test.db").delete();
         
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
@@ -110,8 +115,14 @@ public class City extends World
         
         // Run Java garbage collector to cleanup
         System.gc();
+        
+        instance = this;
     }
 
+    public static City getInstance() {
+        return instance;
+    }
+    
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * EVENTS *

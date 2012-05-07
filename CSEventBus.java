@@ -22,6 +22,7 @@ public class CSEventBus
             // Register listeners
             sharedEventBus.register(new ButtonEventListener());
             sharedEventBus.register(new MenuItemEventListener());
+            sharedEventBus.register(new SelectionEventListener());
         }
     }
     

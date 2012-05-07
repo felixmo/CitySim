@@ -128,7 +128,7 @@ public class Data
         dataSource.insertTiles(tiles);
     }
     
-    public static void updateTile(Tile tiles) {
+    public static void updateTile(Tile tile) {
         CSLogger.sharedLogger().info("Updating map tile");
         dataSource.updateTile(tile);
     }
