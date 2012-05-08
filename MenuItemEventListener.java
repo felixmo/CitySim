@@ -20,6 +20,7 @@ public class MenuItemEventListener extends CSEventListener
 
         if (event.message().equals(MenuItemEvent.RESIDENTIAL)) {
             Map.getInstance().selection().setSelectionMode(true);
+            City.getInstance().addObject(new Hint("Drag out the area you wish to zone as residential."), Hint.ORIGIN_X, Hint.ORIGIN_Y);
         }
         else if (event.message().equals(MenuItemEvent.INDUSTRIAL)) {
             Map.getInstance().selection().setSelectionMode(true);

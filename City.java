@@ -58,11 +58,11 @@ public class City extends World
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
+        setPaintOrder(Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
-        //         new File("maps/test.db").delete();
+        new File("maps/test.db").delete();
 
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
@@ -128,9 +128,6 @@ public class City extends World
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
 
         instance = this;
-
-        // Run Java garbage collector to cleanup
-        System.gc();
     }
 
     public static City getInstance() {
@@ -172,6 +169,8 @@ public class City extends World
         if (writeCountdown == FREQ_WRITE) {
             Data.updateCityStats(currentCityStats());  
             writeCountdown = 0;
+            // Run Java garbage collector to cleanup
+            System.gc();
         }
 
         // Refresh values for HUD every 1 sec

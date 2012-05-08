@@ -46,12 +46,19 @@ public class Label extends Actor
     /*
      * ACCESSORS *
      */
-    
+
     public void setText(String value) {
 
         this.text = value;
 
         image.clear();
+        image.drawString(this.text, 1, frame.height/2);
+    }
+
+    public void setColor(Color value) {
+
+        this.image.setColor(value);
+        this.image.clear();
         image.drawString(this.text, 1, frame.height/2);
     }
 
