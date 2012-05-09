@@ -56,7 +56,7 @@ public class City extends World
     public City() {
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
-
+        
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
@@ -175,6 +175,9 @@ public class City extends World
 
         // Refresh values for HUD every 1 sec
         hud.refresh(valuesForHUD());
+        
+        // FOR TESTING
+        System.out.println("R: " + ResidentialZone.tiles() + " I: " + ResidentialZone.tiles());
     }
 
     // Called when the minimap viewport has been moved (i.e. minimap has been clicked on)

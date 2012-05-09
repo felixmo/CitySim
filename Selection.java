@@ -2,6 +2,7 @@ import greenfoot.*;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Point;
+import java.util.ArrayList;
 
 /**
  * Write a description of class Selection here.
@@ -68,18 +69,51 @@ public class Selection extends Actor
         }       
 
         if (Greenfoot.mouseDragEnded(this)) {
-            //             System.out.println("done");
+            // SEND MSG
+            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED, selectedTiles()));
+
+            // Clear selection
+            this.initalTile = null;
+            this.endTile = null;
+
+            //             setSelectionMode(false);
         }
 
         if (Greenfoot.isKeyDown("escape")) {
             // Clear selection
             this.initalTile = null;
             this.endTile = null;
-            
+
             setSelectionMode(false);
+
+            Zone.setPendingOp(0);
         }
 
         draw();
+    }
+
+    public ArrayList<ArrayList<Tile>> selectedTiles() {
+
+        int width = (endTile.position().x - initalTile.position().x) + 1;
+        int height = (endTile.position().y - initalTile.position().y) + 1;
+
+        ArrayList<ArrayList<Tile>> tiles = Data.tiles();
+
+        ArrayList<ArrayList<Tile>> selectedTiles = new ArrayList<ArrayList<Tile>>(width);
+        for (int i = 0; i < width; i++) {
+            selectedTiles.add(new ArrayList<Tile>(height));
+        }
+
+        int i = 0;
+
+        for (int x = initalTile.position().x; x <= endTile.position().x; x++) {
+            for (int y = initalTile.position().y; y <= endTile.position().y; y++) {
+                selectedTiles.get(i).add(tiles.get(x).get(y));
+            }
+            i++;
+        }
+
+        return selectedTiles;
     }
 
     /*

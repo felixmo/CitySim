@@ -30,7 +30,7 @@ public class Hint extends Actor
 
         this.label = new GreenfootImage(1024, 50);
         this.label.setColor(Color.WHITE);
-        this.label.setFont(CSFont.cabin((float)25.0f));
+        this.label.setFont(Hint.FONT);
         setText(text);
         this.image.drawImage(this.label, 0, 25);
     }
@@ -43,7 +43,7 @@ public class Hint extends Actor
         int width = fontMetrics.stringWidth(this.text);
 
         this.label.clear();
-        this.label.drawString(this.text, (int)width/2, 25);
+        this.label.drawString(this.text, (int)((1024-width)/2), 25);
     }
 
     public void act() {

@@ -15,10 +15,9 @@ public class SelectionEventListener extends CSEventListener
     public void listen(SelectionEvent event) {
         CSLogger.sharedLogger().finer("Message received: " + event.message());
 
-        if (event.message().equals(SelectionEvent.TILE_SELECTED)) {
-            // Procedure for tile selection
-            Point pos = event.tile().position();
-            System.out.println("Tile (" + pos.x + ", " + pos.y + ") was selected.");
+        if (event.message().equals(SelectionEvent.TILES_SELECTED)) {
+            
+            Zone.zoneTiles(event.tiles());
         }
     }
 }

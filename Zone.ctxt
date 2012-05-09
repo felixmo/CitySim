@@ -1,0 +1,7 @@
+#BlueJ class context
+comment0.params=
+comment0.target=int\ pendingOp()
+comment0.text=\ ACCESSORS\ *\n
+comment1.params=value
+comment1.target=void\ setPendingOp(int)
+numComments=2

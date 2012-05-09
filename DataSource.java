@@ -31,11 +31,11 @@ public class DataSource
      */
 
     // Database properties
-    private static String dbName;
-    private boolean dbIsNew;                                                                        // Specifies if database was just created
+    private static String dbName;       // Database name
+    private boolean dbIsNew;            // Specifies if database was just created
 
     private Connection connection;
-    private boolean connectionIsOpen;                                                               // Tells if connection is currently open
+    private boolean connectionIsOpen;   // Tells if connection is currently open
 
     /*
      * CONSTANTS *

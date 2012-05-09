@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Write a description of class SelectionEvent here.
  * 
@@ -7,16 +9,20 @@
 public class SelectionEvent extends CSEvent
 {
 
-    public static final String TILE_SELECTED = "TILE_SELECTED";
+    public static final String TILES_SELECTED = "TILES_SELECTED";
    
-    private Tile tile;
+    private ArrayList<ArrayList<Tile>> tiles;
     
-    public SelectionEvent(String message, Tile tile) {
+    public SelectionEvent(String message) {
         super(message);
-        this.tile = tile;
     }
     
-    public Tile tile() {
-        return this.tile;
+    public SelectionEvent(String message, ArrayList<ArrayList<Tile>> tiles) {
+        super(message);
+        this.tiles = tiles;
+    }
+    
+    public ArrayList<ArrayList<Tile>> tiles() {
+        return this.tiles;    
     }
 }

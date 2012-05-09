@@ -40,6 +40,7 @@ public class Tile
     public static final int EMPTY = 0;
     public static final int GROUND = 100;
     public static final int WATER = 200;
+    // BEACH
     public static final int BEACH_TOP = 201;
     public static final int BEACH_TOP_LEFT = 202;
     public static final int BEACH_TOP_RIGHT = 203;
@@ -48,6 +49,7 @@ public class Tile
     public static final int BEACH_BOTTOM_RIGHT = 206;
     public static final int BEACH_LEFT = 207;
     public static final int BEACH_RIGHT = 208;
+    // GRASS
     public static final int GRASS_1 = 301;
     public static final int GRASS_2 = 302;
     public static final int GRASS_3 = 303;
@@ -57,6 +59,16 @@ public class Tile
     public static final int GRASS_TOP = 307;
     public static final int GRASS_TOP_RIGHT = 308;
     public static final int GRASS_LEFT = 309;
+    // RES. ZONE
+    public static final int RESIDENTIAL_TOP_LEFT = 400;
+    public static final int RESIDENTIAL_TOP = 401;
+    public static final int RESIDENTIAL_TOP_RIGHT = 402;
+    public static final int RESIDENTIAL_LEFT = 403;
+    public static final int RESIDENTIAL = 404;
+    public static final int RESIDENTIAL_RIGHT = 405;
+    public static final int RESIDENTIAL_BOTTOM_LEFT = 406;
+    public static final int RESIDENTIAL_BOTTOM = 407;
+    public static final int RESIDENTIAL_BOTTOM_RIGHT = 408;
 
     /*
      * IMAGE FILES *
