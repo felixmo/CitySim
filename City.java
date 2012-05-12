@@ -45,6 +45,7 @@ public class City extends World
     private Minimap_Viewport minimap_viewport;      // Representation of the viewport in the minimap
     private Cash cash;                              // Current avaliable cash (in-game)
     private MenuBar menuBar;                        // Menu bar containing game controls
+    private Hint hint;
 
     /*
      * INSTANCE VARIABLES *
@@ -175,9 +176,6 @@ public class City extends World
 
         // Refresh values for HUD every 1 sec
         hud.refresh(valuesForHUD());
-        
-        // FOR TESTING
-        System.out.println("R: " + ResidentialZone.tiles() + " I: " + ResidentialZone.tiles());
     }
 
     // Called when the minimap viewport has been moved (i.e. minimap has been clicked on)
@@ -190,6 +188,10 @@ public class City extends World
     public void didMoveMapTo(int x, int y) {
         // Move the representation of the viewport in the minimap
         minimap_viewport.didMoveViewportToCell(x, y);
+    }
+    
+    public void removeHint() {
+        removeObject(this.hint);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -224,4 +226,17 @@ public class City extends World
         return stats;
     }
     // ---------------------------------------------------------------------------------------------------------------------
+
+    /*
+     * ACCESSORS *
+     */
+    
+    public Hint hint() {
+        return this.hint;
+    }
+    
+    public void setHint(Hint aHint) {
+        this.hint = aHint;
+        addObject(this.hint, Hint.ORIGIN_X, Hint.ORIGIN_Y);
+    }
 }

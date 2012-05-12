@@ -132,6 +132,11 @@ public class Data
         CSLogger.sharedLogger().info("Updating map tile");
         dataSource.updateTile(tile);
     }
+    
+    public static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
+        CSLogger.sharedLogger().info("Updating " + tiles.size() * tiles.get(0).size() + " map tiles");
+        dataSource.updateTiles(tiles);
+    }
 
     //
 

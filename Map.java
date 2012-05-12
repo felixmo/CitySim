@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.Color;
+import java.awt.Font;
 
 /**
  * Map
@@ -171,7 +173,7 @@ public class Map extends Actor
     }
 
     private Tile tileForCoordinatePair(int x, int y) {
-        return (Tile)map.get(Math.min(x+2, cityColumns-1)).get(Math.min(y, cityRows-1));
+        return (Tile)map.get(Math.min(x+2, cityColumns)).get(Math.min(y+2, cityRows));
     }
 
     // Translates a given indice to a coordinate for the view, in px
@@ -207,10 +209,12 @@ public class Map extends Actor
          * Iterates each cell (top -> botton) from each column (left -> right)
          * 
          */
+        int dbID = 0;
         for (int x = 0; x < cityColumns; x++) {
             for (int y = 0; y < cityRows; y++) {
 
-                map.get(x).add(new Tile(new Point(x, y), tiles[x][y]));
+                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0));
+                dbID++;
                 //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), cityRows-1)]));
             }
         }
@@ -261,8 +265,14 @@ public class Map extends Actor
         // Draw tiles onto the map image layer for the shifted viewport
         for (int col = cell.x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
             for (int row = cell.y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
-
-                view.drawImage(map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1)).image(), tile_x, tile_y);  
+                
+                Tile tile = map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1));
+                view.drawImage(tile.image(), tile_x, tile_y-Tile.size);
+                // FOR TESTING
+                // Draw dbID on tile
+//                 view.setColor(Color.WHITE);
+//                 view.setFont(CSFont.cabin(12.0f));
+//                 view.drawString(tile.dbID() + "", tile_x, tile_y);
 
                 // Update the coordinates for the next tile to be drawn
                 tile_x = coordinateForCell(col) - viewport.x;

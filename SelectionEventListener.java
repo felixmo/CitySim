@@ -18,6 +18,7 @@ public class SelectionEventListener extends CSEventListener
         if (event.message().equals(SelectionEvent.TILES_SELECTED)) {
             
             Zone.zoneTiles(event.tiles());
+//             City.getInstance().removeHint();
         }
     }
 }

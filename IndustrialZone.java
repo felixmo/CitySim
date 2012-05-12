@@ -8,22 +8,15 @@ import java.util.ArrayList;
  */
 public class IndustrialZone extends Zone
 {
-
-    public static final int ID = 2;
-    public static final int[] MARKERS = { 500 };
-
-    private static int tiles = 0;
-
-    public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
-        tiles += selectedTiles.size() * ((ArrayList)selectedTiles.get(0)).size();
-        Zone.zoneTiles(selectedTiles);
-    }
+    public static final int ID = 3;
+    public static final int[] MARKERS = { 600 };
 
     /*
      * ACCESSORS *
      */
 
-    public static int tiles() {
-        return tiles;
+    public static int count() {
+        Integer count = Zone.counts.get((Integer)ID);
+        return count == null ? 0 : count;
     }
 }

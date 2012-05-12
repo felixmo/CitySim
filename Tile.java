@@ -22,10 +22,9 @@ public class Tile
      */
 
     private Point position;
-    private static int prevType = 1; // prevent crowding of same grass tiles when map is generated
     private int type = 0;   // Type of tile
-    private static int prevDbID = -1; // start at -1 so that the first tile will have an ID of 0
-    private int dbID; // SQL db id
+    private int zone = 0;
+    private int dbID = 0; // SQL db id
 
     /*
      * CONSTANTS *
@@ -76,11 +75,11 @@ public class Tile
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Tile(Point position, int type) {
+    public Tile(int dbID, Point position, int type, int zone) {
+        this.dbID = dbID;
         this.position = position;
-        this.prevType = type;
-        this.type = new Integer(type);
-        this.dbID = prevDbID += 1;
+        this.type = type;
+        this.zone = zone;
     }
 
     /*
@@ -91,27 +90,29 @@ public class Tile
         return position;
     }
 
-    public static int prevType() {
-        return prevType;
-    }
-
-    public Integer type() {
+    public int type() {
         return type;
     }
 
-    public void setType(Integer value) {
+    public void setType(int value) {
         type = value;
-        
+
         // Update value in DB
         Data.updateTile(this);
     }
 
-    public int dbID() {
-        return dbID;
+    public int zone() {
+        return zone;
     }
 
-    public void setDbID(int value) {
-        dbID = value;
+    public void setZone(int value) {
+        zone = value;
+
+//         Data.updateTile(this);
+    }
+
+    public int dbID() {
+        return dbID;
     }
 
     public GreenfootImage image() {

@@ -145,7 +145,7 @@ public class DataSource
         CSLogger.sharedLogger().finer("Creating schema for DB (\"" + dbName + "\")");
 
         try {
-            PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type);");
+            PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type, zone);");
             tiles.execute();
             PreparedStatement mapSize = connection.prepareStatement("CREATE TABLE map_size (" + Data.MAPSIZE_ROWS + ", " + Data.MAPSIZE_COLUMNS + ");");
             mapSize.execute();
@@ -263,7 +263,7 @@ public class DataSource
 
             connection.setAutoCommit(false);
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tiles VALUES (?, ?, ?, ?);");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO tiles VALUES (?, ?, ?, ?, ?);");
             // 1. id
             // 2. x
             // 3. y
@@ -274,10 +274,12 @@ public class DataSource
                 for (int y = 0; y < tiles.get(x).size(); y++) {
 
                     Tile tile = tiles.get(x).get(y);
+
                     statement.setInt(1, tile.dbID());
                     statement.setInt(2, tile.position().x);
                     statement.setInt(3, tile.position().y);
                     statement.setInt(4, tile.type());
+                    statement.setInt(5, tile.zone());
                     statement.addBatch();
                 }
             }
@@ -296,16 +298,47 @@ public class DataSource
 
     public void updateTile(Tile tile) {
 
-        CSLogger.sharedLogger().finer("Updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().finer("Updating tile (" + tile.dbID() + ") @ (" + tile.position().x + ", " + tile.position().y + ") of zone (" + tile.zone() + "), in DB (\"" + dbName + "\")...");
 
         try {
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ? WHERE id = ?");
             statement.setInt(1, tile.type());
-            statement.setInt(2, tile.dbID());
+            statement.setInt(2, tile.zone());
+            statement.setInt(3, tile.dbID());
             statement.executeUpdate();
-            
+
             CSLogger.sharedLogger().finer("Finished updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
+
+        CSLogger.sharedLogger().finer("Updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
+
+        try {
+
+            connection.setAutoCommit(false);
+
+            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ? WHERE id = ?");
+            for (int x = 0; x < tiles.size(); x++) {
+                for (int y = 0; y < tiles.get(x).size(); y++) {
+                    statement.setInt(1, ((Tile)tiles.get(x).get(y)).type());
+                    statement.setInt(2, ((Tile)tiles.get(x).get(y)).zone());
+                    statement.setInt(3, ((Tile)tiles.get(x).get(y)).dbID());     
+                    statement.addBatch();
+                }
+            }
+
+            statement.executeBatch();
+            connection.commit();
+
+            connection.setAutoCommit(true);
+
+            CSLogger.sharedLogger().finer("Finished updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -333,7 +366,7 @@ public class DataSource
                 Map row = (Map)results.get(i);
                 pos.setLocation((Integer)row.get("x"), (Integer)row.get("y"));
 
-                tiles.get(pos.x).add(pos.y, new Tile(new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue()));
+                tiles.get(pos.x).add(pos.y, new Tile(((Integer)row.get("id")).intValue(), new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue(), ((Integer)row.get("zone")).intValue()));
             }
 
             CSLogger.sharedLogger().finer("Finished retrieving map tiles from DB (\"" + dbName + "\")");

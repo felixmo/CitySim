@@ -31,9 +31,9 @@ public class TerrainGenerator {
         rand_ = (rand == null) ? new Random() : rand;
         initialise();
         convertToTiles();
-        remove();
-        remove();
-        remove();
+//         remove();
+//         remove();
+//         remove();
     }
 
     public void initialise() {
