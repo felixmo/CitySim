@@ -27,11 +27,15 @@ public class MenuItemEventListener extends CSEventListener
         }
         else if (event.message().equals(MenuItemEvent.INDUSTRIAL)) {
             Map.getInstance().selection().setSelectionMode(true);
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setSize(IndustrialZone.SIZE);
             Zone.setPendingOp(IndustrialZone.ID);
             City.getInstance().setHint(new Hint("Drag out the areas you wish to zone as industrial. Press 'ESC' when done."));
         }
         else if (event.message().equals(MenuItemEvent.COMMERCIAL)) {
             Map.getInstance().selection().setSelectionMode(true);
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setSize(CommercialZone.SIZE);
             Zone.setPendingOp(CommercialZone.ID);
             City.getInstance().setHint(new Hint("Drag out the areas you wish to zone as commercial. Press 'ESC' when done."));
         }

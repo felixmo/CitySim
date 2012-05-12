@@ -119,7 +119,7 @@ public class Data
     //
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        CSLogger.sharedLogger().info("Returning map tiles");
+//         CSLogger.sharedLogger().info("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 

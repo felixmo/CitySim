@@ -24,8 +24,10 @@ public class Minimap extends Actor
     /*
      * COLORS
      */
-    private final Color GROUND = new Color(216, 146, 125);
-    private final Color RES = new Color(0, 207, 0);
+    private final Color TYPE_GROUND = new Color(216, 146, 125);
+    private final Color ZONE_RESIDENTIAL = new Color(0, 207, 0);
+    private final Color ZONE_INDUSTRIAL = new Color(255, 255, 0);
+    private final Color ZONE_COMMERCIAL = new Color(102, 102, 230);
     
     /*
      * MINIMAP PROPERTIES *
@@ -112,7 +114,7 @@ public class Minimap extends Actor
         switch (type) {
             case Tile.EMPTY: return Color.BLACK;
             case Tile.WATER: return Color.BLUE;
-            case Tile.GROUND: return GROUND;
+            case Tile.GROUND: return TYPE_GROUND;
 
             default: return Color.BLACK;
         }
@@ -120,7 +122,9 @@ public class Minimap extends Actor
     
     private Color colorForTileOfZone(int zone) {
         switch (zone) {
-            case ResidentialZone.ID: return RES;
+            case ResidentialZone.ID: return ZONE_RESIDENTIAL;
+            case IndustrialZone.ID: return ZONE_INDUSTRIAL;
+            case CommercialZone.ID: return ZONE_COMMERCIAL;
             
             default: return Color.BLACK;
         }

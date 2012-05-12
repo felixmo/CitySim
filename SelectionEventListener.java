@@ -19,7 +19,15 @@ public class SelectionEventListener extends CSEventListener
 
             CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
 
-            ResidentialZone.zoneTiles(event.tiles());            
+            switch (Zone.pendingOp()) {
+                case ResidentialZone.ID: ResidentialZone.zoneTiles(event.tiles());  
+                                         break;
+                case IndustrialZone.ID: IndustrialZone.zoneTiles(event.tiles());
+                                        break;
+                case CommercialZone.ID: CommercialZone.zoneTiles(event.tiles());
+                                        break;
+                default: break;
+            }
         }
     }
 }

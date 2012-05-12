@@ -49,8 +49,8 @@ public class Minimap_Viewport extends Actor
             MouseInfo mouseInfo = Greenfoot.getMouseInfo();
 
             // Coordinates of the cursor, relative to the minimap
-            int x = mouseInfo.getX() - 12 - 18;
-            int y = mouseInfo.getY() - 558 - 9;
+            int x = mouseInfo.getX() - 12 - 18; // subtract 18 to centre viewport
+            int y = mouseInfo.getY() - 558 - 9; // subtract 9 to centre viewport
             // X | Subtract distance from left edge of HUD to left edge of minimap from X
             // Y | Subtract distance from the top of the game to the top of the minimap from Y
 
