@@ -7,7 +7,6 @@ comment10.params=tile
 comment10.target=void\ setActiveTile(Tile)
 comment11.params=viewport
 comment11.target=void\ setViewport(java.awt.Rectangle)
-comment11.text=\ \ \ \ public\ Tile\ endTile()\ {\n\ \ \ \ return\ this.endTile;\n\ \ \ \ }\n\n\ \ \ \ public\ void\ setEndTile(Tile\ tile)\ {\n\n\ \ \ \ this.endTile\ \=\ tile;\n\ \ \ \ }\n
 comment12.params=types
 comment12.target=void\ setAcceptedTypes(int[])
 comment13.params=width\ height

@@ -28,7 +28,6 @@ public class Zone
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 ((Tile)selectedTiles.get(i).get(j)).setZone(pendingOp);
-//                 System.out.println("TEST: Zoning tile: " + selectedTiles.get(i).get(j) + " as TYPE " + pendingOp); 
                 count++;
             }
         }
@@ -37,8 +36,6 @@ public class Zone
         counts.put((Integer)pendingOp, value == null ? (Integer)count : (Integer)(value + count));
         
         Data.updateTiles(selectedTiles);
-//         Data.invalidateTiles();
-
     }
 
     /*

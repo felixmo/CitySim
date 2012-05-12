@@ -31,9 +31,9 @@ public class TerrainGenerator {
         rand_ = (rand == null) ? new Random() : rand;
         initialise();
         convertToTiles();
-//         remove();
-//         remove();
-//         remove();
+        remove();
+        remove();
+        remove();
     }
 
     public void initialise() {
@@ -121,22 +121,20 @@ public class TerrainGenerator {
         for (int x = 0; x < tiles.length; x++) {
             for (int y = 0; y < tiles[x].length; y++) {
                 if (tiles[x][y] == Tile.WATER) {
+
                     // Check if tile is water
 
-                    //                     boolean up = false, down = false, left = false, right = false;  // side touching land
                     int sides = 0;  // # of sides touching land
 
                     // check UP for land
                     if (y+1 <= tiles[x].length-1) {
                         if (tiles[x][y+1] == Tile.GROUND) {
-                            //                             up = true;   
                             sides++;
                         }
                     }
                     // check DOWN for land
                     if (y-1 >= 0) {
                         if (tiles[x][y-1] == Tile.GROUND) {
-                            //                             down = true;
                             sides++;
                         }
                     }
@@ -144,7 +142,6 @@ public class TerrainGenerator {
                     // check LEFT for land
                     if (x-1 >= 0) {
                         if (tiles[x-1][y] == Tile.GROUND) {
-                            //                             left = true; 
                             sides++;
                         }
                     }
@@ -152,7 +149,6 @@ public class TerrainGenerator {
                     // check RIGHT for land
                     if (x+1 <= tiles.length-1) {
                         if (tiles[x+1][y] == Tile.GROUND) {
-                            //                             right = true;
                             sides++;
                         }
                     }
@@ -161,25 +157,20 @@ public class TerrainGenerator {
                     if (sides >= 3) {
                         tiles[x][y] = Tile.GROUND;
                     }
-
-                    //                     if (top)
                 }
                 else if (tiles[x][y] == Tile.GROUND) {
 
-                    //                     boolean up = false, down = false, left = false, right = false;  // side touching water
                     int sides = 0;  // # of sides touching water
 
                     // check UP for water
                     if (y+1 <= tiles[x].length-1) {
                         if (tiles[x][y+1] == Tile.WATER) {
-                            //                             up = true;   
                             sides++;
                         }
                     }
                     // check DOWN for water
                     if (y-1 >= 0) {
                         if (tiles[x][y-1] == Tile.WATER) {
-                            //                             down = true;
                             sides++;
                         }
                     }
@@ -187,7 +178,6 @@ public class TerrainGenerator {
                     // check LEFT for water
                     if (x-1 >= 0) {
                         if (tiles[x-1][y] == Tile.WATER) {
-                            //                             left = true; 
                             sides++;
                         }
                     }
@@ -195,14 +185,12 @@ public class TerrainGenerator {
                     // check RIGHT for water
                     if (x+1 <= tiles.length-1) {
                         if (tiles[x+1][y] == Tile.WATER) {
-                            //                             right = true;
                             sides++;
                         }
                     }
 
                     // Change tile to ground if the landmass is 1 tile wide
                     if (sides >= 3) {
-                        //                         System.out.println("changing tile to water");
                         tiles[x][y] = Tile.WATER;
                     }
                 }
@@ -210,6 +198,7 @@ public class TerrainGenerator {
         }
     }
 
+    // NOT IN USE
     private void smooth() {
 
         for (int x = 0; x < tiles.length; x++) {

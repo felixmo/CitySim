@@ -268,6 +268,7 @@ public class Map extends Actor
 
                 Tile tile = map.get(Math.min(col, SIZE_COLUMNS-1)).get(Math.min(row, SIZE_ROWS-1));
                 view.drawImage(tile.image(), tile_x, tile_y-Tile.SIZE);
+
                 // FOR TESTING
                 // Draw dbID on tile
                 //                 view.setColor(Color.WHITE);

@@ -18,11 +18,8 @@ public class SelectionEventListener extends CSEventListener
         if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
 
             CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
-//             System.out.println(event.tiles());
 
             ResidentialZone.zoneTiles(event.tiles());            
-
-//             Map.getInstance().draw();
         }
     }
 }

@@ -96,9 +96,6 @@ public class Tile
 
     public void setType(int value) {
         type = value;
-
-        // Update value in DB
-//         Data.updateTile(this);
     }
 
     public int zone() {
@@ -107,8 +104,6 @@ public class Tile
 
     public void setZone(int value) {
         zone = value;
-
-//         Data.updateTile(this);
     }
 
     public int dbID() {

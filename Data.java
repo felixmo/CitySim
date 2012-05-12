@@ -119,7 +119,7 @@ public class Data
     //
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        //         CSLogger.sharedLogger().info("Returning map tiles");
+        CSLogger.sharedLogger().info("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 
@@ -151,13 +151,7 @@ public class Data
 
         dataSource.updateTiles(tiles);
     }
-
-    //     public static void refreshTiles(Tile[] tiles) {
-    //         CSLogger.sharedLogger().info("Refreshing " + tiles.length + " map tiles");
-    //         ArrayList<Tiles> tiles = dataSource.tiles(tiles);
-    //         
-    //     }
-
+    
     //
 
     public static LinkedHashMap cityStats() {

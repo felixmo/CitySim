@@ -17,8 +17,6 @@ import java.lang.Integer;
 public class Selection extends Actor
 {
 
-    //     private Tile initalTile;
-    //     private Tile endTile;
     private Tile activeTile;
     private Rectangle viewport;
     private boolean active = true;
@@ -31,7 +29,6 @@ public class Selection extends Actor
     public Selection(int width, int height) {
 
         this.image = new GreenfootImage(width, height);
-        //         this.image.setTransparency(255);
         setImage(this.image);
     }
 
@@ -41,10 +38,6 @@ public class Selection extends Actor
 
         this.image.setTransparency(255);
 
-        //         if (!selectionMode) {
-
-        // HOVER
-
         this.image.clear();
         if (selectionMode && !selectionIsValid()) {
             this.image.setTransparency(100);
@@ -53,73 +46,18 @@ public class Selection extends Actor
         }
         this.image.setColor(Color.WHITE);
         this.image.drawRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
-        //         }
-        //         else {
-        // 
-        //             // SELECTION
-        // 
-        //             if (initalTile == null || endTile == null) return;
-        // 
-        //             this.image.clear();
-        //             if (!selectionIsValid()) {
-        //                 this.image.setTransparency(100);
-        //                 this.image.setColor(Color.RED);
-        //                 this.image.fillRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
-        //             }
-        //             this.image.setColor(Color.WHITE);
-        //             this.image.drawRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
-        //         }
     }
 
     public void act() {
 
         if (Greenfoot.mouseClicked(this)) {
-            // FOR TESTING
-            /*
-            String type = "";
-            switch (activeTile.type()) {
-            case Tile.EMPTY: type = "Empty";
-            break;
-            case Tile.GROUND: type = "Ground";
-            break;
-            case Tile.WATER: type = "Water";
-            break;
-            default: break;
-            }
-            System.out.println(activeTile.dbID() + ": " + type);
-             */
+
             if (selectionIsValid()) {
                 if (Zone.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_ZONING, selectedTiles()));
             }
         }
-        //         if (!selectionMode) return;
-        //         this.image.clear(); // Clear previous selection
-        //         if (Greenfoot.mousePressed(this)) {
-        //             this.endTile = null; // Clear previous selection
-        //             this.initalTile = this.activeTile;
-        //         }
 
-        //         if (Greenfoot.mouseDragged(this)) {
-        //             this.endTile = this.activeTile;
-        //         }       
-
-        //         if (Greenfoot.mouseDragEnded(this)) {
-        //             // SEND MSG
-        //             if (selectionIsValid()) {
-        //                 CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED, selectedTiles()));
-        //             }
-        // 
-        //             // Clear selection
-        //             this.initalTile = null;
-        //             this.endTile = null;
-        // 
-        //             //             setSelectionMode(false);
-        //         }
-        // 
         if (Greenfoot.isKeyDown("escape")) {
-            // Clear selection
-//             this.initalTile = null;
-//             this.endTile = null;
 
             setSelectionMode(false);
 
@@ -157,7 +95,6 @@ public class Selection extends Actor
         for (int x = activeTile.position().x; x < (activeTile.position().x + size.getWidth()); x++) {
             for (int y = activeTile.position().y; y < (activeTile.position().y + size.getHeight()); y++) {
                 if (!acceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
-                    //                     System.out.println("Unacceptable type (" + Data.tiles().get(x).get(y).type() + ") found @ (" + x + ", " + y + ") | Active tile @ (" + activeTile.position().x + ", " + activeTile.position().y + ")");
                     return false;
                 }
             }
@@ -186,6 +123,8 @@ public class Selection extends Actor
 
         CSLogger.sharedLogger().finer("Setting selection mode: " + (value ? "ON" : "OFF"));
 
+        this.size.setSize(1, 1);
+        
         this.active = !value;
         this.selectionMode = value;
     }
@@ -202,16 +141,6 @@ public class Selection extends Actor
         draw();
     }
 
-    /*
-    public Tile endTile() {
-    return this.endTile;
-    }
-
-    public void setEndTile(Tile tile) {
-
-    this.endTile = tile;
-    }
-     */
     public void setViewport(Rectangle viewport) {
         this.viewport = viewport;
         draw();
