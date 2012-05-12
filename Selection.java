@@ -17,14 +17,14 @@ import java.lang.Integer;
 public class Selection extends Actor
 {
 
-    private Tile initalTile;
-    private Tile endTile;
+    //     private Tile initalTile;
+    //     private Tile endTile;
     private Tile activeTile;
     private Rectangle viewport;
     private boolean active = true;
     private boolean selectionMode = false;
     private ArrayList<Integer> acceptedTypes = new ArrayList<Integer>();          // accepted types of tiles for selection
-    private Dimension minimumSize = new Dimension(0, 0);
+    private Dimension size = new Dimension(1, 1);
 
     private GreenfootImage image;
 
@@ -41,29 +41,34 @@ public class Selection extends Actor
 
         this.image.setTransparency(255);
 
-        if (!selectionMode) {
+        //         if (!selectionMode) {
 
-            // HOVER
+        // HOVER
 
-            this.image.clear();
-            this.image.setColor(Color.WHITE);
-            this.image.drawRect((((activeTile.position().x) * Tile.size) - viewport.x), (((activeTile.position().y-2) * Tile.size) - viewport.y), Tile.size, Tile.size);
+        this.image.clear();
+        if (selectionMode && !selectionIsValid()) {
+            this.image.setTransparency(100);
+            this.image.setColor(Color.RED);
+            this.image.fillRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
         }
-        else {
-
-            // SELECTION
-
-            if (initalTile == null || endTile == null) return;
-
-            this.image.clear();
-            if (!selectionIsValid()) {
-                this.image.setTransparency(100);
-                this.image.setColor(Color.RED);
-                this.image.fillRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
-            }
-            this.image.setColor(Color.WHITE);
-            this.image.drawRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
-        }
+        this.image.setColor(Color.WHITE);
+        this.image.drawRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
+        //         }
+        //         else {
+        // 
+        //             // SELECTION
+        // 
+        //             if (initalTile == null || endTile == null) return;
+        // 
+        //             this.image.clear();
+        //             if (!selectionIsValid()) {
+        //                 this.image.setTransparency(100);
+        //                 this.image.setColor(Color.RED);
+        //                 this.image.fillRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
+        //             }
+        //             this.image.setColor(Color.WHITE);
+        //             this.image.drawRect(((initalTile.position().x * Tile.size) - viewport.x), (((initalTile.position().y-2) * Tile.size) - viewport.y), (Math.abs(initalTile.position().x - endTile.position().x) * Tile.size) + Tile.size, (Math.abs((initalTile.position().y-2) - (endTile.position().y-2)) * Tile.size) + Tile.size);
+        //         }
     }
 
     public void act() {
@@ -73,48 +78,48 @@ public class Selection extends Actor
             /*
             String type = "";
             switch (activeTile.type()) {
-                case Tile.EMPTY: type = "Empty";
-                break;
-                case Tile.GROUND: type = "Ground";
-                break;
-                case Tile.WATER: type = "Water";
-                break;
-                default: break;
+            case Tile.EMPTY: type = "Empty";
+            break;
+            case Tile.GROUND: type = "Ground";
+            break;
+            case Tile.WATER: type = "Water";
+            break;
+            default: break;
             }
             System.out.println(activeTile.dbID() + ": " + type);
-            */
-        }
-
-        if (!selectionMode) return;
-
-        this.image.clear(); // Clear previous selection
-
-        if (Greenfoot.mousePressed(this)) {
-            this.endTile = null; // Clear previous selection
-            this.initalTile = this.activeTile;
-        }
-
-        if (Greenfoot.mouseDragged(this)) {
-            this.endTile = this.activeTile;
-        }       
-
-        if (Greenfoot.mouseDragEnded(this)) {
-            // SEND MSG
+             */
             if (selectionIsValid()) {
-                CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED, selectedTiles()));
+                if (Zone.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_ZONING, selectedTiles()));
             }
-
-            // Clear selection
-            this.initalTile = null;
-            this.endTile = null;
-
-            //             setSelectionMode(false);
         }
+        //         if (!selectionMode) return;
+        //         this.image.clear(); // Clear previous selection
+        //         if (Greenfoot.mousePressed(this)) {
+        //             this.endTile = null; // Clear previous selection
+        //             this.initalTile = this.activeTile;
+        //         }
 
+        //         if (Greenfoot.mouseDragged(this)) {
+        //             this.endTile = this.activeTile;
+        //         }       
+
+        //         if (Greenfoot.mouseDragEnded(this)) {
+        //             // SEND MSG
+        //             if (selectionIsValid()) {
+        //                 CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED, selectedTiles()));
+        //             }
+        // 
+        //             // Clear selection
+        //             this.initalTile = null;
+        //             this.endTile = null;
+        // 
+        //             //             setSelectionMode(false);
+        //         }
+        // 
         if (Greenfoot.isKeyDown("escape")) {
             // Clear selection
-            this.initalTile = null;
-            this.endTile = null;
+//             this.initalTile = null;
+//             this.endTile = null;
 
             setSelectionMode(false);
 
@@ -126,20 +131,17 @@ public class Selection extends Actor
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
 
-        int width = (endTile.position().x - initalTile.position().x) + 1;
-        int height = (endTile.position().y - initalTile.position().y) + 1;
-
         ArrayList<ArrayList<Tile>> tiles = Data.tiles();
 
-        ArrayList<ArrayList<Tile>> selectedTiles = new ArrayList<ArrayList<Tile>>(width);
-        for (int i = 0; i < width; i++) {
-            selectedTiles.add(new ArrayList<Tile>(height));
+        ArrayList<ArrayList<Tile>> selectedTiles = new ArrayList<ArrayList<Tile>>((int)size.getWidth());
+        for (int i = 0; i < size.getWidth(); i++) {
+            selectedTiles.add(new ArrayList<Tile>((int)size.getHeight()));
         }
 
         int i = 0;
 
-        for (int x = initalTile.position().x; x <= endTile.position().x; x++) {
-            for (int y = initalTile.position().y; y <= endTile.position().y; y++) {
+        for (int x = activeTile.position().x; x < activeTile.position().x + (int)size.getWidth(); x++) {
+            for (int y = activeTile.position().y; y < activeTile.position().y + (int)size.getHeight(); y++) {
                 selectedTiles.get(i).add(tiles.get(x).get(y));
             }
             i++;
@@ -150,24 +152,15 @@ public class Selection extends Actor
 
     private boolean selectionIsValid() {
 
-        int width = (endTile.position().x - initalTile.position().x) + 1;
-        int height = (endTile.position().y - initalTile.position().y) + 1;
+        // Check type
 
-        if (width < minimumSize.getWidth() || height < minimumSize.getHeight()) {
-            // Check size
-            return false;
-        }
-        else {
-            // Check type
-
-            for (int x = initalTile.position().x; x <= endTile.position().x; x++) {
-                for (int y = initalTile.position().y; y <= endTile.position().y; y++) {
-                    if (!acceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
-                        return false;
-                    }
+        for (int x = activeTile.position().x; x < (activeTile.position().x + size.getWidth()); x++) {
+            for (int y = activeTile.position().y; y < (activeTile.position().y + size.getHeight()); y++) {
+                if (!acceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
+                    //                     System.out.println("Unacceptable type (" + Data.tiles().get(x).get(y).type() + ") found @ (" + x + ", " + y + ") | Active tile @ (" + activeTile.position().x + ", " + activeTile.position().y + ")");
+                    return false;
                 }
             }
-
         }
 
         return true;
@@ -209,15 +202,16 @@ public class Selection extends Actor
         draw();
     }
 
+    /*
     public Tile endTile() {
-        return this.endTile;
+    return this.endTile;
     }
 
     public void setEndTile(Tile tile) {
 
-        this.endTile = tile;
+    this.endTile = tile;
     }
-
+     */
     public void setViewport(Rectangle viewport) {
         this.viewport = viewport;
         draw();
@@ -230,7 +224,11 @@ public class Selection extends Actor
         }
     }
 
-    public void setMinimumSize(int width, int height) {
-        this.minimumSize.setSize(width, height);
+    public void setSize(int width, int height) {
+        this.size.setSize(width, height);
+    }
+
+    public void setSize(Dimension size) {
+        this.size = size;
     }
 }

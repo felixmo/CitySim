@@ -10,15 +10,19 @@ import java.awt.Point;
  */
 public class SelectionEventListener extends CSEventListener
 {
-    
+
     @Subscribe
     public void listen(SelectionEvent event) {
         CSLogger.sharedLogger().finer("Message received: " + event.message());
 
-        if (event.message().equals(SelectionEvent.TILES_SELECTED)) {
-            
-            Zone.zoneTiles(event.tiles());
-//             City.getInstance().removeHint();
+        if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
+
+            CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
+//             System.out.println(event.tiles());
+
+            ResidentialZone.zoneTiles(event.tiles());            
+
+//             Map.getInstance().draw();
         }
     }
 }

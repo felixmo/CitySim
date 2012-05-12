@@ -21,7 +21,7 @@ public class MenuItemEventListener extends CSEventListener
         if (event.message().equals(MenuItemEvent.RESIDENTIAL)) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
-            Map.getInstance().selection().setMinimumSize(1, 1);
+            Map.getInstance().selection().setSize(ResidentialZone.SIZE);
             Zone.setPendingOp(ResidentialZone.ID);
             City.getInstance().setHint(new Hint("Drag out the areas you wish to zone as residential. Press 'ESC' when done."));
         }

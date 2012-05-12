@@ -14,7 +14,7 @@ public class Zone
 
     protected static LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<Integer, Integer>();
 
-    public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
+    protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 
         int x = selectedTiles.get(0).get(0).position().x;
         int y = selectedTiles.get(0).get(0).position().y;
@@ -37,6 +37,8 @@ public class Zone
         counts.put((Integer)pendingOp, value == null ? (Integer)count : (Integer)(value + count));
         
         Data.updateTiles(selectedTiles);
+//         Data.invalidateTiles();
+
     }
 
     /*

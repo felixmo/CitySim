@@ -30,9 +30,9 @@ public class Map extends Actor
     private static Map instance;
 
     // Map properties
-    private final int cityColumns = 200;    // cells; horizontal
-    private final int cityRows = 200;   // cells; vertical
-    private Rectangle cityRect = new Rectangle(0, 0, (cityColumns * Tile.size), (cityRows * Tile.size));     // rectangle representing the entirety of the map
+    public final int SIZE_COLUMNS = 200;    // cells; horizontal
+    public final int SIZE_ROWS = 200;   // cells; vertical
+    private Rectangle cityRect = new Rectangle(0, 0, (SIZE_COLUMNS * Tile.SIZE), (SIZE_ROWS * Tile.SIZE));     // rectangle representing the entirety of the map
 
     private ArrayList<ArrayList<Tile>> map;     // Holds map data
 
@@ -41,7 +41,7 @@ public class Map extends Actor
     private final static int tileBuffer = 4;    // number of additional cells to draw beyond the viewport
 
     // Map view
-    private Rectangle viewport = new Rectangle(0, 0, 1024 + (tileBuffer * Tile.size), 768 + (tileBuffer * Tile.size) - 230);   // rectangle representing the viewport | NOTE: remember to subtract HUD and other OSD elements from height/width
+    private Rectangle viewport = new Rectangle(0, 0, 1024 + (tileBuffer * Tile.SIZE), 768 + (tileBuffer * Tile.SIZE) - 230);   // rectangle representing the viewport | NOTE: remember to subtract HUD and other OSD elements from height/width
     private GreenfootImage view = new GreenfootImage(viewport.width, viewport.height);  // image layer containting all the visible map tiles; tiles are drawn onto this image instead of being drawn on-screen individually (too resource-intensive)
 
     // Ref. to mouse info. provided by Greenfoot
@@ -60,8 +60,8 @@ public class Map extends Actor
 
             // Insert specified map properties into DB
             LinkedHashMap mapSize = new LinkedHashMap();
-            mapSize.put(Data.MAPSIZE_ROWS, cityRows);
-            mapSize.put(Data.MAPSIZE_COLUMNS, cityColumns);
+            mapSize.put(Data.MAPSIZE_ROWS, SIZE_ROWS);
+            mapSize.put(Data.MAPSIZE_COLUMNS, SIZE_COLUMNS);
             Data.insertMapSize(mapSize);
 
             // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
@@ -164,7 +164,7 @@ public class Map extends Actor
     // * Helper methods *
     // Translates a given pair of coordinates (for the view, in px) to indices for the representing map tile
     private Point cellForCoordinatePair(int x, int y) {
-        return new Point((x / Tile.size), (y / Tile.size));
+        return new Point((x / Tile.SIZE), (y / Tile.SIZE));
     }
 
     // Translate a given pair of coordinates (within the bounds of the view) to indices for the representing map tile 
@@ -173,17 +173,17 @@ public class Map extends Actor
     }
 
     private Tile tileForCoordinatePair(int x, int y) {
-        return (Tile)map.get(Math.min(x+2, cityColumns)).get(Math.min(y+2, cityRows));
+        return (Tile)map.get(Math.min(x+2, SIZE_COLUMNS)).get(Math.min(y+2, SIZE_ROWS));
     }
 
     // Translates a given indice to a coordinate for the view, in px
     private int coordinateForCell(int cell) {
-        return (cell * Tile.size);
+        return (cell * Tile.SIZE);
     }
 
     // Returns the numbers of the tiles that would fit within a given width
     private int numberOfTilesInWidth(int width) {
-        return (width / Tile.size);
+        return (width / Tile.SIZE);
     }
 
     // * END of helper methods *
@@ -194,14 +194,14 @@ public class Map extends Actor
         CSLogger.sharedLogger().info("Began generating city...");
         long startTime = System.currentTimeMillis();
 
-        int[][] tiles = new TerrainGenerator(null, 1.0f, cityColumns, cityRows).tiles();
+        int[][] tiles = new TerrainGenerator(null, 1.0f, SIZE_COLUMNS, SIZE_ROWS).tiles();
 
         // The columns of the map are represnted by the elements of an ArrayList
-        ArrayList<ArrayList<Tile>> map = new ArrayList<ArrayList<Tile>>(cityColumns);
+        ArrayList<ArrayList<Tile>> map = new ArrayList<ArrayList<Tile>>(SIZE_COLUMNS);
 
         // The rows of the map are represented by the elements of an ArrayList within the ArrayList representing the columns
-        for (int i = 0; i < cityColumns; i++) {
-            map.add(new ArrayList<Tile>(cityRows));
+        for (int i = 0; i < SIZE_COLUMNS; i++) {
+            map.add(new ArrayList<Tile>(SIZE_ROWS));
         }
 
         // Initalize each cell with the default initial type of grass
@@ -210,12 +210,12 @@ public class Map extends Actor
          * 
          */
         int dbID = 0;
-        for (int x = 0; x < cityColumns; x++) {
-            for (int y = 0; y < cityRows; y++) {
+        for (int x = 0; x < SIZE_COLUMNS; x++) {
+            for (int y = 0; y < SIZE_ROWS; y++) {
 
                 map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0));
                 dbID++;
-                //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), cityRows-1)]));
+                //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), SIZE_ROWS-1)]));
             }
         }
 
@@ -251,7 +251,7 @@ public class Map extends Actor
     }
 
     public void draw() {
-        
+
         // Coordinates for the tile being drawn; set at the origin of the shifted viewport
         int tile_x = viewport.x;
         int tile_y = viewport.y;
@@ -265,20 +265,27 @@ public class Map extends Actor
         // Draw tiles onto the map image layer for the shifted viewport
         for (int col = cell.x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
             for (int row = cell.y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
-                
-                Tile tile = map.get(Math.min(col, cityColumns-1)).get(Math.min(row, cityRows-1));
-                view.drawImage(tile.image(), tile_x, tile_y-Tile.size);
+
+                Tile tile = map.get(Math.min(col, SIZE_COLUMNS-1)).get(Math.min(row, SIZE_ROWS-1));
+                view.drawImage(tile.image(), tile_x, tile_y-Tile.SIZE);
                 // FOR TESTING
                 // Draw dbID on tile
-//                 view.setColor(Color.WHITE);
-//                 view.setFont(CSFont.cabin(12.0f));
-//                 view.drawString(tile.dbID() + "", tile_x, tile_y);
+                //                 view.setColor(Color.WHITE);
+                //                 view.setFont(CSFont.cabin(12.0f));
+                //                 view.drawString(tile.dbID() + "", tile_x, tile_y);
 
                 // Update the coordinates for the next tile to be drawn
                 tile_x = coordinateForCell(col) - viewport.x;
                 tile_y = coordinateForCell(row) - viewport.y;
             }
         }
+    }
+
+    public void refresh() {
+
+        this.map = Data.tiles();
+        draw();
+        City.getInstance().hud().minimap().draw();
     }
 
     /*

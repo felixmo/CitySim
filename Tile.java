@@ -30,7 +30,7 @@ public class Tile
      * CONSTANTS *
      */
 
-    public static final int size = 32;     // size of square tile; px
+    public static final int SIZE = 32;     // size of square tile; px
 
     /*
      * TILE TYPES *
@@ -98,7 +98,7 @@ public class Tile
         type = value;
 
         // Update value in DB
-        Data.updateTile(this);
+//         Data.updateTile(this);
     }
 
     public int zone() {

@@ -9,19 +9,23 @@ import java.util.ArrayList;
 public class SelectionEvent extends CSEvent
 {
 
-    public static final String TILES_SELECTED = "TILES_SELECTED";
-   
+    public static final String TILES_SELECTED_FOR_ZONING = "TILES_SELECTED_FOR_ZONING";
+
     private ArrayList<ArrayList<Tile>> tiles;
-    
+
     public SelectionEvent(String message) {
         super(message);
     }
-    
+
     public SelectionEvent(String message, ArrayList<ArrayList<Tile>> tiles) {
         super(message);
         this.tiles = tiles;
     }
-    
+
+    /*
+     * ACCESSORS *
+     */
+
     public ArrayList<ArrayList<Tile>> tiles() {
         return this.tiles;    
     }

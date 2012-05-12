@@ -119,7 +119,7 @@ public class Data
     //
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        CSLogger.sharedLogger().info("Returning map tiles");
+        //         CSLogger.sharedLogger().info("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 
@@ -127,16 +127,36 @@ public class Data
         CSLogger.sharedLogger().info("Inserting map tiles");
         dataSource.insertTiles(tiles);
     }
-    
+
     public static void updateTile(Tile tile) {
         CSLogger.sharedLogger().info("Updating map tile");
         dataSource.updateTile(tile);
     }
-    
+
     public static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
         CSLogger.sharedLogger().info("Updating " + tiles.size() * tiles.get(0).size() + " map tiles");
+
+        ArrayList<ArrayList<Tile>> cachedTiles = (ArrayList<ArrayList<Tile>>)get(TILES);
+
+        for (int x = 0; x < tiles.size(); x++) {
+            for (int y = 0; y < tiles.get(x).size(); y++) {
+
+                Tile tile = (Tile)tiles.get(x).get(y);
+                cachedTiles.get(x).remove(y);
+                cachedTiles.get(x).add(y, tile);
+            }
+        }
+
+        Map.getInstance().refresh();
+
         dataSource.updateTiles(tiles);
     }
+
+    //     public static void refreshTiles(Tile[] tiles) {
+    //         CSLogger.sharedLogger().info("Refreshing " + tiles.length + " map tiles");
+    //         ArrayList<Tiles> tiles = dataSource.tiles(tiles);
+    //         
+    //     }
 
     //
 

@@ -63,7 +63,7 @@ public class City extends World
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
-        new File("maps/test.db").delete();
+//         new File("maps/test.db").delete();
 
         // Configure data source
         Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
@@ -238,5 +238,9 @@ public class City extends World
     public void setHint(Hint aHint) {
         this.hint = aHint;
         addObject(this.hint, Hint.ORIGIN_X, Hint.ORIGIN_Y);
+    }
+    
+    public HUD hud() {
+        return this.hud;
     }
 }

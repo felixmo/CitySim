@@ -22,6 +22,12 @@ public class Minimap extends Actor
     // ---------------------------------------------------------------------------------------------------------------------
 
     /*
+     * COLORS
+     */
+    private final Color GROUND = new Color(216, 146, 125);
+    private final Color RES = new Color(0, 207, 0);
+    
+    /*
      * MINIMAP PROPERTIES *
      */
     private final Rectangle FRAME = new Rectangle(112, 658, 200, 200);
@@ -51,7 +57,7 @@ public class Minimap extends Actor
     }    
 
     // Draws the minimap
-    private void draw() {
+    public void draw() {
 
         // Clear minimap
         image.clear();
@@ -61,20 +67,24 @@ public class Minimap extends Actor
         // Get all tiles
         ArrayList<ArrayList<Tile>> map = Data.tiles();
 
-        // Determine the size of the map
-        LinkedHashMap mapSize = Data.mapSize();
-        int cityColumns = (Integer)mapSize.get(Data.MAPSIZE_COLUMNS);
-        int cityRows = (Integer)mapSize.get(Data.MAPSIZE_ROWS);
-
         // Position of the minimap tile being drawn
         int x = 0;
         int y = 0;
 
         // Iterate through every map tile and draw it onto minimap, adjusting the position for the next tile with each iteration
         // Minimap is drawn column by column
-        for (int i = 0; i < cityColumns; i++) {
-            for (int j = 0; j < cityRows; j++) {
-                image.setColor(colorForTileOfType(((Tile)map.get(i).get(j)).type()));
+        for (int i = 0; i < Map.getInstance().SIZE_COLUMNS; i++) {
+            for (int j = 0; j < Map.getInstance().SIZE_ROWS; j++) {
+                
+                Tile tile = (Tile)map.get(i).get(j);
+                if (tile.zone() > 0) {
+                    image.setColor(colorForTileOfZone(tile.zone()));
+                }
+                else {
+                    image.setColor(colorForTileOfType(tile.type())); 
+                }
+                
+//                 image.setColor(colorForTileOfType(((Tile)map.get(i).get(j)).type()));
                 image.fillRect(x, y, tileSize, tileSize); // Minimap tiles are 2px * 2px
                 y+=tileSize;
             }
@@ -102,13 +112,16 @@ public class Minimap extends Actor
         switch (type) {
             case Tile.EMPTY: return Color.BLACK;
             case Tile.WATER: return Color.BLUE;
-            case Tile.GROUND: return new Color(216, 146, 125);
-            case Tile.GRASS_1: return new Color(76, 114, 62);
-            case Tile.GRASS_2: return new Color(76, 114, 62);
-            case Tile.GRASS_3: return new Color(76, 114, 62);
-            case Tile.GRASS_4: return new Color(76, 114, 62);
-            case Tile.GRASS_5: return new Color(76, 114, 62);
+            case Tile.GROUND: return GROUND;
 
+            default: return Color.BLACK;
+        }
+    }
+    
+    private Color colorForTileOfZone(int zone) {
+        switch (zone) {
+            case ResidentialZone.ID: return RES;
+            
             default: return Color.BLACK;
         }
     }

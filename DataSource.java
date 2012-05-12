@@ -379,6 +379,36 @@ public class DataSource
 
         return null;
     }
+/*
+    public ArrayList<Tiles> tiles(Tile[] tiles) {
+
+        CSLogger.sharedLogger().info("Retrieiving + " tiles.length + " map tiles from DB  (\"" + dbName + "\")...");
+
+        try {
+
+            ArrayList<Tiles> tiles = new ArrayList<Tiles>(tiles.length);
+            
+            List results = (List) new QueryRunner().query(connection, "SELECT * from tiles WHERE id BETWEEN " + tiles[0].dbID() + " AND " + tiles[tiles.length-1].dbID(), new MapListHandler());
+            Point pos = new Point(0, 0);
+            for (int i = 0; i < results.size(); i++) {
+
+                Map row = (Map)results.get(i);
+                pos.setLocation((Integer)row.get("x"), (Integer)row.get("y"));
+
+                tiles.get(pos.x).add(pos.y, new Tile(((Integer)row.get("id")).intValue(), new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue(), ((Integer)row.get("zone")).intValue()));
+            }
+
+            CSLogger.sharedLogger().finer("Finished retrieving " + tiles.length + " map tiles from DB (\"" + dbName + "\")");
+
+            return tiles;
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+    */
 
     // - CITY -
 
