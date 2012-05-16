@@ -50,21 +50,21 @@ public class Selection extends Actor
 
     public void act() {
 
-        if (Greenfoot.mouseClicked(this)) {
+        if (selectionMode && Greenfoot.mouseClicked(this)) {
 
             if (selectionIsValid()) {
                 if (Zone.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_ZONING, selectedTiles()));
+                if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
             }
         }
 
-        if (Greenfoot.isKeyDown("escape")) {
+        if (selectionMode && Greenfoot.isKeyDown("escape")) {
 
             setSelectionMode(false);
 
             Zone.setPendingOp(0);
+            City.getInstance().removeHint();
         }
-
-        draw();
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {

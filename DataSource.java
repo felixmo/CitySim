@@ -26,6 +26,8 @@ public class DataSource
 
     // ---------------------------------------------------------------------------------------------------------------
 
+    private static DataSource instance;
+    
     /*
      * INSTANCE VARIABLES *
      */
@@ -46,6 +48,8 @@ public class DataSource
     // ---------------------------------------------------------------------------------------------------------------
 
     public DataSource(String dbName) {
+        
+        instance = this;
 
         this.dbName = dbName;
 
@@ -77,6 +81,10 @@ public class DataSource
         return connectionIsOpen;
     }
 
+    public static DataSource getInstance() {
+        return instance;
+    }
+    
     /*
      * HELPERS *
      */
@@ -145,14 +153,26 @@ public class DataSource
         CSLogger.sharedLogger().finer("Creating schema for DB (\"" + dbName + "\")");
 
         try {
-            PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type, zone);");
+
+            // Tiles
+            PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type, zone, road);");
             tiles.execute();
+            tiles.close();
+
+            // Map size
             PreparedStatement mapSize = connection.prepareStatement("CREATE TABLE map_size (" + Data.MAPSIZE_ROWS + ", " + Data.MAPSIZE_COLUMNS + ");");
             mapSize.execute();
+            mapSize.close();
+
+            // Map metadata
             PreparedStatement mapMetadata = connection.prepareStatement("CREATE TABLE map_metadata ("+ Data.METADATA_NAME +");");
             mapMetadata.execute();
+            mapMetadata.close();
+
+            // City stats.
             PreparedStatement cityStats = connection.prepareStatement("CREATE TABLE city_stats (" + Data.CITYSTATS_DAYS + ", " + Data.CITYSTATS_MONTHS + ", " + Data.CITYSTATS_YEARS + ", " + Data.CITYSTATS_POPULATION + ", " + Data.CITYSTATS_CASH + ");");
             cityStats.execute();
+            cityStats.close();
 
             CSLogger.sharedLogger().finer("Finished creating schema for DB (\"" + dbName + "\")");
         }
@@ -173,7 +193,9 @@ public class DataSource
 
         try {
 
-            List results = (List) new QueryRunner().query(connection, "SELECT * from map_size", new MapListHandler());
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT * from map_size", new MapListHandler());
+
             LinkedHashMap mapSize = new LinkedHashMap(2);
             Map row = (Map)results.listIterator().next();
             mapSize.putAll(row);
@@ -203,6 +225,7 @@ public class DataSource
             statement.setInt(2, (Integer)mapSize.get(Data.MAPSIZE_COLUMNS));
             statement.addBatch();
             statement.executeBatch();
+            statement.close();
 
             CSLogger.sharedLogger().finer("Finished inserting map size into DB (\"" + dbName + "\")");
         }
@@ -216,7 +239,10 @@ public class DataSource
         CSLogger.sharedLogger().finer("Retrieving map metadata from DB (\"" + dbName + "\")");
 
         try {
-            List results = (List) new QueryRunner().query(connection, "SELECT * from map_metadata", new MapListHandler());
+
+            QueryRunner runner = new QueryRunner();
+            List results = (List) runner.query(connection, "SELECT * from map_metadata", new MapListHandler());
+
             LinkedHashMap mapMetadata = new LinkedHashMap(1);
             Map row = (Map)results.listIterator().next();
             mapMetadata.putAll(row);
@@ -243,6 +269,7 @@ public class DataSource
             statement.setString(1, (String)mapMetadata.get("name"));
             statement.addBatch();
             statement.executeBatch();
+            statement.close();
 
             CSLogger.sharedLogger().finer("Finished inserting map metadata into DB (\"" + dbName + "\")");
         }
@@ -263,11 +290,13 @@ public class DataSource
 
             connection.setAutoCommit(false);
 
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tiles VALUES (?, ?, ?, ?, ?);");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO tiles VALUES (?, ?, ?, ?, ?, ?);");
             // 1. id
             // 2. x
             // 3. y
             // 4. type
+            // 5. zone
+            // 6. road
 
             for (int x = 0; x < tiles.size(); x++) {
 
@@ -280,12 +309,14 @@ public class DataSource
                     statement.setInt(3, tile.position().y);
                     statement.setInt(4, tile.type());
                     statement.setInt(5, tile.zone());
+                    statement.setInt(6, tile.road());
                     statement.addBatch();
                 }
             }
 
             statement.executeBatch();
             connection.commit();
+            statement.close();
 
             connection.setAutoCommit(true);
 
@@ -298,17 +329,19 @@ public class DataSource
 
     public void updateTile(Tile tile) {
 
-        CSLogger.sharedLogger().finer("Updating tile (" + tile.dbID() + ") @ (" + tile.position().x + ", " + tile.position().y + ") of zone (" + tile.zone() + "), in DB (\"" + dbName + "\")...");
+//         CSLogger.sharedLogger().finer("Updating tile (" + tile.dbID() + ") @ (" + tile.position().x + ", " + tile.position().y + ") of zone (" + tile.zone() + "), in DB (\"" + dbName + "\")...");
 
         try {
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ?, road = ? WHERE id = ?");
             statement.setInt(1, tile.type());
             statement.setInt(2, tile.zone());
-            statement.setInt(3, tile.dbID());
+            statement.setInt(3, tile.road());
+            statement.setInt(4, tile.dbID());
             statement.executeUpdate();
+            statement.close();
 
-            CSLogger.sharedLogger().finer("Finished updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
+//             CSLogger.sharedLogger().finer("Finished updating tile " + tile.position().toString() + " in DB (\"" + dbName + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -317,28 +350,30 @@ public class DataSource
 
     public void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
 
-        CSLogger.sharedLogger().finer("Updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
+//         CSLogger.sharedLogger().finer("Updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
 
         try {
 
             connection.setAutoCommit(false);
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE tiles SET type = ?, zone = ?, road = ? WHERE id = ?");
             for (int x = 0; x < tiles.size(); x++) {
                 for (int y = 0; y < tiles.get(x).size(); y++) {
                     statement.setInt(1, ((Tile)tiles.get(x).get(y)).type());
                     statement.setInt(2, ((Tile)tiles.get(x).get(y)).zone());
-                    statement.setInt(3, ((Tile)tiles.get(x).get(y)).dbID());     
+                    statement.setInt(3, ((Tile)tiles.get(x).get(y)).road());
+                    statement.setInt(4, ((Tile)tiles.get(x).get(y)).dbID());     
                     statement.addBatch();
                 }
             }
 
             statement.executeBatch();
             connection.commit();
+            statement.close();
 
             connection.setAutoCommit(true);
 
-            CSLogger.sharedLogger().finer("Finished updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
+//             CSLogger.sharedLogger().finer("Finished updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -359,14 +394,16 @@ public class DataSource
                 tiles.add(new ArrayList<Tile>(size.y));
             }
 
-            List results = (List) new QueryRunner().query(connection, "SELECT * from tiles", new MapListHandler());
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT * from tiles", new MapListHandler());
+
             Point pos = new Point(0, 0);
             for (int i = 0; i < results.size(); i++) {
 
                 Map row = (Map)results.get(i);
                 pos.setLocation((Integer)row.get("x"), (Integer)row.get("y"));
 
-                tiles.get(pos.x).add(pos.y, new Tile(((Integer)row.get("id")).intValue(), new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue(), ((Integer)row.get("zone")).intValue()));
+                tiles.get(pos.x).add(pos.y, new Tile(((Integer)row.get("id")).intValue(), new Point(((Integer)row.get("x")).intValue(), ((Integer)row.get("y")).intValue()), ((Integer)row.get("type")).intValue(), ((Integer)row.get("zone")).intValue(), ((Integer)row.get("road")).intValue()));
             }
 
             CSLogger.sharedLogger().finer("Finished retrieving map tiles from DB (\"" + dbName + "\")");
@@ -388,7 +425,9 @@ public class DataSource
 
         try {
 
-            List results = (List) new QueryRunner().query(connection, "SELECT * from city_stats", new MapListHandler());
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT * from city_stats", new MapListHandler());
+
             LinkedHashMap cityStats = new LinkedHashMap(5);
             Map row = (Map)results.listIterator().next();
             cityStats.putAll(row);
@@ -423,6 +462,7 @@ public class DataSource
             statement.setInt(5, (Integer)cityStats.get(Data.CITYSTATS_CASH));
             statement.addBatch();
             statement.executeBatch();
+            statement.close();
 
             CSLogger.sharedLogger().finer("Finished inserting city stats into DB (\"" + dbName + "\")");
         }
@@ -440,22 +480,27 @@ public class DataSource
             PreparedStatement statement = connection.prepareStatement("UPDATE city_stats SET days = ?");
             statement.setInt(1, (Integer)cityStats.get(Data.CITYSTATS_DAYS));
             statement.executeUpdate();
+            statement.close();
 
             statement = connection.prepareStatement("UPDATE city_stats SET months = ?");
             statement.setInt(1, (Integer)cityStats.get(Data.CITYSTATS_MONTHS));
             statement.executeUpdate();
+            statement.close();
 
             statement = connection.prepareStatement("UPDATE city_stats SET years = ?");
             statement.setInt(1, (Integer)cityStats.get(Data.CITYSTATS_YEARS));
             statement.executeUpdate();
+            statement.close();
 
             statement = connection.prepareStatement("UPDATE city_stats SET population = ?");
             statement.setInt(1, (Integer)cityStats.get(Data.CITYSTATS_POPULATION));
             statement.executeUpdate();
+            statement.close();
 
             statement = connection.prepareStatement("UPDATE city_stats SET cash = ?");
             statement.setInt(1, (Integer)cityStats.get(Data.CITYSTATS_CASH));
             statement.executeUpdate();
+            statement.close();
 
             CSLogger.sharedLogger().finer("Finished updating city stats in DB (\"" + dbName + "\")");
         }

@@ -29,5 +29,14 @@ public class SelectionEventListener extends CSEventListener
                 default: break;
             }
         }
+        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_ROAD)) {
+            
+            switch (Road.pendingOp()) {
+                case Street.ID: Street.buildStreet(event.tile(), Road.activeType());
+                                break;
+                                
+                default: break;
+            }
+        }
     }
 }

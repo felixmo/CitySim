@@ -3,6 +3,7 @@ import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.io.File;
 import java.awt.Point;
+import java.util.Arrays;
 
 /**
  * City
@@ -23,7 +24,7 @@ public class City extends World
     /*
      * STATIC VARIABLES *
      */
-    private static City instance;
+    private static City instance;                    // pointer to an instance of 'City'; to be used globally to access 'City'
 
     /*
      * CONSTANTS *
@@ -32,9 +33,9 @@ public class City extends World
     // Initial values
     private final int INITIAL_CASH = 100000;         // amount of $ to start with
     private final int INITIAL_POP = 0;               // # of people in the population to start with
-    private final int INITIAL_DATE_DAYS = 1;         
-    private final int INITIAL_DATE_MONTHS = 1;
-    private final int INITIAL_DATE_YEARS = 0;
+    private final int INITIAL_DATE_DAYS = 1;         // number of days elasped in the inital date
+    private final int INITIAL_DATE_MONTHS = 1;       // number of months elasped in the inital date
+    private final int INITIAL_DATE_YEARS = 0;        // number of years elapsed in the inital date
 
     /*
      * REFERENCES *
@@ -45,8 +46,9 @@ public class City extends World
     private Minimap_Viewport minimap_viewport;      // Representation of the viewport in the minimap
     private Cash cash;                              // Current avaliable cash (in-game)
     private MenuBar menuBar;                        // Menu bar containing game controls
-    private Hint hint;
-
+    private Hint hint;                              // Active hint
+    private TileSelector tileSelector;              // Active tile selector
+    
     /*
      * INSTANCE VARIABLES *
      */
@@ -59,30 +61,31 @@ public class City extends World
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
         
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
+        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
 //         new File("maps/test.db").delete();
 
-        // Configure data source
-        Data.setDataSource(new DataSource("test"));    // FOR TESTING PURPOSES
-
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
         if (Data.dbIsNew()) {
 
-            // Metadata
+            // - Metadata -
             LinkedHashMap mapMetadata = new LinkedHashMap(1);
+            // Initial metadata
             mapMetadata.put(Data.METADATA_NAME, "Toronto"); // FOR TESTING PURPOSES
+            
             Data.insertMapMetadata(mapMetadata);
 
-            // City stats
+            // - City stats -
             LinkedHashMap cityStats = new LinkedHashMap(5);
+            // Initial city stats.
             cityStats.put(Data.CITYSTATS_DAYS, INITIAL_DATE_DAYS);
             cityStats.put(Data.CITYSTATS_MONTHS, INITIAL_DATE_MONTHS);
             cityStats.put(Data.CITYSTATS_YEARS, INITIAL_DATE_YEARS);
             cityStats.put(Data.CITYSTATS_POPULATION, INITIAL_POP);
             cityStats.put(Data.CITYSTATS_CASH, INITIAL_CASH);
+            
             Data.insertCityStats(cityStats);
         }
 
@@ -106,25 +109,35 @@ public class City extends World
         menuBar = new MenuBar();
         addObject(menuBar, 512, 14);
 
-        // Menu bar items
-        ArrayList<String> menuBarItems = new ArrayList(4);
-        menuBarItems.add("Zone");
-        menuBarItems.add("Roads");
-        menuBarItems.add("Power");
-        menuBarItems.add("Protection");
+        // - Menu bar items -
+        ArrayList<String> menuBarItems = new ArrayList(2);
+        menuBarItems.add("Zoning");
+        menuBarItems.add("Transportation");
+//         menuBarItems.add("Utilities");
+//         menuBarItems.add("Civic");
         menuBar.setItems(menuBarItems);
 
-        // Menu items
+        // * Menu items * 
+        
         /*
          * NOTE *
          * Menu items need to be declared in 'MenuItemEvent' as well and implemented in 'MenuItemEventListener'.
          */
+        
+        // -> Zoning
         ArrayList<String> zoneItems = new ArrayList(3);
         zoneItems.add("Residential");
         zoneItems.add("Commercial");
         zoneItems.add("Industrial");
-        menuBar.setMenuItemsForItem("Zone", zoneItems);
+        menuBar.setMenuItemsForItem("Zoning", zoneItems);
+        
+        // -> Transportation
+        ArrayList<String> roadItems = new ArrayList(1);
+        roadItems.add("Roads");
+        menuBar.setMenuItemsForItem("Transportation", roadItems);
 
+        // * END of menu items *
+        
         // Initalize the cash store from the last known value in the DB
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
 
@@ -193,6 +206,11 @@ public class City extends World
     public void removeHint() {
         removeObject(this.hint);
     }
+    
+    public void removeTileSelector() {
+        removeObjects(Arrays.asList(this.tileSelector.items()));
+        removeObject(this.tileSelector);
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------
     /*
@@ -240,7 +258,12 @@ public class City extends World
         addObject(this.hint, Hint.ORIGIN_X, Hint.ORIGIN_Y);
     }
     
-    public HUD hud() {
-        return this.hud;
+    public TileSelector tileSelector() {
+        return this.tileSelector;
+    }
+    
+    public void setTileSelector(TileSelector tileSelector) {
+        this.tileSelector = tileSelector;
+        addObject(this.tileSelector, TileSelector.ORIGIN_X, TileSelector.ORIGIN_Y);
     }
 }

@@ -2,7 +2,14 @@ import java.util.Random;
 import java.lang.Math;
 import java.text.DecimalFormat;
 
-// TO DO: remember to credit
+/*
+ * The terrain generator uses a random displacement fractal to generate noise that resemebles landforms 
+ * Decimal values are returned and parsed into tiles
+ *
+ * CREDITS FOR THE MAIN FRACTAL CODE: 
+ * "andrew-thompson" & "simon-g" on stackoverflow.com
+ * Original code: http://stackoverflow.com/a/5532726/859788
+ */
 
 public class TerrainGenerator {
     /** Source of entropy */

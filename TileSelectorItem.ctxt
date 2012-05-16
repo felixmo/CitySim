@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.params=type\ index\ origin
+comment0.target=TileSelectorItem(int,\ int,\ java.awt.Point)
+comment1.params=
+comment1.target=void\ act()
+comment2.params=
+comment2.target=java.awt.Point\ origin()
+comment2.text=\ ACCESSORS\ *\n
+numComments=3

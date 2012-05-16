@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.params=tiles
+comment0.target=TileSelector(int[])
+comment1.params=
+comment1.target=void\ act()
+comment2.params=
+comment2.target=TileSelectorItem[]\ items()
+comment2.text=\ ACCESSORS\ *\n
+numComments=3

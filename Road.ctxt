@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.params=selectedTile
+comment0.target=void\ updateTile(Tile)
+comment1.params=
+comment1.target=int\ pendingOp()
+comment1.text=\ ACCESSORS\ *\n
+comment2.params=value
+comment2.target=void\ setPendingOp(int)
+comment3.params=
+comment3.target=int\ activeType()
+comment4.params=value
+comment4.target=void\ setActiveType(int)
+numComments=5

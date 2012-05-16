@@ -1,7 +1,11 @@
 #BlueJ class context
 comment0.params=message
 comment0.target=SelectionEvent(java.lang.String)
-comment1.params=
-comment1.target=tiles()
-comment1.text=\ ACCESSORS\ *\n
-numComments=2
+comment1.params=message\ tile
+comment1.target=SelectionEvent(java.lang.String,\ Tile)
+comment2.params=
+comment2.target=tiles()
+comment2.text=\ ACCESSORS\ *\n
+comment3.params=
+comment3.target=Tile\ tile()
+numComments=4

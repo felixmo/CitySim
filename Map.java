@@ -34,8 +34,6 @@ public class Map extends Actor
     public final int SIZE_ROWS = 200;   // cells; vertical
     private Rectangle cityRect = new Rectangle(0, 0, (SIZE_COLUMNS * Tile.SIZE), (SIZE_ROWS * Tile.SIZE));     // rectangle representing the entirety of the map
 
-    private ArrayList<ArrayList<Tile>> map;     // Holds map data
-
     // View configuration
     private final int moveSpeed = 20;       // # of px to move at a time
     private final static int tileBuffer = 4;    // number of additional cells to draw beyond the viewport
@@ -53,6 +51,8 @@ public class Map extends Actor
 
     public Map() {
 
+        Map.instance = this;
+
         if (Data.dbIsNew()) {
             // New DB
 
@@ -65,23 +65,19 @@ public class Map extends Actor
             Data.insertMapSize(mapSize);
 
             // Generate a new map (for testing), set the image representing this 'Actor' to be the map image, and then do the inital draw of map tiles from the origin
-            map = generateCity();
-            Data.insertTiles(map);
+            Data.insertTiles(generateCity());
         }
         else {
             // Existing DB
 
             // Get map data from DB
             CSLogger.sharedLogger().info("Database exists; loading tiles...");
-            map = Data.tiles();
         }
 
-        // Draw map on screen
+        // Draw map on screen, starting at the origin (0, 0)
         setImage(view);
         Point viewportLoc = viewport.getLocation();
         viewportDidMove(viewportLoc.x, viewportLoc.y);
-
-        this.instance = this;
     }
 
     // * Greenfoot methods *
@@ -173,7 +169,7 @@ public class Map extends Actor
     }
 
     private Tile tileForCoordinatePair(int x, int y) {
-        return (Tile)map.get(Math.min(x+2, SIZE_COLUMNS)).get(Math.min(y+2, SIZE_ROWS));
+        return (Tile)Data.tiles().get(Math.min(x+2, SIZE_COLUMNS-1)).get(Math.min(y+2, SIZE_ROWS-1));
     }
 
     // Translates a given indice to a coordinate for the view, in px
@@ -213,7 +209,7 @@ public class Map extends Actor
         for (int x = 0; x < SIZE_COLUMNS; x++) {
             for (int y = 0; y < SIZE_ROWS; y++) {
 
-                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0));
+                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0, 0));
                 dbID++;
                 //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), SIZE_ROWS-1)]));
             }
@@ -250,43 +246,36 @@ public class Map extends Actor
         draw();
     }
 
-    public void draw() {
-
+    protected void draw() {
+        
+        // Get cached map data
+        ArrayList<ArrayList<Tile>> map = Data.tiles();
+        
         // Coordinates for the tile being drawn; set at the origin of the shifted viewport
         int tile_x = viewport.x;
         int tile_y = viewport.y;
+        
+        Point vpLoc = viewport.getLocation();                   // Viewport location
+        Point cell = cellForCoordinatePair(vpLoc.x, vpLoc.y);   // Cell @ viewport origin
 
-        Point vpLoc = viewport.getLocation();
-        Point cell = cellForCoordinatePair(vpLoc.x, vpLoc.y);
-
-        // Clear the map image layer
+        // Clear the whole map image
         view.clear();
 
         // Draw tiles onto the map image layer for the shifted viewport
         for (int col = cell.x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
             for (int row = cell.y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
 
+                // Get the tile (if it is within the bounds of the map)
                 Tile tile = map.get(Math.min(col, SIZE_COLUMNS-1)).get(Math.min(row, SIZE_ROWS-1));
+                
+                // Draw the tile image onto the whole map image
                 view.drawImage(tile.image(), tile_x, tile_y-Tile.SIZE);
-
-                // FOR TESTING
-                // Draw dbID on tile
-                //                 view.setColor(Color.WHITE);
-                //                 view.setFont(CSFont.cabin(12.0f));
-                //                 view.drawString(tile.dbID() + "", tile_x, tile_y);
 
                 // Update the coordinates for the next tile to be drawn
                 tile_x = coordinateForCell(col) - viewport.x;
                 tile_y = coordinateForCell(row) - viewport.y;
             }
         }
-    }
-
-    public void refresh() {
-
-        this.map = Data.tiles();
-        draw();
-        City.getInstance().hud().minimap().draw();
     }
 
     /*

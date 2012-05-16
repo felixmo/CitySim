@@ -53,7 +53,13 @@ public class Minimap_Viewport extends Actor
             int y = mouseInfo.getY() - 558 - 9; // subtract 9 to centre viewport
             // X | Subtract distance from left edge of HUD to left edge of minimap from X
             // Y | Subtract distance from the top of the game to the top of the minimap from Y
-
+            
+            x = Math.max(0, x);
+            x = Math.min(200-18, x);
+            
+            y = Math.max(0, y);
+            y = Math.min(200-18, y);
+            
             origin.setLocation(x, y);
             draw();
             ((City)getWorld()).didMoveViewportTo(x, y);

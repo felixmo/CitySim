@@ -20,11 +20,11 @@ public class Tile
     /*
      * INSTANCE VARIABLES *
      */
-
+    private int dbID = 0;   // SQL db id
     private Point position;
-    private int type = 0;   // Type of tile
-    private int zone = 0;
-    private int dbID = 0; // SQL db id
+    private int type = 0;   // Type of tile (detail)
+    private int zone = 0;   // Type of zone
+    private int road = 0;   // Type of road
 
     /*
      * CONSTANTS *
@@ -69,22 +69,44 @@ public class Tile
     public static final int RESIDENTIAL_BOTTOM = 407;
     public static final int RESIDENTIAL_BOTTOM_RIGHT = 408;
 
+    // STREETS
+    // U = up
+    // D = down
+    // L = left
+    // R = right
+    public static final int STREET_HORIZONTAL = 101;
+    public static final int STREET_VERTICAL = 102;
+    public static final int STREET_BEND_TOPRIGHT = 103;
+    public static final int STREET_BEND_BOTTOMRIGHT = 104;
+    public static final int STREET_BEND_BOTTOMLEFT = 105;
+    public static final int STREET_BEND_TOPLEFT = 106;
+    public static final int STREET_HORIZONTAL_D_VERTICAL_U = 107;
+    public static final int STREET_VERTICAL_L_HORIZTONAL_R = 108;
+    public static final int STREET_HORIZONTAL_U_VERTICAL_D = 109;
+    public static final int STREET_VERTICAL_R_HORIZTONAL_L = 110;
+    public static final int STREET_INTERSECTION = 111;
+
     /*
      * IMAGE FILES *
      */
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Tile(int dbID, Point position, int type, int zone) {
+    public Tile(int dbID, Point position, int type, int zone, int road) {
         this.dbID = dbID;
         this.position = position;
         this.type = type;
         this.zone = zone;
+        this.road = road;
     }
 
     /*
      * ACCESSORS *
      */
+
+    public int dbID() {
+        return dbID;
+    }
 
     public Point position() {
         return position;
@@ -106,8 +128,12 @@ public class Tile
         zone = value;
     }
 
-    public int dbID() {
-        return dbID;
+    public int road() {
+        return road;
+    }
+
+    public void setRoad(int value) {
+        road = value;
     }
 
     public GreenfootImage image() {
@@ -118,9 +144,14 @@ public class Tile
      * HELPERS *
      */
 
-    public static GreenfootImage imageForType(Integer type) {
+    public static GreenfootImage imageFromDiskForType(Integer type) {
 
         return new GreenfootImage("images/tiles/" + type + ".png");
+    }
+
+    public static GreenfootImage imageFromCacheForType(Integer value) {
+
+        return ImageCache.get(value);
     }
 }
 

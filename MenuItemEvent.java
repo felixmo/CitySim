@@ -18,7 +18,16 @@ public class MenuItemEvent extends CSEvent
     public static final String RESIDENTIAL = "Residential";
     public static final String INDUSTRIAL = "Industrial";
     public static final String COMMERCIAL = "Commercial";
-
+    
+    // Transportation
+    public static final String STREETS = "Roads";
+ 
+    // Utilities
+    //
+    
+    // Civic
+    //
+    
     public MenuItemEvent(String message) {
         super(message);
     }

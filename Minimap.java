@@ -21,6 +21,8 @@ public class Minimap extends Actor
 
     // ---------------------------------------------------------------------------------------------------------------------
 
+    private static Minimap sharedInstance;
+    
     /*
      * COLORS
      */
@@ -39,34 +41,27 @@ public class Minimap extends Actor
      * INSTANCE VARIABLES
      */
 
-    private GreenfootImage image;                       // Minimap view
     private Point viewportOrigin = new Point(0, 0);     // Viewport origin
 
     // ---------------------------------------------------------------------------------------------------------------------
 
     public Minimap() {
+       
+        Minimap.sharedInstance = this;
 
-        this.image = new GreenfootImage(FRAME.width, FRAME.height);
-        this.image.setTransparency(150);
-        setImage(this.image);
-
+        // Inital draw on load
         draw();
-    }
-
-    public void act() 
-    {
-        // Do nothing
-    }    
+    }  
 
     // Draws the minimap
     public void draw() {
+        
+        // A new image is created for the minimap, drawn onto, and the applied as the Actor's image
+        // Drawing of the minimap is done this way so that there won't be any artifacting when draw() is called by a thread other than the main thread
+        GreenfootImage image = new GreenfootImage(FRAME.width, FRAME.height);
+        image.setTransparency(150);
 
-        // Clear minimap
-        image.clear();
-
-        // Draw minimap
-
-        // Get all tiles
+        // Get map
         ArrayList<ArrayList<Tile>> map = Data.tiles();
 
         // Position of the minimap tile being drawn
@@ -79,6 +74,7 @@ public class Minimap extends Actor
             for (int j = 0; j < Map.getInstance().SIZE_ROWS; j++) {
                 
                 Tile tile = (Tile)map.get(i).get(j);
+                // Get the color to draw based on either the tile's type or zone (if zoned)
                 if (tile.zone() > 0) {
                     image.setColor(colorForTileOfZone(tile.zone()));
                 }
@@ -86,15 +82,17 @@ public class Minimap extends Actor
                     image.setColor(colorForTileOfType(tile.type())); 
                 }
                 
-//                 image.setColor(colorForTileOfType(((Tile)map.get(i).get(j)).type()));
                 image.fillRect(x, y, tileSize, tileSize); // Minimap tiles are 2px * 2px
                 y+=tileSize;
             }
+            
             // Reset Y to top of the column 
             y = 0;
 
             x+=tileSize;
         }
+        
+        setImage(image);
     }
 
     /*
@@ -103,6 +101,10 @@ public class Minimap extends Actor
 
     public Rectangle frame() {
         return FRAME;
+    }
+    
+    public static Minimap getInstance() {
+        return sharedInstance;
     }
 
     /*
