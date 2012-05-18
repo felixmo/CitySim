@@ -6,79 +6,107 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
- * Menu
- * CitySim
- * v0.1
+ * Menu view and view controller; extends MenuElement.
  * 
- * Created by Felix Mo on 04-19-2012
- * 
- * Menu view and view controller; extends MenuElement
- * 
+ * @author Felix Mo
+ * @version v0.1
+ * @since 2012-04-19
  */
 
 public class Menu extends MenuElement
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
-
     /*
      * INSTANCE VARIABLES
      */
 
-    private MenuBarItem menuBarItem;
-    private ArrayList<MenuItem> menuItems;
-    private int activeIndex = -1;
-
-    private MouseInfo mouseInfo;
+    private MenuBarItem menuBarItem;        // The menu bar item the menu belongs to
+    private ArrayList<MenuItem> menuItems;  // The MenuItem actors that belong to the Menu
+    private int activeIndex = -1;           // The index of the current active menu item (-1 = none)
+    private MouseInfo mouseInfo;            // A reference to the MouseInfo object provided by the Greenfoot framework
 
     // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTRUCTORS *
+     */
 
-    public Menu(MenuBarItem barItem, ArrayList<String> items) {
+    /**
+     * Constructs a Menu.
+     * 
+     * @param menuBarItem The menu bar item that the menu belongs to.
+     * @param items The items in the menu (as {@link Strings})
+     */
+    public Menu(MenuBarItem menuBarItem, ArrayList<String> items) {
 
         super("", 0);
-
-        this.menuBarItem = barItem;
-
+        this.menuBarItem = menuBarItem;
         setItems(items);
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * GREENFOOT METHODS
+     */
+
+    /**
+     * Draws, and activates, the menu when it is added to the world.
+     * 
+     * @param World The {@link World} the object was added to.
+     */
     protected void addedToWorld(World world) {
+        // Activate this menu
         this.active = true;
+        // Draw the menu if it has not already been drawn
         if (this.image != null) draw();
     }
 
+    /**
+     * The procedure to draw the menu and its menu items.
+     */
     private void draw() {
 
         Point origin = this.frame.getLocation();
 
         this.image.clear();
 
+        // Draw menu
         this.image.setColor(Color.WHITE);
         this.image.fillRect(0, 0, this.frame.width, this.frame.height);
+        // Draw menu outline
         this.image.setColor(Color.BLACK);
         this.image.drawRect(0, 0, this.frame.width, this.frame.height);
 
+        // Add menu items to menu
         for (MenuItem menuItem : menuItems) {
             City.getInstance().addObject(menuItem, menuItem.frame().x+(int)menuItem.frame().width/2, menuItem.frame().y);
         }
     }
 
+    /**
+     * The procedure containing the menu's behaviour. The menu will highlight menu items as the cursor hovers over them.
+     */
     public void act() {
 
+        // Get mouse position
         Point mouse = null;
 
         if (Greenfoot.getMouseInfo() != null) {
             mouseInfo = Greenfoot.getMouseInfo();
         }
 
+        // Get the menu item the cursor is currently hovering over
         if (active) {
 
             if (mouseInfo != null) {
                 mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
 
+                // Check horizontal bounds
                 if (mouse.x <= this.frame.width + this.frame.x && mouse.x >= menuBarItem.frame().x) {
+                    // Check vertical bounds
                     if (mouse.y <= this.frame.height + this.frame.y && mouse.y >= menuBarItem.frame().height) {
 
+                        // Iterate through all the menu items to check if cursor is within the bounds of their frames
                         for (MenuItem item : menuItems) {
 
                             Rectangle frame = item.frame();
@@ -86,9 +114,9 @@ public class Menu extends MenuElement
 
                             if (mouse.y >= origin.y && mouse.y <= origin.y + frame.height) {
 
+                                // Activate menu item IF it is not the current active item (prevents redundancy)
                                 if (menuItems.indexOf(item) != this.activeIndex) {
-
-                                    didHighlightMenuItem(item);
+                                    didHoverOverMenuItem(item);
                                 }
                             }
                         }
@@ -98,32 +126,56 @@ public class Menu extends MenuElement
         }
     }
 
-    public void didHighlightMenuItem(MenuItem menuItem) {
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * MENU *
+     */
 
+    /**
+     * Menu behaviour for hovering over a menu item.
+     * 
+     * @param menuItem The menu item that the cursor is currently hovering over.
+     */
+    public void didHoverOverMenuItem(MenuItem menuItem) {
+
+        // Activate the menu item
         for (MenuItem item : menuItems) {
             item.setActive(item == menuItem ? (active ? true : false) : false);
         }
 
+        // Update index
         this.activeIndex = menuItem.index();
     } 
-
+    
+    
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * ACCESSORS *
      */
 
+    /**
+     * Returns the {@link MenuItems} that belongs to the menu.
+     * 
+     * @return The {@link MenuItems} belonging to the menu.
+     */
     public ArrayList<MenuItem> menuItems() {
         return this.menuItems;
     }
 
+    /**
+     * Sets the items of the menu.
+     * 
+     * @param items The titles (as {@link Strings}) of the menu's items.
+     */
     public void setItems(ArrayList<String> items) {
 
         // Create frame based on dimensions derived from font metrics
         FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(FONT); 
         int width = 0;
         int index = 0;
+        
         // Find the widest menu item and use it's width + padding as the menu width
         for (String item : items) {
-
             if (fontMetrics.stringWidth(item) > width) {
                 width = fontMetrics.stringWidth(item)+28;
             }
@@ -144,15 +196,25 @@ public class Menu extends MenuElement
         int height = items.size() * 24;     // 14px + 4px padding
         this.frame = new Rectangle(menuBarItem.frame().x, menuBarItem.frame().y+14, width, height);
 
+        // Recreate the menu's view with the new dimensions
         this.image = new GreenfootImage(width, height);
         setImage(this.image);
     }
 
-    public void setActive(boolean value) {
+    /**
+     * Sets the state of the menu.
+     * 
+     * @param The new state of the menu.
+     */
+    public void setActive(boolean state) {
 
-        this.active = value;
+        this.active = state;
+        
+        // If the menu is now inactive
         if (!active) {
+            // Reset the active index to -1 (no selection);
             this.activeIndex = -1;
+            // Deactivate the menu bar item that this menu belogns to
             this.menuBarItem.menuBar().changeItemStateTo(this.menuBarItem, false);
         }
     }

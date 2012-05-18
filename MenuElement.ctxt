@@ -1,15 +1,20 @@
 #BlueJ class context
 comment0.params=title\ index
 comment0.target=MenuElement(java.lang.String,\ int)
+comment0.text=\n\ Constructs\ a\ MenuElement\n\ \n\ @param\ title\ The\ title\ of\ the\ menu\ element.\n\ @param\ index\ The\ position\ of\ the\ menu\ element,\ relative\ to\ others\ within\ the\ same\ group.\n
 comment1.params=
 comment1.target=java.awt.Rectangle\ frame()
-comment1.text=\ ACCESSORS\ *\n
+comment1.text=\n\ Returns\ the\ element's\ frame.\n\ \n\ @return\ The\ element's\ frame\ (as\ a\ {@link\ Rectangle}),\ which\ includes\ its\ origin\ (in\ view)\ and\ its\ dimensions.\n\ @see\ Rectangle\n
 comment2.params=frame
 comment2.target=void\ setFrame(java.awt.Rectangle)
+comment2.text=\n\ Sets\ the\ element's\ frame.\ By\ setting\ the\ frame,\ a\ new\ container\ for\ the\ menu\ element's\ view\ will\ be\ created,\ thus\ a\ re-draw\ of\ the\ element\ is\ necessary.\n\ \n\ @param\ frame\ The\ {@link\ Rectangle}\ that\ is\ to\ be\ the\ new\ frame\ to\ be\ used\ by\ the\ menu\ element.\n
 comment3.params=
 comment3.target=boolean\ active()
-comment4.params=active
+comment3.text=\n\ Returns\ the\ element's\ state\ (wether\ it\ is\ active\ or\ not).\n\ \n\ @return\ True\ if\ the\ element\ is\ active\n
+comment4.params=state
 comment4.target=void\ setActive(boolean)
+comment4.text=\n\ Sets\ the\ element's\ state.\ The\ method\ can\ be\ overriden\ for\ custom\ functionality\ when\ setting\ the\ element's\ active.\n\ \n\ @param\ state\ The\ element's\ new\ state.\n
 comment5.params=
 comment5.target=int\ index()
+comment5.text=\ \n\ Returns\ the\ element's\ index;\ it's\ position\ relative\ to\ other\ elements\ within\ the\ same\ group.\n\ \n\ @return\ An\ integer\ with\ the\ element's\ index.\n
 numComments=6
