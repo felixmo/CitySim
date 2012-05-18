@@ -20,11 +20,12 @@ public class Tile
     /*
      * INSTANCE VARIABLES *
      */
-    private int dbID = 0;   // SQL db id
+    private int dbID = 0;       // SQL db id
     private Point position;
-    private int type = 0;   // Type of tile (detail)
-    private int zone = 0;   // Type of zone
-    private int road = 0;   // Type of road
+    private int type = 0;       // Type of tile (detail)
+    private int zone = 0;       // Type of zone
+    private int zoneID = -1; 
+    private int road = 0;       // Type of road
 
     /*
      * CONSTANTS *
@@ -92,11 +93,12 @@ public class Tile
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Tile(int dbID, Point position, int type, int zone, int road) {
+    public Tile(int dbID, Point position, int type, int zone, int zoneID, int road) {
         this.dbID = dbID;
         this.position = position;
         this.type = type;
         this.zone = zone;
+        this.zoneID = zoneID;
         this.road = road;
     }
 
@@ -126,6 +128,14 @@ public class Tile
 
     public void setZone(int value) {
         zone = value;
+    }
+    
+    public int zoneID() {
+        return this.zoneID;
+    }
+    
+    public void setZoneID(int id) {
+        zoneID = id;
     }
 
     public int road() {

@@ -1,34 +1,26 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.File;
 import java.awt.Point;
 import java.util.Arrays;
 
 /**
- * City
- * CitySim
- * v0.1
- *
- * Created by Felix Mo on 02-11-2012
- *
  * 'City' acts as a container for all objects / "Actors" in the game (incl. map, HUD, etc.)
- *
+ * 
+ * @author Felix Mo
+ * @version v0.1
+ * @since 2012-02-11
  */
 
 public class City extends World
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
-
-    /*
-     * STATIC VARIABLES *
-     */
-    private static City instance;                    // pointer to an instance of 'City'; to be used globally to access 'City'
-
     /*
      * CONSTANTS *
      */
+
     private final int FREQ_WRITE = 10;               // # of secs before updated data is written to DB
     // Initial values
     private final int INITIAL_CASH = 100000;         // amount of $ to start with
@@ -37,9 +29,18 @@ public class City extends World
     private final int INITIAL_DATE_MONTHS = 1;       // number of months elasped in the inital date
     private final int INITIAL_DATE_YEARS = 0;        // number of years elapsed in the inital date
 
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * STATIC VARIABLES *
+     */
+
+    private static City instance;                    // pointer to an instance of 'City'; to be used globally to access 'City'
+
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * REFERENCES *
      */
+
     private Map map;                                // Map of the city
     private Date date;                              // Current date (in-game) / time elapsed
     private HUD hud;                                // HUD display containing game info and controls
@@ -48,49 +49,68 @@ public class City extends World
     private MenuBar menuBar;                        // Menu bar containing game controls
     private Hint hint;                              // Active hint
     private TileSelector tileSelector;              // Active tile selector
-    
+
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * INSTANCE VARIABLES *
      */
+
     private int writeCountdown = 0;                  // Countdown until updated data is written to DB
+    private int lastZoneID = 0;                      // Keeps track of the last ID assigned to a zone; this value is incremented and assigned to new zones
 
     // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTRUCTORS *
+     */
 
+    /**
+     * Constructs a City.
+     */
     public City() {
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
-        
+
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
-//         new File("maps/test.db").delete();
+
+        //         new File("maps/test.db").delete();
 
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
         if (Data.dbIsNew()) {
 
             // - Metadata -
-            LinkedHashMap mapMetadata = new LinkedHashMap(1);
+            HashMap mapMetadata = new HashMap(1);
             // Initial metadata
             mapMetadata.put(Data.METADATA_NAME, "Toronto"); // FOR TESTING PURPOSES
-            
+
             Data.insertMapMetadata(mapMetadata);
 
             // - City stats -
-            LinkedHashMap cityStats = new LinkedHashMap(5);
+            HashMap cityStats = new HashMap(5);
             // Initial city stats.
             cityStats.put(Data.CITYSTATS_DAYS, INITIAL_DATE_DAYS);
             cityStats.put(Data.CITYSTATS_MONTHS, INITIAL_DATE_MONTHS);
             cityStats.put(Data.CITYSTATS_YEARS, INITIAL_DATE_YEARS);
             cityStats.put(Data.CITYSTATS_POPULATION, INITIAL_POP);
             cityStats.put(Data.CITYSTATS_CASH, INITIAL_CASH);
-            
+
             Data.insertCityStats(cityStats);
+
+            // - Zone stats -
+            HashMap zoneStats = new HashMap(4);
+            zoneStats.put(Data.ZONESTATS_RESIDENTIALCOUNT, 0);
+            zoneStats.put(Data.ZONESTATS_INDUSTRIALCOUNT, 0);
+            zoneStats.put(Data.ZONESTATS_COMMERCIALCOUNT, 0);
+            zoneStats.put(Data.ZONESTATS_LASTZONEID, -1);
+
+            Data.insertZoneStats(zoneStats);
         }
 
         // Resume tracking date from last saved date
-        LinkedHashMap cityStats = Data.cityStats();
+        HashMap cityStats = Data.cityStats();
         date = new Date((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
 
         // Create and add a new map for the city
@@ -113,47 +133,51 @@ public class City extends World
         ArrayList<String> menuBarItems = new ArrayList(2);
         menuBarItems.add("Zoning");
         menuBarItems.add("Transportation");
-//         menuBarItems.add("Utilities");
-//         menuBarItems.add("Civic");
+        //         menuBarItems.add("Utilities");
+        //         menuBarItems.add("Civic");
+        menuBarItems.add("Tools");
         menuBar.setItems(menuBarItems);
 
         // * Menu items * 
-        
+
         /*
          * NOTE *
          * Menu items need to be declared in 'MenuItemEvent' as well and implemented in 'MenuItemEventListener'.
          */
-        
+
         // -> Zoning
         ArrayList<String> zoneItems = new ArrayList(3);
         zoneItems.add("Residential");
         zoneItems.add("Commercial");
         zoneItems.add("Industrial");
         menuBar.setMenuItemsForItem("Zoning", zoneItems);
-        
+
         // -> Transportation
         ArrayList<String> roadItems = new ArrayList(1);
         roadItems.add("Roads");
         menuBar.setMenuItemsForItem("Transportation", roadItems);
 
+        // -> Tools
+        ArrayList<String> toolItems = new ArrayList(1);
+        toolItems.add("Bulldozer");
+        menuBar.setMenuItemsForItem("Tools", toolItems);
+
         // * END of menu items *
-        
+
         // Initalize the cash store from the last known value in the DB
         cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
 
         instance = this;
     }
 
-    public static City getInstance() {
-        return instance;
-    }
-
     // ---------------------------------------------------------------------------------------------------------------------
     /*
-     * EVENTS *
+     * GREENFOOT EVENTS *
      */
 
-    // Called when game is started
+    /**
+     * Overrides started() in {@link World} from the Greenfoot framework. This is called when the game is started.
+     */
     public void started() {
         CSLogger.sharedLogger().info("Game has started...");
 
@@ -165,7 +189,9 @@ public class City extends World
         date.start();
     }
 
-    // Called when game is paused in Greenfoot
+    /**
+     * Overrides stopped() in {@link World} from the Greenfoot framework. This is called when the game is stopped.
+     */
     public void stopped() {
         CSLogger.sharedLogger().info("Game has stopped.");
 
@@ -175,38 +201,92 @@ public class City extends World
         Data.closeConnection();
     }
 
-    // Called when date is incremented (every 1 sec)
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * DATE * 
+     */
+
+    /**
+     * <p>
+     * This method is called when date is incremented (every 1 sec).
+     * </p>
+     * 
+     * <p>
+     * This method tells {@link Data} to write the latest statistics to the database and hints to the JVM to perform GC <b>every 10 secs</b>, and refreshes the HUD values <b>every 1 sec</b>.
+     * </p>
+     */
     public void didIncrementDate() {
 
         // Write to DB
         writeCountdown++;
         if (writeCountdown == FREQ_WRITE) {
+
             Data.updateCityStats(currentCityStats());  
             writeCountdown = 0;
+
             // Run Java garbage collector to cleanup
             System.gc();
         }
 
         // Refresh values for HUD every 1 sec
         hud.refresh(valuesForHUD());
+
+        // Refresh minimap if there are changes to map
+        if (Minimap.getInstance().shouldUpdate()) {
+            new MinimapDrawThread().start();
+            Minimap.getInstance().setShouldUpdate(false);
+        }
+
     }
 
-    // Called when the minimap viewport has been moved (i.e. minimap has been clicked on)
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * MAP *
+     */
+
+    /**
+     * <p>
+     * This method is called when the minimap viewport has been moved.
+     * </p>
+     * (i.e. minimap has been clicked on)
+     */
     public void didMoveViewportTo(int x, int y) {
         // Move the map
         map.viewportDidMoveTo(x, y);
     }
 
-    // Called when the map is moved
+    /**
+     * <p>
+     * This method is called when the map is moved. 
+     * </p>
+     * (i.e. when the user scrolls the map).
+     * <p>
+     * 
+     * </p>
+     * <p>
+     * Updates the viewport position on the minimap after the map has moved.
+     * </p>
+     */
     public void didMoveMapTo(int x, int y) {
         // Move the representation of the viewport in the minimap
         minimap_viewport.didMoveViewportToCell(x, y);
     }
-    
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * MODAL VIEWS / DIALOGS *
+     */
+
+    /**
+     * Removes the active hint from view.
+     */
     public void removeHint() {
         removeObject(this.hint);
     }
-    
+
+    /**
+     * Removes the active tile selector from view.
+     */
     public void removeTileSelector() {
         removeObjects(Arrays.asList(this.tileSelector.items()));
         removeObject(this.tileSelector);
@@ -218,9 +298,9 @@ public class City extends World
      */
 
     // Returns formatted values for the HUD labels
-    private LinkedHashMap valuesForHUD() {
+    private HashMap valuesForHUD() {
 
-        LinkedHashMap values = new LinkedHashMap(4);
+        HashMap values = new HashMap(4);
 
         values.put(HUD.NAME, "Toronto");  // TESTING
         values.put(HUD.POPULATION, 0);    // TESTING
@@ -231,9 +311,9 @@ public class City extends World
     }
 
     // Returns the city stats. w/o formatting (i.e. for writing the values to the DB)
-    private LinkedHashMap currentCityStats() {
+    private HashMap currentCityStats() {
 
-        LinkedHashMap stats = new LinkedHashMap(5);
+        HashMap stats = new HashMap(5);
 
         stats.put(Data.CITYSTATS_DAYS, date.days());
         stats.put(Data.CITYSTATS_MONTHS, date.months());
@@ -243,27 +323,56 @@ public class City extends World
 
         return stats;
     }
-    // ---------------------------------------------------------------------------------------------------------------------
 
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * ACCESSORS *
      */
-    
+
+    /**
+     * Returns the active {@link Hint}.
+     * 
+     * @return The active {@link Hint}.
+     */
     public Hint hint() {
         return this.hint;
     }
-    
-    public void setHint(Hint aHint) {
-        this.hint = aHint;
+
+    /**
+     * Sets the active hint. This reference to it will be used later to remove it from view.
+     * 
+     * @param hint The hint to be made active.
+     */
+    public void setHint(Hint hint) {
+        this.hint = hint;
         addObject(this.hint, Hint.ORIGIN_X, Hint.ORIGIN_Y);
     }
-    
+
+    /**
+     * Returns the active {@link TileSelector}.
+     * 
+     * @return The active {@link TileSelector}.
+     */
     public TileSelector tileSelector() {
         return this.tileSelector;
     }
-    
+
+    /**
+     * Sets the active {@link TileSelector}.
+     * 
+     * @param tileSelector The {@link TileSelector} to be made active.
+     */
     public void setTileSelector(TileSelector tileSelector) {
         this.tileSelector = tileSelector;
         addObject(this.tileSelector, TileSelector.ORIGIN_X, TileSelector.ORIGIN_Y);
+    }
+
+    /**
+     * Returns an instance {@link City}.
+     * 
+     * @return An instance of City.
+     */
+    public static City getInstance() {
+        return instance;
     }
 }

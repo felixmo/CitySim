@@ -6,7 +6,7 @@ import java.lang.Thread;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class CSThread extends Thread
+public abstract class CSThread extends Thread
 {
 
     public CSThread(String name) {

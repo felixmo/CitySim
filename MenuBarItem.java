@@ -11,7 +11,7 @@ import java.awt.Rectangle;
  * 
  * Created by Felix Mo on 04-18-2012
  * 
- * Menu item view
+ * Menu item view; extends MenuElement
  * 
  */
 
@@ -34,17 +34,13 @@ public class MenuBarItem extends MenuElement
         
         this.menuBar = menuBar;
     }
-
-    protected void addedToWorld(World world) {
-        this.world = world;
-    }
     
     private void draw() {
 
         // Create the image and draw title within it
         this.image.clear();
         this.image.setColor(Color.BLACK);
-        this.image.setFont(font);
+        this.image.setFont(FONT);
         this.image.drawString(this.title, 8, 16);
     }
 
@@ -70,7 +66,7 @@ public class MenuBarItem extends MenuElement
 
             if (this.menu != null) {
                 this.menu.setActive(true);
-                this.world.addObject(menu, this.frame.x+(int)this.menu.frame().width/2, this.frame.y+(int)this.menu.frame().height/2+(int)this.frame.height/2);
+                City.getInstance().addObject(menu, this.frame.x+(int)this.menu.frame().width/2, this.frame.y+(int)this.menu.frame().height/2+(int)this.frame.height/2);
             }
         }
         else {
@@ -80,8 +76,8 @@ public class MenuBarItem extends MenuElement
 
             if (this.menu != null) {
                 if (this.menu.active()) this.menu.setActive(false); // Check! Otherwise infinite loop occurs when selecting menu item
-                world.removeObjects(menu.menuItems());
-                world.removeObject(menu);
+                City.getInstance().removeObjects(menu.menuItems());
+                City.getInstance().removeObject(menu);
             }
         }
     }
@@ -89,7 +85,7 @@ public class MenuBarItem extends MenuElement
     public void setOrigin(Point value) {
 
         // Create frame based on dimensions derived from font metrics
-        FontMetrics fontMetrics = new GreenfootImage(1024, 28).getAwtImage().getGraphics().getFontMetrics(font); 
+        FontMetrics fontMetrics = new GreenfootImage(1024, 28).getAwtImage().getGraphics().getFontMetrics(FONT); 
         int width = fontMetrics.stringWidth(title);
         this.frame = new Rectangle(value.x, value.y, width+16, 22);
 

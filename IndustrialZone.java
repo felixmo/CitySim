@@ -11,7 +11,8 @@ public class IndustrialZone extends Zone
 {
     public static final int ID = 3;
     public static final int[] MARKERS = { 500, 501, 502, 503, 504, 505, 506, 507, 508 };
-    public static final Dimension SIZE = new Dimension(3, 3);
+    public static final int SIZE_WIDTH = 3;
+    public static final int SIZE_HEIGHT = 3;
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 

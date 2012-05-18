@@ -11,7 +11,8 @@ public class ResidentialZone extends Zone
 {
     public static final int ID = 1;
     public static final int[] MARKERS = { 400, 401, 402, 403, 404, 405, 406, 407, 408 };
-    public static final Dimension SIZE = new Dimension(3, 3);
+    public static final int SIZE_WIDTH = 3;
+    public static final int SIZE_HEIGHT = 3;
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
         

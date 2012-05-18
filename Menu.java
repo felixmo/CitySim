@@ -12,7 +12,7 @@ import java.awt.Rectangle;
  * 
  * Created by Felix Mo on 04-19-2012
  * 
- * Menu view
+ * Menu view and view controller; extends MenuElement
  * 
  */
 
@@ -26,7 +26,6 @@ public class Menu extends MenuElement
      */
 
     private MenuBarItem menuBarItem;
-//     private ArrayList<String> items;
     private ArrayList<MenuItem> menuItems;
     private int activeIndex = -1;
 
@@ -44,7 +43,6 @@ public class Menu extends MenuElement
     }
 
     protected void addedToWorld(World world) {
-        this.world = world;   
         this.active = true;
         if (this.image != null) draw();
     }
@@ -61,7 +59,7 @@ public class Menu extends MenuElement
         this.image.drawRect(0, 0, this.frame.width, this.frame.height);
 
         for (MenuItem menuItem : menuItems) {
-            this.world.addObject(menuItem, menuItem.frame().x+(int)menuItem.frame().width/2, menuItem.frame().y);
+            City.getInstance().addObject(menuItem, menuItem.frame().x+(int)menuItem.frame().width/2, menuItem.frame().y);
         }
     }
 
@@ -77,8 +75,6 @@ public class Menu extends MenuElement
 
             if (mouseInfo != null) {
                 mouse = new Point(mouseInfo.getX(), mouseInfo.getY());
-
-                //                 System.out.println("MOUSE: " + mouse.toString());
 
                 if (mouse.x <= this.frame.width + this.frame.x && mouse.x >= menuBarItem.frame().x) {
                     if (mouse.y <= this.frame.height + this.frame.y && mouse.y >= menuBarItem.frame().height) {
@@ -121,10 +117,8 @@ public class Menu extends MenuElement
 
     public void setItems(ArrayList<String> items) {
 
-//         this.items = items;
-
         // Create frame based on dimensions derived from font metrics
-        FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(font); 
+        FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(FONT); 
         int width = 0;
         int index = 0;
         // Find the widest menu item and use it's width + padding as the menu width
@@ -160,8 +154,6 @@ public class Menu extends MenuElement
         if (!active) {
             this.activeIndex = -1;
             this.menuBarItem.menuBar().changeItemStateTo(this.menuBarItem, false);
-            //             this.world.removeObjects(menuItems);
-            //             this.world.removeObject(this);
         }
     }
 }

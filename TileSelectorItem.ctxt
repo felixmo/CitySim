@@ -1,9 +1,11 @@
 #BlueJ class context
 comment0.params=type\ index\ origin
 comment0.target=TileSelectorItem(int,\ int,\ java.awt.Point)
+comment0.text=\n\ Construct\ a\ TileSelectorItem.\n\ \n\ @param\ type\ The\ type/ID\ of\ the\ tile\ to\ be\ shown.\ This\ value\ is\ used\ to\ retrieve\ the\ tile\ image\ from\ {@link\ ImageCache}\n\ @param\ index\ The\ position\ of\ the\ item\ relative\ to\ other\ items.\ This\ value\ is\ zero-indexed.\ (First\ item\ would\ have\ an\ index\ of\ 0)\n\ @param\ origin\ A\ {@link\ Point}\ with\ the\ item's\ display\ origin\ (top-left\ corner\ of\ the\ item)\ \n
 comment1.params=
 comment1.target=void\ act()
+comment1.text=\n\ Overrides\ act()\ method\ in\ 'Actor'\ from\ the\ Greenfoot\ framework\ to\ facilitate\ custom\ actions\n
 comment2.params=
 comment2.target=java.awt.Point\ origin()
-comment2.text=\ ACCESSORS\ *\n
+comment2.text=\n\ @return\ A\ {@link\ Point}\ with\ the\ item's\ display\ origin\ (top-left\ corner\ of\ the\ item).\n\ @see\ Point\n
 numComments=3

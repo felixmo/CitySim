@@ -21,20 +21,38 @@ public class SelectionEventListener extends CSEventListener
 
             switch (Zone.pendingOp()) {
                 case ResidentialZone.ID: ResidentialZone.zoneTiles(event.tiles());  
-                                         break;
+                break;
                 case IndustrialZone.ID: IndustrialZone.zoneTiles(event.tiles());
-                                        break;
+                break;
                 case CommercialZone.ID: CommercialZone.zoneTiles(event.tiles());
-                                        break;
+                break;
                 default: break;
             }
         }
         else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_ROAD)) {
-            
+
             switch (Road.pendingOp()) {
                 case Street.ID: Street.buildStreet(event.tile(), Road.activeType());
-                                break;
-                                
+                break;
+
+                default: break;
+            }
+        }
+        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_TOOL)) {
+
+            switch (Tool.pendingOp()) {
+                case Bulldozer.ID: Bulldozer.bulldoze(event.tile());
+                break;
+
+                default: break;
+            }
+        }
+        else if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_TOOLS)) {
+
+            switch (Tool.pendingOp()) {
+                case Bulldozer.ID: Bulldozer.bulldoze(event.tiles());
+                break;
+
                 default: break;
             }
         }

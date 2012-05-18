@@ -22,7 +22,10 @@ public class Selection extends Actor
     private boolean active = true;
     private boolean selectionMode = false;
     private ArrayList<Integer> acceptedTypes = new ArrayList<Integer>();          // accepted types of tiles for selection
+    private ArrayList<Integer> unacceptedTypes = new ArrayList<Integer>();
+    private ArrayList<Integer> unacceptedRoads = new ArrayList<Integer>();
     private Dimension size = new Dimension(1, 1);
+    private boolean customSize = false;
 
     private GreenfootImage image;
 
@@ -39,32 +42,81 @@ public class Selection extends Actor
         this.image.setTransparency(255);
 
         this.image.clear();
-        if (selectionMode && !selectionIsValid()) {
-            this.image.setTransparency(100);
-            this.image.setColor(Color.RED);
-            this.image.fillRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
+
+        if (selectionMode) {
+
+            if (!selectionIsValid()) {
+                this.image.setTransparency(100);
+                this.image.setColor(Color.RED);
+                this.image.fillRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
+            }
         }
+
         this.image.setColor(Color.WHITE);
         this.image.drawRect((((activeTile.position().x) * Tile.SIZE) - viewport.x), (((activeTile.position().y-2) * Tile.SIZE) - viewport.y), (int)size.getWidth()*Tile.SIZE, (int)size.getHeight()*Tile.SIZE);
     }
 
     public void act() {
 
-        if (selectionMode && Greenfoot.mouseClicked(this)) {
+        if (selectionMode) {
 
-            if (selectionIsValid()) {
-                if (Zone.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_ZONING, selectedTiles()));
+            if (Greenfoot.mouseClicked(this)) {
+
+                if (selectionIsValid()) {
+                    if (Zone.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_ZONING, selectedTiles()));
+                    if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
+                    if (Tool.pendingOp() > 0) {
+                        if (size.getWidth() == 1 && size.getHeight() == 1) {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_TOOL, activeTile));
+                        }
+                        else {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
+                        }
+                    }
+                }
+            } 
+            else if (Greenfoot.mouseDragged(this)) {
+
                 if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
+                if (Tool.pendingOp() > 0) {
+                    if (size.getWidth() == 1 && size.getHeight() == 1) {
+                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_TOOL, activeTile));
+                    }
+                    else {
+                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
+                    }
+                }
+            }
+
+            // Increases (up key) and decreases (down key) the selection size
+            
+            String key = Greenfoot.getKey();
+            if (key != null) {
+                if (key.equalsIgnoreCase("up")) {
+                    size.setSize(size.getWidth()+1, size.getHeight()+1);
+                    draw();
+                }
+                else if (key.equalsIgnoreCase("down")) {
+                    if (!(size.getWidth() == 1 && size.getHeight() == 1)) { 
+                        size.setSize(size.getWidth()-1, size.getHeight()-1);
+                        draw();
+                    }
+                }
+            }
+
+            if (Greenfoot.isKeyDown("escape")) {
+                setSelectionMode(false);
+                this.customSize = false;
+
+                Zone.setPendingOp(0);
+                Road.setPendingOp(0);
+                Tool.setPendingOp(0);
+
+                City.getInstance().removeHint();
             }
         }
 
-        if (selectionMode && Greenfoot.isKeyDown("escape")) {
-
-            setSelectionMode(false);
-
-            Zone.setPendingOp(0);
-            City.getInstance().removeHint();
-        }
+        // TODO: increase bulldozer size (up & down arrow keys)
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
@@ -94,9 +146,27 @@ public class Selection extends Actor
 
         for (int x = activeTile.position().x; x < (activeTile.position().x + size.getWidth()); x++) {
             for (int y = activeTile.position().y; y < (activeTile.position().y + size.getHeight()); y++) {
-                if (!acceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
-                    return false;
+
+                if (this.acceptedTypes.size() > 0) {
+
+                    if (!acceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
+                        return false;
+                    }
                 }
+
+                if (this.unacceptedTypes.size() > 0) {
+
+                    if (unacceptedTypes.contains(Data.tiles().get(x).get(y).type())) {
+                        return false;
+                    }
+                }
+
+                if (this.unacceptedRoads.size() > 0) {
+                    if (unacceptedRoads.contains(Data.tiles().get(x).get(y).road())) {
+                        return false;
+                    }
+                }
+
             }
         }
 
@@ -113,6 +183,10 @@ public class Selection extends Actor
 
     public void setActive(boolean value) {
         this.active = value;
+
+        if (!this.active) {
+            this.image.setTransparency(0);
+        }
     }
 
     public boolean selectionMode() {
@@ -124,9 +198,15 @@ public class Selection extends Actor
         CSLogger.sharedLogger().finer("Setting selection mode: " + (value ? "ON" : "OFF"));
 
         this.size.setSize(1, 1);
-        
+        this.customSize = false;
+
         this.active = !value;
         this.selectionMode = value;
+        if (!value) {
+            this.acceptedTypes.clear();
+            this.unacceptedTypes.clear();
+            this.unacceptedRoads.clear();
+        }
     }
 
     public Tile activeTile() {
@@ -137,7 +217,24 @@ public class Selection extends Actor
 
         if (this.activeTile == tile) return;
 
-        this.activeTile = tile;
+        if ((!selectionMode || Tool.pendingOp() == Bulldozer.ID) && tile.zoneID() > -1) {
+            // ONLY SNAP IF:
+            // - normal mode
+            // - bulldozer
+            if (this.activeTile.zoneID() != tile.zoneID()) {
+                int id = Data.tilesInZoneWithID(tile.zoneID())[0];
+                this.activeTile = Data.tileWithID(id);
+            }
+            setSize(3, 3);
+            this.customSize = false;
+        }
+        else {
+            this.activeTile = tile;
+            if (!this.customSize) {
+                setSize(1, 1);
+            }
+        }
+
         draw();
     }
 
@@ -153,11 +250,27 @@ public class Selection extends Actor
         }
     }
 
+    public void setUnacceptedTypes(int[] types) {
+        this.unacceptedTypes.clear();
+        for (int type : types) {
+            this.unacceptedTypes.add(new Integer(type));
+        }
+    }
+
+    public void setUnacceptedRoads(int[] roads) {
+        this.unacceptedRoads.clear();
+        for (int road : roads) {
+            this.unacceptedRoads.add(new Integer(road));
+        }
+    }
+
     public void setSize(int width, int height) {
         this.size.setSize(width, height);
+        this.customSize = true;
     }
 
     public void setSize(Dimension size) {
         this.size = size;
+        this.customSize = true;
     }
 }

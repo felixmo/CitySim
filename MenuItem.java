@@ -8,7 +8,7 @@ import java.awt.Color;
  * 
  * Created by Felix Mo on 04-20-2012
  * 
- * Menu item view
+ * Menu item view; extends MenuElement
  * 
  */
 
@@ -32,7 +32,6 @@ public class MenuItem extends MenuElement
     }
 
     protected void addedToWorld(World world) {
-        this.world = world;
         draw();
     }
 
@@ -41,7 +40,7 @@ public class MenuItem extends MenuElement
         // Create the image and draw text within it
         this.image.clear();
         this.image.setColor(Color.BLACK);
-        this.image.setFont(font);
+        this.image.setFont(FONT);
         this.image.drawString(this.title, 8, 16);
     }
 

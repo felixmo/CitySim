@@ -2,18 +2,44 @@ import greenfoot.*;
 import java.awt.Point;
 
 /**
- * Write a description of class Selector here.
+ * View & view controller for a dialog in which users can select a {@link TileSelctorItem}
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Felix Mo
+ * @version v0.1
+ * @since 2010-03-14
+ * 
  */
 public class TileSelector extends Actor
 {
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTANTS *
+     */
+
+    /* The origin is set to the top-left corner of the view */
+    /** X coordinate of the default origin */
     public static final int ORIGIN_X = 512;
+    /** Y coordinate of the default origin */
     public static final int ORIGIN_Y = 30;
 
-    private TileSelectorItem[] items;
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * INSTANCE VARIABLES *
+     */
+ 
+    /** Holds all of the TileSelector to be displayed */
+    private TileSelectorItem[] items;    
 
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTRUCTORS *
+     */
+
+    /**
+     * Construct a TileSelector
+     * 
+     * @param tiles The ids of the types of tiles to be displayed; the images will be automatically loaded from the image cache
+     */
     public TileSelector(int[] tiles) {
 
         int space = (1024 - (tiles.length+1 * Tile.SIZE)) / tiles.length+1;
@@ -30,16 +56,29 @@ public class TileSelector extends Actor
         setImage(new GreenfootImage("images/notif.png"));
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * GREENFOOT METHODS *
+     */
+
+    /**
+     * Overrides act() method in 'Actor' from the Greenfoot framework to facilitate custom actions
+     */
     public void act() {
 
         if (Greenfoot.isKeyDown("escape")) {
             City.getInstance().removeTileSelector();
-            return;
         }
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * ACCESSORS *
+     */
+
+    /**
+     * @return An array of the {@link TileSelectorItems} being shown by the TileSelector. 
+     * @see TileSelectorItem
      */
     public TileSelectorItem[] items() {
         return this.items;

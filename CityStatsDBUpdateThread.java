@@ -1,4 +1,4 @@
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 /**
  * Write a description of class CityStatsDBUpdateThrad here.
@@ -9,9 +9,9 @@ import java.util.LinkedHashMap;
 public class CityStatsDBUpdateThread extends CSThread 
 {
     private static int count = 0;
-    private LinkedHashMap cityStats;
+    private HashMap cityStats;
 
-    public CityStatsDBUpdateThread(LinkedHashMap cityStats) {
+    public CityStatsDBUpdateThread(HashMap cityStats) {
         super("CityStatsDBUpdateThread#" + (count+=1));
         this.cityStats = cityStats;
     }

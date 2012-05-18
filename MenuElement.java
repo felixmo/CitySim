@@ -3,34 +3,48 @@ import java.awt.Font;
 import java.awt.Rectangle;
 
 /**
- * Write a description of class MenuElement here.
+ * 'MenuElement' is an abstract class which provides a partial implementation of a menu UI element
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Felix Mo
+ * @version v0.1
+ * @since 2012-05-01
  */
+
 public abstract class MenuElement extends Actor
 {
 
-    private static final float FONTSIZE = 14.0f;
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTANTS *
+     */
+    private static final float FONTSIZE = 14.0f;                // Font size for text
+    protected static final Font FONT = CSFont.cabin(FONTSIZE);  // Font used by elements
 
-    protected World world;
-    protected String title;
-    protected Rectangle frame;
-    protected GreenfootImage image;
-    protected int index;
-    protected boolean active;
-    protected Font font;
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * ATTRIBUTES *
+     */
+    protected String title;                                     // Element's title/text
+    protected Rectangle frame;                                  // Frame (dimensions & origin)
+    protected GreenfootImage image;                             // Element's view is contained in this GreenfootImage
+    protected int index;                                        // Element's index; it's position relative to other elements it is grouped with
+    protected boolean active;                                   // Element's state
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * CONSTRUCTORS *
+     */
 
     public MenuElement(String title, int index) {
         this.title = title;
         this.index = index;
-        this.font = CSFont.cabin(FONTSIZE);
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------
     /*
      * ACCESSORS *
      */
-    
+
     public Rectangle frame() {
         return frame;
     }
@@ -46,7 +60,7 @@ public abstract class MenuElement extends Actor
     public boolean active() {
         return this.active;
     }
-    
+
     public void setActive(boolean active) {
         this.active = active;
     }

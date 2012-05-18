@@ -42,6 +42,8 @@ public class Minimap extends Actor
      */
 
     private Point viewportOrigin = new Point(0, 0);     // Viewport origin
+    
+    private boolean shouldUpdate = false;
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -105,6 +107,14 @@ public class Minimap extends Actor
     
     public static Minimap getInstance() {
         return sharedInstance;
+    }
+    
+    public boolean shouldUpdate() {
+        return this.shouldUpdate;
+    }
+    
+    public void setShouldUpdate(boolean value) {
+        this.shouldUpdate = value;
     }
 
     /*

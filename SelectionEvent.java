@@ -11,7 +11,9 @@ public class SelectionEvent extends CSEvent
 
     public static final String TILES_SELECTED_FOR_ZONING = "TILES_SELECTED_FOR_ZONING";
     public static final String TILE_SELECTED_FOR_ROAD = "TILE_SELECTED_FOR_ROAD";
-
+    public static final String TILES_SELECTED_FOR_TOOLS = "TILES_SELECTED_FOR_TOOLS";
+    public static final String TILE_SELECTED_FOR_TOOL = "TILE_SELECTED_FOR_TOOL";
+    
     private ArrayList<ArrayList<Tile>> tiles;
     private Tile tile;
 
@@ -23,7 +25,7 @@ public class SelectionEvent extends CSEvent
         super(message);
         this.tiles = tiles;
     }
-    
+
     public SelectionEvent(String message, Tile tile) {
         super(message);
         this.tile = tile;
@@ -36,7 +38,7 @@ public class SelectionEvent extends CSEvent
     public ArrayList<ArrayList<Tile>> tiles() {
         return this.tiles;    
     }
-    
+
     public Tile tile() {
         return this.tile;
     }

@@ -209,7 +209,7 @@ public class Map extends Actor
         for (int x = 0; x < SIZE_COLUMNS; x++) {
             for (int y = 0; y < SIZE_ROWS; y++) {
 
-                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0, 0));
+                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0, -1, 0));
                 dbID++;
                 //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), SIZE_ROWS-1)]));
             }
@@ -247,14 +247,14 @@ public class Map extends Actor
     }
 
     protected void draw() {
-        
+
         // Get cached map data
         ArrayList<ArrayList<Tile>> map = Data.tiles();
-        
+
         // Coordinates for the tile being drawn; set at the origin of the shifted viewport
         int tile_x = viewport.x;
         int tile_y = viewport.y;
-        
+
         Point vpLoc = viewport.getLocation();                   // Viewport location
         Point cell = cellForCoordinatePair(vpLoc.x, vpLoc.y);   // Cell @ viewport origin
 
@@ -267,7 +267,7 @@ public class Map extends Actor
 
                 // Get the tile (if it is within the bounds of the map)
                 Tile tile = map.get(Math.min(col, SIZE_COLUMNS-1)).get(Math.min(row, SIZE_ROWS-1));
-                
+
                 // Draw the tile image onto the whole map image
                 view.drawImage(tile.image(), tile_x, tile_y-Tile.SIZE);
 

@@ -28,6 +28,9 @@ public class MenuItemEvent extends CSEvent
     // Civic
     //
     
+    // Tools
+    public static final String BULLDOZER = "Bulldozer";
+    
     public MenuItemEvent(String message) {
         super(message);
     }

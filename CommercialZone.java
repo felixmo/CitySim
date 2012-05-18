@@ -11,7 +11,8 @@ public class CommercialZone extends Zone
 {
     public static final int ID = 2;
     public static final int[] MARKERS = { 600, 601, 602, 603, 604, 605, 606, 607, 608 };
-    public static final Dimension SIZE = new Dimension(3, 3);
+    public static final int SIZE_WIDTH = 3;
+    public static final int SIZE_HEIGHT = 3;
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 

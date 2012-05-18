@@ -1,5 +1,5 @@
 import greenfoot.*;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.Rectangle;
 import java.awt.Point;
@@ -23,7 +23,7 @@ public class HUD extends Actor {
      * INSTANCE VARIABLES
      */
 
-    private LinkedHashMap labels = new LinkedHashMap(4);                                             // Holds references to all labels for easy access
+    private HashMap labels = new HashMap(4);                                             // Holds references to all labels for easy access
     private Minimap minimap;                                                                        // The minimap
 
     /*
@@ -67,7 +67,7 @@ public class HUD extends Actor {
     }
 
     // Refreshes the values on the HUD with the values provided
-    public void refresh(LinkedHashMap values) {
+    public void refresh(HashMap values) {
 
         // Maps the values from the provided LinkedHashMap to the values on the HUD
         Iterator iterator = values.keySet().iterator();

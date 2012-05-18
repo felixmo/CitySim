@@ -1,7 +1,7 @@
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +47,8 @@ public class Data
     private static final String METADATA = "metadata";
     private static final String TILES = "tiles";
     private static final String CITYSTATS = "citystats";
+    private static final String ZONESTATS = "zonestats";
+    private static final String ZONETILE = "zone_tile";
 
     // - External -
     // Map size
@@ -60,6 +62,14 @@ public class Data
     public static final String CITYSTATS_CASH = "cash";
     // Metadata
     public static final String METADATA_NAME = "name";
+    // Zones
+    public static final String ZONETILE_ZONEID = "zone_id";
+    public static final String ZONETILE_TILEID = "tile_id";
+    // Zone stats
+    public static final String ZONESTATS_RESIDENTIALCOUNT = "residential_count";
+    public static final String ZONESTATS_INDUSTRIALCOUNT = "industrial_count";
+    public static final String ZONESTATS_COMMERCIALCOUNT = "commercial_count";
+    public static final String ZONESTATS_LASTZONEID = "last_zone_id";
 
     // --------------------------------------------------------------------------------------------------------------------
 
@@ -89,12 +99,12 @@ public class Data
     }
 
     public static void closeConnection() {
-        
+
         CSLogger.sharedLogger().info("Asking data source to close connection...");
-        
+
         // Close connection to DB
         DataSource.getInstance().closeConnection();
-        
+
         // Clean out the cache 
         cache.invalidateAll();
         cache.cleanUp();
@@ -103,26 +113,30 @@ public class Data
 
     //
 
-    public static LinkedHashMap mapSize() {
+    public static HashMap mapSize() {
         CSLogger.sharedLogger().info("Returning map size");
-        return (LinkedHashMap)get(MAPSIZE);
+        return (HashMap)get(MAPSIZE);
     }
 
-    public static void insertMapSize(LinkedHashMap mapSize) {
+    public static void insertMapSize(HashMap mapSize) {
         CSLogger.sharedLogger().info("Inserting map size");
         DataSource.getInstance().insertMapSize(mapSize);
     }
 
     //
 
-    public static LinkedHashMap mapMetadata() {
-        CSLogger.sharedLogger().info("Returning map size");
-        return (LinkedHashMap)get(METADATA);
+    public static HashMap mapMetadata() {
+        CSLogger.sharedLogger().info("Returning map metadata");
+        return (HashMap)get(METADATA);
     }
 
-    public static void insertMapMetadata(LinkedHashMap metadata) {
+    public static void insertMapMetadata(HashMap metadata) {
         CSLogger.sharedLogger().info("Inserting map metadata");
         DataSource.getInstance().insertMapMetadata(metadata);
+    }
+
+    public static void updateMapMetadata(HashMap metadata) {
+        DataSource.getInstance().updateMapMetadata(metadata);
     }
 
     //
@@ -130,6 +144,10 @@ public class Data
     public static ArrayList<ArrayList<Tile>> tiles() {
         CSLogger.sharedLogger().finest("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
+    }
+
+    public static Tile tileWithID(int id) {
+        return DataSource.getInstance().tileWithID(id);
     }
 
     public static void insertTiles(ArrayList<ArrayList<Tile>> tiles) {
@@ -144,15 +162,13 @@ public class Data
         // Update the cached map w/ the changes so that the map can be redrawn using the modified cached data
         // This is much faster than writing the changes to the DB, AND THEN running a query to refresh the cache
         ArrayList<ArrayList<Tile>> cachedTiles = (ArrayList<ArrayList<Tile>>)get(TILES);
-        Tile cachedTile = (Tile)cachedTiles.get(tile.position().x).get(tile.position().y);
-        cachedTiles.get(tile.position().x).remove(tile.position().y);
-        cachedTiles.get(tile.position().x).add(tile.position().y, tile);
+        cachedTiles.get(tile.position().x).set(tile.position().y, tile);
 
         // Re-draw map
         Map.getInstance().draw();
-
-        // Update the minimap on another thread; less of a priority
-        new MinimapDrawThread().start();
+        
+        // Tell minimap it should be updated
+        Minimap.getInstance().setShouldUpdate(true);
 
         // Write changes to DB after displaying the changes
         new TileDBUpdateThread(tile).start();
@@ -167,18 +183,15 @@ public class Data
         ArrayList<ArrayList<Tile>> cachedTiles = (ArrayList<ArrayList<Tile>>)get(TILES);
         for (int x = 0; x < tiles.size(); x++) {
             for (int y = 0; y < tiles.get(x).size(); y++) {
-
-                Tile tile = (Tile)tiles.get(x).get(y);
-                cachedTiles.get(x).remove(y);
-                cachedTiles.get(x).add(y, tile);
+                cachedTiles.get(x).set(y, (Tile)tiles.get(x).get(y));
             }
         }
 
         // Re-draw map
         Map.getInstance().draw();
 
-        // Update the minimap on another thread; less of a priority
-        new MinimapDrawThread().start();
+        // Tell minimap it should be updated
+        Minimap.getInstance().setShouldUpdate(true);
 
         // Write changes to DB after displaying the changes
         new TileDBUpdateThread(tiles).start();
@@ -186,17 +199,55 @@ public class Data
 
     //
 
-    public static LinkedHashMap cityStats() {
-        CSLogger.sharedLogger().info("Returning city stats");
-        return (LinkedHashMap)get(CITYSTATS);
+    public static HashMap zoneStats() {
+        CSLogger.sharedLogger().info("Getting zone stats");
+        return DataSource.getInstance().zoneStats();
     }
 
-    public static void insertCityStats(LinkedHashMap cityStats) {
+    public static void insertZoneStats(HashMap stats) {
+        CSLogger.sharedLogger().info("Inserting zone stats...");
+        DataSource.getInstance().insertZoneStats(stats);
+    }
+
+    public static void updateZoneStats(HashMap stats) {
+        CSLogger.sharedLogger().info("Updating zone stats...");
+        DataSource.getInstance().updateZoneStats(stats);
+    }
+
+    public static int lastZoneID() {
+        return ((Integer)DataSource.getInstance().zoneStats().get("last_zone_id")).intValue();
+    }
+
+    //
+
+    public static int[] tilesInZoneWithID(int id) {
+        CSLogger.sharedLogger().info("Getting zone with ID: " + id);
+        return DataSource.getInstance().tilesInZoneWithID(id);
+    }
+
+    public static void insertZoneWithTiles(HashMap[] zoneTiles) {
+        CSLogger.sharedLogger().info("Inserting zone...");
+        new ZoneDBInsertThread(zoneTiles).start();
+    }
+
+    public static void deleteZoneWithID(int zoneID) {
+        CSLogger.sharedLogger().info("Deleting zone with ID: " + zoneID);
+        new ZoneDBDeleteThread(zoneID).start();
+    }
+
+    //
+
+    public static HashMap cityStats() {
+        CSLogger.sharedLogger().info("Returning city stats");
+        return (HashMap)get(CITYSTATS);
+    }
+
+    public static void insertCityStats(HashMap cityStats) {
         CSLogger.sharedLogger().info("Inserting city stats");
         DataSource.getInstance().insertCityStats(cityStats);
     }
 
-    public static void updateCityStats(LinkedHashMap cityStats) {
+    public static void updateCityStats(HashMap cityStats) {
         CSLogger.sharedLogger().info("Updating city stats");
         // Write new city stats. on seperate thread
         new CityStatsDBUpdateThread(cityStats).start();
