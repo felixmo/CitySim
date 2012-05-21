@@ -1,5 +1,8 @@
 #BlueJ class context
 comment0.params=
 comment0.target=int\ count()
-comment0.text=\ ACCESSORS\ *\n
-numComments=1
+comment1.params=more
+comment1.target=void\ addToCount(int)
+comment2.params=less
+comment2.target=void\ subtractFromCount(int)
+numComments=3

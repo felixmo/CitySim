@@ -1,4 +1,3 @@
-import java.util.LinkedHashMap;
 import java.util.ArrayList;
 
 /**
@@ -12,15 +11,9 @@ public class Road
     private static int pendingOp = 0;
     private static int activeType = 0;
 
-    protected static LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<Integer, Integer>();
-
     protected static void updateTile(Tile selectedTile) {
 
         CSLogger.sharedLogger().info("Building road on tile (" + selectedTile.position().x + ", " + selectedTile.position().y + ") of type " + pendingOp);
-
-        selectedTile.setRoad(pendingOp);
-        Integer value = counts.get((Integer)pendingOp);
-        counts.put((Integer)pendingOp, value == null ? (Integer)1 : (Integer)(value + 1));
 
         Data.updateTile(selectedTile);
     }
@@ -40,9 +33,6 @@ public class Road
                 count++;
             }
         }
-
-        Integer value = counts.get((Integer)pendingOp);
-        counts.put((Integer)pendingOp, value == null ? (Integer)count : (Integer)(value + count));
 
         Data.updateTiles(selectedTiles);
     }

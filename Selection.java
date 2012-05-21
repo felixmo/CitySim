@@ -217,7 +217,7 @@ public class Selection extends Actor
 
         if (this.activeTile == tile) return;
 
-        if ((!selectionMode || Tool.pendingOp() == Bulldozer.ID) && tile.zoneID() > -1) {
+        if ((!selectionMode || Tool.pendingOp() == Bulldozer.TYPE_ID) && tile.zoneID() > -1) {
             // ONLY SNAP IF:
             // - normal mode
             // - bulldozer

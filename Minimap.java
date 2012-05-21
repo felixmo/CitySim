@@ -134,9 +134,9 @@ public class Minimap extends Actor
     
     private Color colorForTileOfZone(int zone) {
         switch (zone) {
-            case ResidentialZone.ID: return ZONE_RESIDENTIAL;
-            case IndustrialZone.ID: return ZONE_INDUSTRIAL;
-            case CommercialZone.ID: return ZONE_COMMERCIAL;
+            case ResidentialZone.TYPE_ID: return ZONE_RESIDENTIAL;
+            case IndustrialZone.TYPE_ID: return ZONE_INDUSTRIAL;
+            case CommercialZone.TYPE_ID: return ZONE_COMMERCIAL;
             
             default: return Color.BLACK;
         }

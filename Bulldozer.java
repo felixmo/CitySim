@@ -9,17 +9,19 @@ import java.util.ArrayList;
  */
 public class Bulldozer extends Tool
 {
-    public static final int ID = 1;
+    public static final int TYPE_ID = 1;
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
 
     public static void bulldoze(Tile tile) {
 
+        if (tile.road() == Street.TYPE_ID) Street.subtractFromCount(1);
+
         tile.setType(Tile.GROUND);
         tile.setRoad(0);
         tile.setZone(0);
         tile.setZoneID(-1);
-        
+
         Tool.updateTile(tile);
     }
 
@@ -28,12 +30,22 @@ public class Bulldozer extends Tool
         int width = tiles.size();
         int height = ((ArrayList)tiles.get(0)).size();
 
-        if (((Tile)tiles.get(0).get(0)).zoneID() > -1) {
-            Data.deleteZoneWithID(((Tile)tiles.get(0).get(0)).zoneID());
+        int zone_type = ((Tile)tiles.get(0).get(0)).zone();
+        switch (zone_type) {
+            case CommercialZone.TYPE_ID: CommercialZone.subtractFromCount(width*height);
+            break;
+            case IndustrialZone.TYPE_ID: IndustrialZone.subtractFromCount(width*height);
+            break;
+            case ResidentialZone.TYPE_ID: ResidentialZone.subtractFromCount(width*height);
+            break;
+            default:
+            break;
         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+
+                if (((Tile)tiles.get(i).get(j)).road() == Street.TYPE_ID) Street.subtractFromCount(1);
 
                 ((Tile)tiles.get(i).get(j)).setType(Tile.GROUND);
                 ((Tile)tiles.get(i).get(j)).setRoad(0);

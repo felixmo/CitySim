@@ -20,11 +20,11 @@ public class SelectionEventListener extends CSEventListener
             CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
 
             switch (Zone.pendingOp()) {
-                case ResidentialZone.ID: ResidentialZone.zoneTiles(event.tiles());  
+                case ResidentialZone.TYPE_ID: ResidentialZone.zoneTiles(event.tiles());  
                 break;
-                case IndustrialZone.ID: IndustrialZone.zoneTiles(event.tiles());
+                case IndustrialZone.TYPE_ID: IndustrialZone.zoneTiles(event.tiles());
                 break;
-                case CommercialZone.ID: CommercialZone.zoneTiles(event.tiles());
+                case CommercialZone.TYPE_ID: CommercialZone.zoneTiles(event.tiles());
                 break;
                 default: break;
             }
@@ -32,7 +32,7 @@ public class SelectionEventListener extends CSEventListener
         else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_ROAD)) {
 
             switch (Road.pendingOp()) {
-                case Street.ID: Street.buildStreet(event.tile(), Road.activeType());
+                case Street.TYPE_ID: Street.buildStreet(event.tile(), Road.activeType());
                 break;
 
                 default: break;
@@ -41,7 +41,7 @@ public class SelectionEventListener extends CSEventListener
         else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_TOOL)) {
 
             switch (Tool.pendingOp()) {
-                case Bulldozer.ID: Bulldozer.bulldoze(event.tile());
+                case Bulldozer.TYPE_ID: Bulldozer.bulldoze(event.tile());
                 break;
 
                 default: break;
@@ -50,7 +50,7 @@ public class SelectionEventListener extends CSEventListener
         else if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_TOOLS)) {
 
             switch (Tool.pendingOp()) {
-                case Bulldozer.ID: Bulldozer.bulldoze(event.tiles());
+                case Bulldozer.TYPE_ID: Bulldozer.bulldoze(event.tiles());
                 break;
 
                 default: break;

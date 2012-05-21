@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.lang.Integer;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * Write a description of class Zoning here.
@@ -13,8 +12,6 @@ public class Zone
 {   
     private static int pendingOp = 0; // ID of zone type
 
-    protected static LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<Integer, Integer>();
-
     // - 
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
@@ -22,6 +19,7 @@ public class Zone
         int zoneID = Data.lastZoneID() + 1;
         HashMap zoneStats = Data.zoneStats();
         zoneStats.put(Data.ZONESTATS_LASTZONEID, zoneID);
+        Data.updateZoneStats(zoneStats);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -47,24 +45,10 @@ public class Zone
             }
         }
 
-        Integer value = counts.get((Integer)pendingOp);
-        counts.put((Integer)pendingOp, value == null ? (Integer)count : (Integer)(value + count));
-
-        switch (pendingOp) {
-            case CommercialZone.ID: zoneStats.put(Data.ZONESTATS_COMMERCIALCOUNT, counts.get(pendingOp));
-            break;
-            case IndustrialZone.ID: zoneStats.put(Data.ZONESTATS_INDUSTRIALCOUNT, counts.get(pendingOp));
-            break;
-            case ResidentialZone.ID: zoneStats.put(Data.ZONESTATS_RESIDENTIALCOUNT, counts.get(pendingOp));
-            break;
-            default: break;
-        }
-
         Data.insertZoneWithTiles(zoneTiles);
-        Data.updateZoneStats(zoneStats);
         Data.updateTiles(selectedTiles);
     }
-
+    
     /*
      * ACCESSORS *
      */

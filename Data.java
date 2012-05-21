@@ -70,6 +70,8 @@ public class Data
     public static final String ZONESTATS_INDUSTRIALCOUNT = "industrial_count";
     public static final String ZONESTATS_COMMERCIALCOUNT = "commercial_count";
     public static final String ZONESTATS_LASTZONEID = "last_zone_id";
+    // Road stats
+    public static final String ROADSTATS_STREETCOUNT = "street_count";
 
     // --------------------------------------------------------------------------------------------------------------------
 
@@ -166,7 +168,7 @@ public class Data
 
         // Re-draw map
         Map.getInstance().draw();
-        
+
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
 
@@ -216,6 +218,23 @@ public class Data
 
     public static int lastZoneID() {
         return ((Integer)DataSource.getInstance().zoneStats().get("last_zone_id")).intValue();
+    }
+
+    //
+
+    public static HashMap roadStats() {
+        CSLogger.sharedLogger().info("Getting road stats");
+        return DataSource.getInstance().roadStats();
+    }
+
+    public static void insertRoadStats(HashMap stats) {
+        CSLogger.sharedLogger().info("Inserting road stats...");
+        DataSource.getInstance().insertRoadStats(stats);
+    }
+
+    public static void updateRoadStats(HashMap stats) {
+        CSLogger.sharedLogger().info("Updating road stats...");
+        DataSource.getInstance().updateRoadStats(stats);
     }
 
     //

@@ -166,6 +166,11 @@ public class DataSource
             zoneStats.execute();
             zoneStats.close();
 
+            // Road stats
+            PreparedStatement roadStats = connection.prepareStatement("CREATE TABLE road_stats (street_count);");
+            roadStats.execute();
+            roadStats.close();
+
             // Tiles
             PreparedStatement tiles = connection.prepareStatement("CREATE TABLE tiles (id, x, y, type, zone, zone_id, road);");
             tiles.execute();
@@ -406,7 +411,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().finer("Finished inserting zone into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().finer("Finished inserting zone stats into DB (\"" + dbName + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -431,7 +436,65 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().finer("Finished updating map metadata in DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().finer("Finished updating zone stats in DB (\"" + dbName + "\")");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    // - ROAD STATS -
+    
+    public HashMap roadStats() {
+        CSLogger.sharedLogger().finer("Retrieving road stats from DB (\"" + dbName + "\")...");
+
+        try {
+
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT * FROM road_stats", new MapListHandler());
+            HashMap road = (HashMap)results.listIterator().next();
+            CSLogger.sharedLogger().info("Finished retrieving road stats from DB (\"" + dbName + "\").");
+            return road;
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void insertRoadStats(HashMap stats) {
+        CSLogger.sharedLogger().finer("Inserting road stats into DB (\"" + dbName + "\")...");
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO road_stats VALUES (?);");
+            // 1. street_count
+
+            statement.setInt(1, ((Integer)stats.get(Data.ROADSTATS_STREETCOUNT)).intValue());
+            statement.addBatch();
+            statement.executeBatch();
+            statement.close();
+
+            CSLogger.sharedLogger().finer("Finished inserting road stats into DB (\"" + dbName + "\")");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public void updateRoadStats(HashMap stats) {
+        CSLogger.sharedLogger().finer("Updating road stats in DB (\"" + dbName + "\")...");
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE road_stats SET " + Data.ROADSTATS_STREETCOUNT + " = ?;");
+            // 1. street_count
+
+            statement.setInt(1, ((Integer)stats.get(Data.ROADSTATS_STREETCOUNT)).intValue());
+            statement.addBatch();
+            statement.executeBatch();
+            statement.close();
+
+            CSLogger.sharedLogger().finer("Finished updating road stats in DB (\"" + dbName + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();

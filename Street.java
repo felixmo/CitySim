@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Write a description of class Street here.
@@ -9,15 +10,15 @@ import java.util.ArrayList;
  */
 public class Street extends Road
 {
-    public static final int ID = 1;
+    public static final int TYPE_ID = 1;
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
 
     public static void buildStreet(Tile tile, int type) {
 
-        // System.out.println("Building street");
-
         tile.setType(type);
+        tile.setRoad(TYPE_ID);
+        addToCount(1);
 
         Road.updateTile(tile);
     }
@@ -26,23 +27,32 @@ public class Street extends Road
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
+        addToCount(width*height);
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
                 tile.setType(type);
+                tile.setRoad(TYPE_ID);
             }
         }
-        
+
         Road.updateTiles(selectedTiles);
     }
 
-    /*
-     * ACCESSORS *
-     */
-
     public static int count() {
-        Integer count = Zone.counts.get((Integer)ID);
-        return count == null ? 0 : count;
+        return ((Integer)Data.roadStats().get(Data.ROADSTATS_STREETCOUNT)).intValue();
+    }
+
+    public static void addToCount(int more) {
+        HashMap roadStats = Data.roadStats();
+        roadStats.put(Data.ROADSTATS_STREETCOUNT, new Integer(count()+more));
+        Data.updateRoadStats(roadStats);
+    }
+
+    public static void subtractFromCount(int less) {
+        HashMap roadStats = Data.roadStats();
+        roadStats.put(Data.ROADSTATS_STREETCOUNT, new Integer(count()-less));
+        Data.updateRoadStats(roadStats);
     }
 }

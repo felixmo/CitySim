@@ -107,6 +107,12 @@ public class City extends World
             zoneStats.put(Data.ZONESTATS_LASTZONEID, -1);
 
             Data.insertZoneStats(zoneStats);
+            
+            // - Road stats -
+            HashMap roadStats = new HashMap(1);
+            roadStats.put(Data.ROADSTATS_STREETCOUNT, 0);
+            
+            Data.insertRoadStats(roadStats);
         }
 
         // Resume tracking date from last saved date

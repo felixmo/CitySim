@@ -24,8 +24,11 @@ public class Tile
     private Point position;
     private int type = 0;       // Type of tile (detail)
     private int zone = 0;       // Type of zone
-    private int zoneID = -1; 
+    private int zoneID = -1;    // ID of the zone the tile belongs to; -1 = none
     private int road = 0;       // Type of road
+    // Utilites
+    private boolean powered = false; 
+    private boolean hasWater = false;
 
     /*
      * CONSTANTS *
