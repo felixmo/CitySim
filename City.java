@@ -72,7 +72,7 @@ public class City extends World
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
-
+        
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
 

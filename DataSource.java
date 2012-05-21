@@ -53,8 +53,13 @@ public class DataSource
 
         this.dbName = dbName;
 
-        // Check if the database already exists
-        dbIsNew = !fileExists(mapsDirectory + "/" + this.dbName + ".db");
+        // Check if the database and the "maps" directory exists; create them if they don't
+        if (new File(mapsDirectory).isDirectory()) {
+            dbIsNew = !fileExists(mapsDirectory + "/" + this.dbName + ".db");
+        }
+        else {
+            new File(mapsDirectory).mkdir();
+        }
 
         openConnection(this.dbName);
 
@@ -444,7 +449,7 @@ public class DataSource
     }
 
     // - ROAD STATS -
-    
+
     public HashMap roadStats() {
         CSLogger.sharedLogger().finer("Retrieving road stats from DB (\"" + dbName + "\")...");
 
