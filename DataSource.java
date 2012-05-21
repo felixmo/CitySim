@@ -55,10 +55,13 @@ public class DataSource
 
         // Check if the database and the "maps" directory exists; create them if they don't
         if (new File(mapsDirectory).isDirectory()) {
+            CSLogger.sharedLogger().info("Maps directory exists; checking if map exists...");
             dbIsNew = !fileExists(mapsDirectory + "/" + this.dbName + ".db");
         }
         else {
+            CSLogger.sharedLogger().info("Maps directory does not exist; creating it now...");
             new File(mapsDirectory).mkdir();
+            dbIsNew = true;
         }
 
         openConnection(this.dbName);
