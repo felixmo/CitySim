@@ -1,6 +1,0 @@
-#BlueJ class context
-comment0.params=key
-comment0.target=greenfoot.GreenfootImage\ load(java.lang.Integer)
-comment1.params=key
-comment1.target=greenfoot.GreenfootImage\ get(java.lang.Integer)
-numComments=2

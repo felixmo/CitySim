@@ -27,3 +27,7 @@ Thumbs.db
 # Java junk #
 #############
 *.class
+
+# Greenfoot junk #
+##################
+*.ctxt
