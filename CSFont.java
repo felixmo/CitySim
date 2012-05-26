@@ -38,7 +38,7 @@ public class CSFont
     private static Font loadFont(String path) {
 
         try {
-            InputStream is = Label.class.getResourceAsStream(path);
+            InputStream is = CSFont.class.getResourceAsStream(path);
             return Font.createFont(Font.TRUETYPE_FONT, is);
         }
         catch (Exception e) {

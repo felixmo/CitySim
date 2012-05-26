@@ -4,17 +4,17 @@
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class ZoneDBDeleteThread extends CSThread
+public class ZoneTileDBDeleteThread extends CSThread
 {
 
     private int zoneID;
 
-    public ZoneDBDeleteThread(int zoneID) {
+    public ZoneTileDBDeleteThread(int zoneID) {
         super("");
         this.zoneID = zoneID;
     }
 
     public void run() {
-        DataSource.getInstance().deleteZoneWithID(this.zoneID);
+        DataSource.getInstance().deleteZoneTileWithID(this.zoneID);
     }
 }

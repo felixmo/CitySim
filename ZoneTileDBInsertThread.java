@@ -1,22 +1,22 @@
 import java.util.HashMap;
 
 /**
- * Write a description of class ZoneDBInsertThread here.
+ * Write a description of class ZoneTilesDBInsertThread here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class ZoneDBInsertThread extends CSThread
+public class ZoneTileDBInsertThread extends CSThread
 {
 
     private HashMap[] zoneTiles;    
 
-    public ZoneDBInsertThread(HashMap[] zoneTiles) {
+    public ZoneTileDBInsertThread(HashMap[] zoneTiles) {
         super("");
         this.zoneTiles = zoneTiles;
     }
 
     public void run() {
-        DataSource.getInstance().insertZoneWithTiles(this.zoneTiles);
+        DataSource.getInstance().insertZoneTiles(this.zoneTiles);
     }
 }

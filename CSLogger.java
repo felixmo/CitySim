@@ -1,4 +1,5 @@
-import java.util.logging.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Write a description of class CSLogger here.
@@ -8,26 +9,7 @@ import java.util.logging.*;
  */
 public class CSLogger
 {
-    private static Logger sharedLogger;              // Shared logger
-    private static final Level LEVEL = Level.FINER;  // Only events AT or ABOVE this level will be logged & shown in the console
-
-    static {
-
-        if (sharedLogger == null) {
-            // Configure logging
-            
-            LogManager manager = LogManager.getLogManager();
-            manager.reset();
-
-            ConsoleHandler handler = new ConsoleHandler();
-            handler.setLevel(LEVEL);
-            handler.setFormatter(new LogFormatter());
-
-            sharedLogger = Logger.getLogger("com.felixmo.CitySim.logger");
-            sharedLogger.addHandler(handler);
-            sharedLogger.setLevel(LEVEL);
-        }
-    }
+    private final static Logger sharedLogger = LoggerFactory.getLogger("com.felixmo.CitySim");           // Shared logger
 
     // Logging is done via a global instance of 'Logger' rather than through CSLogger so that the caller can be logged as well
     public static Logger sharedLogger() {

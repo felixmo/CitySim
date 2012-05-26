@@ -24,6 +24,7 @@ public class Selection extends Actor
     private ArrayList<Integer> acceptedTypes = new ArrayList<Integer>();          // accepted types of tiles for selection
     private ArrayList<Integer> unacceptedTypes = new ArrayList<Integer>();
     private ArrayList<Integer> unacceptedRoads = new ArrayList<Integer>();
+    private ArrayList<Integer> unacceptedZones = new ArrayList<Integer>();
     private Dimension size = new Dimension(1, 1);
     private boolean customSize = false;
 
@@ -89,7 +90,7 @@ public class Selection extends Actor
             }
 
             // Increases (up key) and decreases (down key) the selection size
-            
+
             String key = Greenfoot.getKey();
             if (key != null) {
                 if (key.equalsIgnoreCase("up")) {
@@ -115,8 +116,11 @@ public class Selection extends Actor
                 City.getInstance().removeHint();
             }
         }
-
-        // TODO: increase bulldozer size (up & down arrow keys)
+//         else {
+//             if (Greenfoot.mouseClicked(this)) {
+//                 System.out.println(Data.zonesInArea(new Point(activeTile.position().x+1, activeTile.position().y+1), 25).length);
+//             }
+//         }
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
@@ -167,6 +171,12 @@ public class Selection extends Actor
                     }
                 }
 
+                if (this.unacceptedZones.size() > 0) {
+                    if (unacceptedZones.contains(Data.tiles().get(x).get(y).zone())) {
+                        return false;
+                    }
+                }
+
             }
         }
 
@@ -195,7 +205,7 @@ public class Selection extends Actor
 
     public void setSelectionMode(boolean value) {
 
-        CSLogger.sharedLogger().finer("Setting selection mode: " + (value ? "ON" : "OFF"));
+        CSLogger.sharedLogger().debug("Setting selection mode: " + (value ? "ON" : "OFF"));
 
         this.size.setSize(1, 1);
         this.customSize = false;
@@ -261,6 +271,13 @@ public class Selection extends Actor
         this.unacceptedRoads.clear();
         for (int road : roads) {
             this.unacceptedRoads.add(new Integer(road));
+        }
+    }
+
+    public void setUnacceptedZones(int[] zones) {
+        this.unacceptedZones.clear();
+        for (int zone : zones) {
+            this.unacceptedZones.add(new Integer(zone));
         }
     }
 

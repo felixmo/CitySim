@@ -13,7 +13,7 @@ public class SelectionEventListener extends CSEventListener
 
     @Subscribe
     public void listen(SelectionEvent event) {
-        CSLogger.sharedLogger().finer("Message received: " + event.message());
+        CSLogger.sharedLogger().debug("Message received: " + event.message());
 
         if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
 

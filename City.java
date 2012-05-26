@@ -72,12 +72,14 @@ public class City extends World
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
-        
+
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
 
         //         new File("maps/test.db").delete();
 
+        System.setProperty("logback.configurationFile", "./external/logback.xml");
+        
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
         if (Data.dbIsNew()) {
 
@@ -107,11 +109,11 @@ public class City extends World
             zoneStats.put(Data.ZONESTATS_LASTZONEID, -1);
 
             Data.insertZoneStats(zoneStats);
-            
+
             // - Road stats -
             HashMap roadStats = new HashMap(1);
             roadStats.put(Data.ROADSTATS_STREETCOUNT, 0);
-            
+
             Data.insertRoadStats(roadStats);
         }
 
@@ -225,8 +227,15 @@ public class City extends World
 
         // Write to DB
         writeCountdown++;
-        if (writeCountdown == FREQ_WRITE) {
 
+        if (writeCountdown % 5 == 0) {
+            new ZoneAgeDBUpdateThread(5).start();
+        }
+
+        if (writeCountdown == FREQ_WRITE) {
+            
+//             new CityEvaluationThread().start();
+            
             Data.updateCityStats(currentCityStats());  
             writeCountdown = 0;
 

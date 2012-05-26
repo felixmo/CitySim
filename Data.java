@@ -3,6 +3,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.awt.Point;
 
 /**
  * Data
@@ -42,40 +43,82 @@ public class Data
      * IDENTIFIERS *
      */
 
-    // - Internal -
-    private static final String MAPSIZE = "map_size";
-    private static final String METADATA = "metadata";
-    private static final String TILES = "tiles";
-    private static final String CITYSTATS = "citystats";
-    private static final String ZONESTATS = "zonestats";
-    private static final String ZONETILE = "zone_tile";
+    public static final String MAPSIZE = "map_size";
+    public static final String METADATA = "map_metadata";
+    public static final String TILES = "tiles";
+    public static final String CITYSTATS = "city_stats";
+    public static final String ZONESTATS = "zone_stats";
+    public static final String ZONETILE = "zone_tile";
+    public static final String ZONES = "zones";
+    public static final String ROADSTATS = "road_stats";
+    public static final HashMap<String, String[]> TABLES_MAPPING;
 
-    // - External -
+    // Zones
+    public static final String ZONES_ID = "id";
+    public static final String ZONES_ZONE = "zone";
+    public static final String ZONES_AGE = "age";
+    public static final String ZONES_POWERED = "powered";
+    public static final String ZONES_HASWATER = "has_water";
+    public static final String ZONES_X = "x";
+    public static final String ZONES_Y = "y";
+    public static final String ZONES_PRIMARY_ALLOCATION = "primary_allocation";
+    public static final String ZONES_PRIMARY_CAPACITY = "primary_capacity";
+    public static final String ZONES_SECONDARY_ALLOCATION = "secondary_allocation";
+    public static final String ZONES_SECONDARY_CAPACITY = "secondary_capacity";
+    public static final String[] ZONES_PARAMS = { ZONES_ID, ZONES_ZONE, ZONES_AGE, ZONES_POWERED, ZONES_HASWATER, ZONES_X, ZONES_Y, ZONES_PRIMARY_ALLOCATION, ZONES_PRIMARY_CAPACITY, ZONES_SECONDARY_ALLOCATION, ZONES_SECONDARY_CAPACITY };
+    // Zone tiles
+    public static final String ZONETILE_ZONEID = "zone_id";
+    public static final String ZONETILE_TILEID = "tile_id";
+    public static final String[] ZONETILE_PARAMS = { ZONETILE_ZONEID, ZONETILE_TILEID };
+    // Zone stats
+    public static final String ZONESTATS_RESIDENTIALCOUNT = "residential_count";
+    public static final String ZONESTATS_INDUSTRIALCOUNT = "industrial_count";
+    public static final String ZONESTATS_COMMERCIALCOUNT = "commercial_count";
+    public static final String ZONESTATS_LASTZONEID = "last_zone_id";
+    public static final String[] ZONESTATS_PARAMS = { ZONESTATS_RESIDENTIALCOUNT, ZONESTATS_INDUSTRIALCOUNT, ZONESTATS_COMMERCIALCOUNT, ZONESTATS_LASTZONEID };
+    // Road stats
+    public static final String ROADSTATS_STREETCOUNT = "street_count";
+    public static final String[] ROADSTATS_PARAMS = { ROADSTATS_STREETCOUNT };
+    // Tiles
+    public static final String TILES_ID = "id";
+    public static final String TILES_X = "x";
+    public static final String TILES_Y = "y";
+    public static final String TILES_TYPE = "type";
+    public static final String TILES_ZONE = "zone";
+    public static final String TILES_ZONEID = "zone_id";
+    public static final String TILES_ROAD = "road";
+    public static final String TILES_POWERED = "powered";
+    public static final String TILES_HASWATER = "has_water";
+    public static final String[] TILES_PARAMS = { TILES_ID, TILES_X, TILES_Y, TILES_TYPE, TILES_ZONE, TILES_ZONEID, TILES_ROAD, TILES_POWERED, TILES_HASWATER};
     // Map size
     public static final String MAPSIZE_ROWS = "rows";
     public static final String MAPSIZE_COLUMNS = "columns";
+    public static final String[] MAPSIZE_PARAMS = { MAPSIZE_ROWS, MAPSIZE_COLUMNS };
+    // Metadata
+    public static final String METADATA_NAME = "name";
+    public static final String[] METADATA_PARAMS = { METADATA_NAME };
     // City stats.
     public static final String CITYSTATS_DAYS = "days";
     public static final String CITYSTATS_MONTHS = "months";
     public static final String CITYSTATS_YEARS = "years";
     public static final String CITYSTATS_POPULATION = "population";
     public static final String CITYSTATS_CASH = "cash";
-    // Metadata
-    public static final String METADATA_NAME = "name";
-    // Zones
-    public static final String ZONETILE_ZONEID = "zone_id";
-    public static final String ZONETILE_TILEID = "tile_id";
-    // Zone stats
-    public static final String ZONESTATS_RESIDENTIALCOUNT = "residential_count";
-    public static final String ZONESTATS_INDUSTRIALCOUNT = "industrial_count";
-    public static final String ZONESTATS_COMMERCIALCOUNT = "commercial_count";
-    public static final String ZONESTATS_LASTZONEID = "last_zone_id";
-    // Road stats
-    public static final String ROADSTATS_STREETCOUNT = "street_count";
+    public static final String[] CITYSTATS_PARAMS = { CITYSTATS_DAYS, CITYSTATS_MONTHS, CITYSTATS_YEARS, CITYSTATS_POPULATION, CITYSTATS_CASH };
 
     // --------------------------------------------------------------------------------------------------------------------
 
     static {
+
+        TABLES_MAPPING = new HashMap<String, String[]>();
+        TABLES_MAPPING.put(ZONES, ZONES_PARAMS);
+        TABLES_MAPPING.put(ZONETILE, ZONETILE_PARAMS);
+        TABLES_MAPPING.put(ZONESTATS, ZONESTATS_PARAMS);
+        TABLES_MAPPING.put(ROADSTATS, ROADSTATS_PARAMS);
+        TABLES_MAPPING.put(TILES, TILES_PARAMS);
+        TABLES_MAPPING.put(MAPSIZE, MAPSIZE_PARAMS);
+        TABLES_MAPPING.put(METADATA, METADATA_PARAMS);
+        TABLES_MAPPING.put(CITYSTATS, CITYSTATS_PARAMS);
+
         if (dataSource == null) {
             dataSource = new DataSource("test");
         }
@@ -144,7 +187,7 @@ public class Data
     //
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        CSLogger.sharedLogger().finest("Returning map tiles");
+        CSLogger.sharedLogger().trace("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 
@@ -185,7 +228,8 @@ public class Data
         ArrayList<ArrayList<Tile>> cachedTiles = (ArrayList<ArrayList<Tile>>)get(TILES);
         for (int x = 0; x < tiles.size(); x++) {
             for (int y = 0; y < tiles.get(x).size(); y++) {
-                cachedTiles.get(x).set(y, (Tile)tiles.get(x).get(y));
+                Tile tile = (Tile)tiles.get(x).get(y);
+                cachedTiles.get(tile.position().x).set(tile.position().y, tile);
             }
         }
 
@@ -216,8 +260,23 @@ public class Data
         DataSource.getInstance().updateZoneStats(stats);
     }
 
+    public static int idForNewZone() {
+        incrementLastZoneID();
+        return lastZoneID();
+    }
+
     public static int lastZoneID() {
-        return ((Integer)DataSource.getInstance().zoneStats().get("last_zone_id")).intValue();
+        int id = ((Integer)DataSource.getInstance().zoneStats().get("last_zone_id")).intValue();
+        CSLogger.sharedLogger().info("Returning last zone ID (" + id + ")");
+        return id;
+    }
+
+    private static void incrementLastZoneID() {
+        int id = lastZoneID()+1;
+        CSLogger.sharedLogger().info("Incrementing last zone ID to (" + id + ")");
+        HashMap zoneStats = Data.zoneStats();
+        zoneStats.put(Data.ZONESTATS_LASTZONEID, id);
+        DataSource.getInstance().updateZoneStats(zoneStats);
     }
 
     //
@@ -239,19 +298,66 @@ public class Data
 
     //
 
+    public static HashMap[] zonesWithCriteria(String criteria) {
+        //         CSLogger.sharedLogger().info("Running query for zones matching criteria (" + criteria + ")");
+        return DataSource.getInstance().zonesWithCriteria(criteria);
+    }
+
+    public static HashMap[] zonesInArea(Point start, int radius) {
+        return zonesWithCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius));
+    }
+
+    public static HashMap[] zonesInArea(Point start, int radius, int zone) {
+        return zonesWithCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius) + " AND zone = " + zone);
+    }
+
+    public static HashMap[] zonesInArea(Point start, int radius, int zone1, int zone2) {
+        return zonesWithCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + ")");
+    }
+
+    public static void insertZone(HashMap zone) {
+        CSLogger.sharedLogger().info("Inserting zone...");
+        DataSource.getInstance().insertZone(zone);
+    }
+
+    public static void insertZone(int id, int type, int powered, int hasWater, int x, int y) {
+        CSLogger.sharedLogger().info("Inserting zone (" + id + ") of type (" + type + ")");
+        HashMap zone = new HashMap(ZONES_PARAMS.length);
+        zone.put(ZONES_ID, id);
+        zone.put(ZONES_ZONE, type);
+        zone.put(ZONES_AGE, 0);
+        zone.put(ZONES_POWERED, powered);
+        zone.put(ZONES_HASWATER, hasWater);
+        zone.put(ZONES_X, x);
+        zone.put(ZONES_Y, y);
+        DataSource.getInstance().insertZone(zone);
+    }
+
+    public static void updateZone(HashMap zone) {
+        CSLogger.sharedLogger().info("Updating zone...");
+        DataSource.getInstance().updateZone(zone);
+    }
+
+    public static void deleteZoneWithID(int id) {
+        CSLogger.sharedLogger().info("Deleting zone with ID (" + id + ")");
+        DataSource.getInstance().deleteZoneWithID(id);
+    }
+
+    //
+
     public static int[] tilesInZoneWithID(int id) {
-        CSLogger.sharedLogger().info("Getting zone with ID: " + id);
+        CSLogger.sharedLogger().info("Getting zone_tile with ID: " + id);
         return DataSource.getInstance().tilesInZoneWithID(id);
     }
 
-    public static void insertZoneWithTiles(HashMap[] zoneTiles) {
-        CSLogger.sharedLogger().info("Inserting zone...");
-        new ZoneDBInsertThread(zoneTiles).start();
+    public static void insertZoneTiles(HashMap[] zoneTiles) {
+        CSLogger.sharedLogger().info("Inserting zone_tile...");
+        new ZoneTileDBInsertThread(zoneTiles).start();
     }
 
-    public static void deleteZoneWithID(int zoneID) {
-        CSLogger.sharedLogger().info("Deleting zone with ID: " + zoneID);
-        new ZoneDBDeleteThread(zoneID).start();
+    public static void deleteZoneTileWithID(int zoneID) {
+        CSLogger.sharedLogger().info("Deleting zone_tile with ID: " + zoneID);
+        new ZoneTileDBDeleteThread(zoneID).start();
     }
 
     //

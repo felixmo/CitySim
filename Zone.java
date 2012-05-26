@@ -16,10 +16,11 @@ public class Zone
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 
-        int zoneID = Data.lastZoneID() + 1;
-        HashMap zoneStats = Data.zoneStats();
-        zoneStats.put(Data.ZONESTATS_LASTZONEID, zoneID);
-        Data.updateZoneStats(zoneStats);
+        int zoneID = Data.idForNewZone();
+        
+        // TODO: check if zone is powered and has water
+        Tile center = (Tile)selectedTiles.get(1).get(1);
+        Data.insertZone(zoneID, pendingOp, center.powered(), center.hasWater(), center.position().x, center.position().y);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -45,7 +46,7 @@ public class Zone
             }
         }
 
-        Data.insertZoneWithTiles(zoneTiles);
+        Data.insertZoneTiles(zoneTiles);
         Data.updateTiles(selectedTiles);
     }
     

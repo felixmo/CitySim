@@ -1,8 +1,9 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.awt.Point;
+import java.util.HashMap;
 
 /**
- * Rectangle
+ * Tile
  * CitySim
  * v0.1
  *
@@ -20,16 +21,9 @@ public class Tile
     /*
      * INSTANCE VARIABLES *
      */
-    private int dbID = 0;       // SQL db id
-    private Point position;
-    private int type = 0;       // Type of tile (detail)
-    private int zone = 0;       // Type of zone
-    private int zoneID = -1;    // ID of the zone the tile belongs to; -1 = none
-    private int road = 0;       // Type of road
-    // Utilites
-    private boolean powered = false; 
-    private boolean hasWater = false;
-
+    
+    private HashMap properties;
+    
     /*
      * CONSTANTS *
      */
@@ -96,61 +90,90 @@ public class Tile
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Tile(int dbID, Point position, int type, int zone, int zoneID, int road) {
-        this.dbID = dbID;
-        this.position = position;
-        this.type = type;
-        this.zone = zone;
-        this.zoneID = zoneID;
-        this.road = road;
+    public Tile(HashMap properties) {
+        this.properties = properties;
+    }
+    
+    public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
+        
+        properties = new HashMap();
+        properties.put(Data.TILES_ID, new Integer(dbID));
+        properties.put(Data.TILES_X, new Integer(position.x));
+        properties.put(Data.TILES_Y, new Integer(position.y));
+        properties.put(Data.TILES_TYPE, new Integer(type));
+        properties.put(Data.TILES_ZONE, new Integer(zone));
+        properties.put(Data.TILES_ZONEID, new Integer(zoneID));
+        properties.put(Data.TILES_ROAD, new Integer(road));
+        properties.put(Data.TILES_POWERED, new Integer(powered));
+        properties.put(Data.TILES_HASWATER, new Integer(hasWater));
     }
 
     /*
      * ACCESSORS *
      */
 
+    public Object get(String key) {
+        return this.properties.get(key);
+    }
+    
     public int dbID() {
-        return dbID;
+        return ((Integer)properties.get(Data.TILES_ID)).intValue();
     }
 
     public Point position() {
-        return position;
+        return new Point((Integer)properties.get(Data.TILES_X), (Integer)properties.get(Data.TILES_Y));
     }
 
     public int type() {
-        return type;
+        return ((Integer)properties.get(Data.TILES_TYPE)).intValue();
     }
 
     public void setType(int value) {
-        type = value;
+        properties.put(Data.TILES_TYPE, new Integer(value));
     }
 
     public int zone() {
-        return zone;
+        return ((Integer)properties.get(Data.TILES_ZONE)).intValue();
     }
 
     public void setZone(int value) {
-        zone = value;
+        properties.put(Data.TILES_ZONE, new Integer(value));
     }
     
     public int zoneID() {
-        return this.zoneID;
+        return ((Integer)properties.get(Data.TILES_ZONEID)).intValue();
     }
     
     public void setZoneID(int id) {
-        zoneID = id;
+        properties.put(Data.TILES_ZONEID, new Integer(id));
     }
 
     public int road() {
-        return road;
+        return ((Integer)properties.get(Data.TILES_ROAD)).intValue();
     }
 
     public void setRoad(int value) {
-        road = value;
+        properties.put(Data.TILES_ROAD, new Integer(value));
+    }
+    
+    public int powered() {
+        return ((Integer)properties.get(Data.TILES_POWERED)).intValue();
+    }
+    
+    public void setPowered(int value) {
+        properties.put(Data.TILES_POWERED, new Integer(value));
+    }
+    
+    public int hasWater() {
+        return ((Integer)properties.get(Data.TILES_HASWATER)).intValue();
+    }
+    
+    public void setHasWater(int value) {
+        properties.put(Data.TILES_HASWATER, new Integer(value));
     }
 
     public GreenfootImage image() {
-        return ImageCache.get(type);
+        return ImageCache.get(((Integer)this.properties.get(Data.TILES_TYPE)).intValue());
     }
 
     /*

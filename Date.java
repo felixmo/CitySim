@@ -95,6 +95,14 @@ public class Date
         return years;
     }
 
+    /**
+     * Returns the days (seconds, in reality) since the CitySim epoch (day 0)
+     */
+    public int timeSinceEpoch() {
+        
+        return ((years * 12) * 31) + (months * 31) + days;        
+    }
+    
     // ---------------------------------------------------------------------------------------------------------------------
 
     // Returns a string representation of the date with the specified format
