@@ -27,7 +27,7 @@ public class Data
 
     private static DataSource dataSource = null;                                    // Data source; SQLite interface
 
-    // Data cache
+    // General data cache
     private static LoadingCache<String, Object> cache = CacheBuilder.newBuilder()
         .maximumSize(1000)
         .build(
@@ -35,6 +35,18 @@ public class Data
                 public Object load(String key) throws Exception {
                     CSLogger.sharedLogger().info("Caching data for key: " + key);
                     return dataForKey(key);
+                }
+            }
+        );
+
+    // Caches zone_tile data
+    private static LoadingCache<String, Object> zoneTileCache = CacheBuilder.newBuilder()
+        .maximumSize(4000)
+        .build(
+            new CacheLoader<String, Object>() {
+                public Object load(String key) throws Exception {
+                    CSLogger.sharedLogger().info("Caching zone_tile (" + key + ")");
+                    return DataSource.getInstance().tilesInZoneWithID(Integer.parseInt(key));
                 }
             }
         );
@@ -58,14 +70,13 @@ public class Data
     public static final String ZONES_ZONE = "zone";
     public static final String ZONES_AGE = "age";
     public static final String ZONES_POWERED = "powered";
-    public static final String ZONES_HASWATER = "has_water";
     public static final String ZONES_X = "x";
     public static final String ZONES_Y = "y";
     public static final String ZONES_PRIMARY_ALLOCATION = "primary_allocation";
     public static final String ZONES_PRIMARY_CAPACITY = "primary_capacity";
     public static final String ZONES_SECONDARY_ALLOCATION = "secondary_allocation";
     public static final String ZONES_SECONDARY_CAPACITY = "secondary_capacity";
-    public static final String[] ZONES_PARAMS = { ZONES_ID, ZONES_ZONE, ZONES_AGE, ZONES_POWERED, ZONES_HASWATER, ZONES_X, ZONES_Y, ZONES_PRIMARY_ALLOCATION, ZONES_PRIMARY_CAPACITY, ZONES_SECONDARY_ALLOCATION, ZONES_SECONDARY_CAPACITY };
+    public static final String[] ZONES_PARAMS = { ZONES_ID, ZONES_ZONE, ZONES_AGE, ZONES_POWERED, ZONES_X, ZONES_Y, ZONES_PRIMARY_ALLOCATION, ZONES_PRIMARY_CAPACITY, ZONES_SECONDARY_ALLOCATION, ZONES_SECONDARY_CAPACITY };
     // Zone tiles
     public static final String ZONETILE_ZONEID = "zone_id";
     public static final String ZONETILE_TILEID = "tile_id";
@@ -88,8 +99,7 @@ public class Data
     public static final String TILES_ZONEID = "zone_id";
     public static final String TILES_ROAD = "road";
     public static final String TILES_POWERED = "powered";
-    public static final String TILES_HASWATER = "has_water";
-    public static final String[] TILES_PARAMS = { TILES_ID, TILES_X, TILES_Y, TILES_TYPE, TILES_ZONE, TILES_ZONEID, TILES_ROAD, TILES_POWERED, TILES_HASWATER};
+    public static final String[] TILES_PARAMS = { TILES_ID, TILES_X, TILES_Y, TILES_TYPE, TILES_ZONE, TILES_ZONEID, TILES_ROAD, TILES_POWERED };
     // Map size
     public static final String MAPSIZE_ROWS = "rows";
     public static final String MAPSIZE_COLUMNS = "columns";
@@ -320,17 +330,17 @@ public class Data
         DataSource.getInstance().insertZone(zone);
     }
 
-    public static void insertZone(int id, int type, int powered, int hasWater, int x, int y) {
-        CSLogger.sharedLogger().info("Inserting zone (" + id + ") of type (" + type + ")");
+    public static void insertZone(int id, int type, int powered, int x, int y) {
+        //         CSLogger.sharedLogger().info("Inserting zone (" + id + ") of type (" + type + ")");
         HashMap zone = new HashMap(ZONES_PARAMS.length);
         zone.put(ZONES_ID, id);
         zone.put(ZONES_ZONE, type);
         zone.put(ZONES_AGE, 0);
         zone.put(ZONES_POWERED, powered);
-        zone.put(ZONES_HASWATER, hasWater);
         zone.put(ZONES_X, x);
         zone.put(ZONES_Y, y);
-        DataSource.getInstance().insertZone(zone);
+        //         DataSource.getInstance().insertZone(zone);
+        insertZone(zone);
     }
 
     public static void updateZone(HashMap zone) {
@@ -347,7 +357,14 @@ public class Data
 
     public static int[] tilesInZoneWithID(int id) {
         CSLogger.sharedLogger().info("Getting zone_tile with ID: " + id);
-        return DataSource.getInstance().tilesInZoneWithID(id);
+        //         return DataSource.getInstance().tilesInZoneWithID(id);
+        try {
+            return (int[])zoneTileCache.get(id + "");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void insertZoneTiles(HashMap[] zoneTiles) {
@@ -406,9 +423,7 @@ public class Data
         else if (key.equals(CITYSTATS)) {
             data = DataSource.getInstance().cityStats();
         }
-
-        cache.put(key, data);
-
+        
         return data;
     }
 }

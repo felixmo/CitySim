@@ -48,10 +48,18 @@ public class MenuItemEventListener extends CSEventListener
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
-            // TODO: unaccpeted zone
             Map.getInstance().selection().setSize(Street.SIZE_WIDTH, Street.SIZE_HEIGHT);    
             Road.setPendingOp(Street.TYPE_ID);
-            City.getInstance().setTileSelector(new TileSelector( new int[]{ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111 } ));
+            City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
+        }
+        // * POWER *
+        else if (event.message().equals(MenuItemEvent.WIRE)) {
+            Map.getInstance().selection().setSelectionMode(true);
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
+            Map.getInstance().selection().setSize(Wire.SIZE_WIDTH, Wire.SIZE_HEIGHT);    
+            Power.setPendingOp(Wire.TYPE_ID);
+            City.getInstance().setTileSelector(new TileSelector(Wire.MARKERS));
         }
         // * TOOLS *
         else if (event.message().equals(MenuItemEvent.BULLDOZER)) {

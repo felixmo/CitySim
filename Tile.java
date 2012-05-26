@@ -90,23 +90,34 @@ public class Tile
 
     // ---------------------------------------------------------------------------------------------------------------------
 
+    public Tile(int dbID, Point position, int type) {
+        this.properties = new HashMap();
+        this.properties.put(Data.TILES_ID, new Integer(dbID));
+        this.properties.put(Data.TILES_X, new Integer(position.x));
+        this.properties.put(Data.TILES_Y, new Integer(position.y));
+        this.properties.put(Data.TILES_TYPE, new Integer(type));
+        this.properties.put(Data.TILES_ZONE, new Integer(0));
+        this.properties.put(Data.TILES_ZONEID, new Integer(-1));
+        this.properties.put(Data.TILES_ROAD, new Integer(0));
+        this.properties.put(Data.TILES_POWERED, new Integer(0));
+    }
+    
     public Tile(HashMap properties) {
         this.properties = properties;
     }
     
-    public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
-        
-        properties = new HashMap();
-        properties.put(Data.TILES_ID, new Integer(dbID));
-        properties.put(Data.TILES_X, new Integer(position.x));
-        properties.put(Data.TILES_Y, new Integer(position.y));
-        properties.put(Data.TILES_TYPE, new Integer(type));
-        properties.put(Data.TILES_ZONE, new Integer(zone));
-        properties.put(Data.TILES_ZONEID, new Integer(zoneID));
-        properties.put(Data.TILES_ROAD, new Integer(road));
-        properties.put(Data.TILES_POWERED, new Integer(powered));
-        properties.put(Data.TILES_HASWATER, new Integer(hasWater));
-    }
+//     public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
+//         
+//         properties = new HashMap();
+//         properties.put(Data.TILES_ID, new Integer(dbID));
+//         properties.put(Data.TILES_X, new Integer(position.x));
+//         properties.put(Data.TILES_Y, new Integer(position.y));
+//         properties.put(Data.TILES_TYPE, new Integer(type));
+//         properties.put(Data.TILES_ZONE, new Integer(zone));
+//         properties.put(Data.TILES_ZONEID, new Integer(zoneID));
+//         properties.put(Data.TILES_ROAD, new Integer(road));
+//         properties.put(Data.TILES_POWERED, new Integer(powered));
+//     }
 
     /*
      * ACCESSORS *
@@ -162,14 +173,6 @@ public class Tile
     
     public void setPowered(int value) {
         properties.put(Data.TILES_POWERED, new Integer(value));
-    }
-    
-    public int hasWater() {
-        return ((Integer)properties.get(Data.TILES_HASWATER)).intValue();
-    }
-    
-    public void setHasWater(int value) {
-        properties.put(Data.TILES_HASWATER, new Integer(value));
     }
 
     public GreenfootImage image() {

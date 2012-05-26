@@ -138,11 +138,10 @@ public class City extends World
         addObject(menuBar, 512, 14);
 
         // - Menu bar items -
-        ArrayList<String> menuBarItems = new ArrayList(2);
+        ArrayList<String> menuBarItems = new ArrayList(4);
         menuBarItems.add("Zoning");
         menuBarItems.add("Transportation");
-        //         menuBarItems.add("Utilities");
-        //         menuBarItems.add("Civic");
+        menuBarItems.add("Power");
         menuBarItems.add("Tools");
         menuBar.setItems(menuBarItems);
 
@@ -153,7 +152,7 @@ public class City extends World
          * Menu items need to be declared in 'MenuItemEvent' as well and implemented in 'MenuItemEventListener'.
          */
 
-        // -> Zoning
+        // -> Zoning (first)
         ArrayList<String> zoneItems = new ArrayList(3);
         zoneItems.add("Residential");
         zoneItems.add("Commercial");
@@ -164,8 +163,15 @@ public class City extends World
         ArrayList<String> roadItems = new ArrayList(1);
         roadItems.add("Roads");
         menuBar.setMenuItemsForItem("Transportation", roadItems);
+        
+        // -> Power
+        ArrayList<String> powerItems = new ArrayList(3);
+        powerItems.add("Wire");
+        powerItems.add("Coal power plant");
+        powerItems.add("Nuclear power plant");
+        menuBar.setMenuItemsForItem("Power", powerItems);
 
-        // -> Tools
+        // -> Tools (last)
         ArrayList<String> toolItems = new ArrayList(1);
         toolItems.add("Bulldozer");
         menuBar.setMenuItemsForItem("Tools", toolItems);

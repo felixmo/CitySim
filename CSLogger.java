@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CSLogger
 {
-    private final static Logger sharedLogger = LoggerFactory.getLogger("com.felixmo.CitySim");           // Shared logger
+    private final static Logger sharedLogger = LoggerFactory.getLogger("com.felixmo.CitySim");          
 
     // Logging is done via a global instance of 'Logger' rather than through CSLogger so that the caller can be logged as well
     public static Logger sharedLogger() {

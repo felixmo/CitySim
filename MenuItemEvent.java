@@ -22,11 +22,8 @@ public class MenuItemEvent extends CSEvent
     // Transportation
     public static final String STREETS = "Roads";
  
-    // Utilities
-    //
-    
-    // Civic
-    //
+    // Power
+    public static final String WIRE = "Wire";
     
     // Tools
     public static final String BULLDOZER = "Bulldozer";

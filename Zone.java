@@ -20,7 +20,7 @@ public class Zone
         
         // TODO: check if zone is powered and has water
         Tile center = (Tile)selectedTiles.get(1).get(1);
-        Data.insertZone(zoneID, pendingOp, center.powered(), center.hasWater(), center.position().x, center.position().y);
+        Data.insertZone(zoneID, pendingOp, center.powered(), center.position().x, center.position().y);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();

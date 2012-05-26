@@ -209,7 +209,7 @@ public class Map extends Actor
         for (int x = 0; x < SIZE_COLUMNS; x++) {
             for (int y = 0; y < SIZE_ROWS; y++) {
 
-                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y], 0, -1, 0, 0, 0));
+                map.get(x).add(new Tile(dbID, new Point(x, y), tiles[x][y]));
                 dbID++;
                 //                 System.out.println("(" + x + ", " + y + ")" + " | " + "Value: " + value + " | Tile: " + ((Tile)map.get(x).get(y)).type() + " | Value below: " + df.format(grid[x][Math.min(Math.max(0, y-1), SIZE_ROWS-1)]));
             }
