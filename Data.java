@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -348,9 +355,20 @@ public class Data
         DataSource.getInstance().updateZone(zone);
     }
 
-    public static void deleteZoneWithID(int id) {
+    public static void deleteZone(int id, int type) {
         CSLogger.sharedLogger().info("Deleting zone with ID (" + id + ")");
         DataSource.getInstance().deleteZoneWithID(id);
+        deleteZoneTileWithID(id);
+        switch (type) {
+            case CommercialZone.TYPE_ID: CommercialZone.subtractFromCount(9);
+            break;
+            case IndustrialZone.TYPE_ID: IndustrialZone.subtractFromCount(9);
+            break;
+            case ResidentialZone.TYPE_ID: ResidentialZone.subtractFromCount(9);
+            break;
+            default:
+            break;
+        }
     }
 
     //
@@ -374,6 +392,7 @@ public class Data
 
     public static void deleteZoneTileWithID(int zoneID) {
         CSLogger.sharedLogger().info("Deleting zone_tile with ID: " + zoneID);
+        zoneTileCache.invalidate(zoneID + "");
         new ZoneTileDBDeleteThread(zoneID).start();
     }
 
@@ -423,7 +442,7 @@ public class Data
         else if (key.equals(CITYSTATS)) {
             data = DataSource.getInstance().cityStats();
         }
-        
+
         return data;
     }
 }

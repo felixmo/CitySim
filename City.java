@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -139,10 +146,10 @@ public class City extends World
 
         // - Menu bar items -
         ArrayList<String> menuBarItems = new ArrayList(4);
-        menuBarItems.add("Zoning");
-        menuBarItems.add("Transportation");
-        menuBarItems.add("Power");
-        menuBarItems.add("Tools");
+        menuBarItems.add(Zone.NAME);
+        menuBarItems.add(Road.NAME);
+        menuBarItems.add(PowerGrid.NAME);
+        menuBarItems.add(Tool.NAME);
         menuBar.setItems(menuBarItems);
 
         // * Menu items * 
@@ -154,27 +161,27 @@ public class City extends World
 
         // -> Zoning (first)
         ArrayList<String> zoneItems = new ArrayList(3);
-        zoneItems.add("Residential");
-        zoneItems.add("Commercial");
-        zoneItems.add("Industrial");
-        menuBar.setMenuItemsForItem("Zoning", zoneItems);
+        zoneItems.add(ResidentialZone.NAME);
+        zoneItems.add(CommercialZone.NAME);
+        zoneItems.add(IndustrialZone.NAME);
+        menuBar.setMenuItemsForItem(Zone.NAME, zoneItems);
 
         // -> Transportation
         ArrayList<String> roadItems = new ArrayList(1);
-        roadItems.add("Roads");
-        menuBar.setMenuItemsForItem("Transportation", roadItems);
+        roadItems.add(Street.NAME);
+        menuBar.setMenuItemsForItem(Road.NAME, roadItems);
         
         // -> Power
         ArrayList<String> powerItems = new ArrayList(3);
-        powerItems.add("Wire");
-        powerItems.add("Coal power plant");
-        powerItems.add("Nuclear power plant");
-        menuBar.setMenuItemsForItem("Power", powerItems);
+        powerItems.add(PowerLine.NAME);
+        powerItems.add(CoalPowerPlant.NAME);
+        powerItems.add(NuclearPowerPlant.NAME);
+        menuBar.setMenuItemsForItem(PowerGrid.NAME, powerItems);
 
         // -> Tools (last)
         ArrayList<String> toolItems = new ArrayList(1);
-        toolItems.add("Bulldozer");
-        menuBar.setMenuItemsForItem("Tools", toolItems);
+        toolItems.add(Bulldozer.NAME);
+        menuBar.setMenuItemsForItem(Tool.NAME, toolItems);
 
         // * END of menu items *
 

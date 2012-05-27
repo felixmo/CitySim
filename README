@@ -1,0 +1,86 @@
+CitySim, a Java-baed city simulation game built atop the Greenfoot framework (http://www.greenfoot.org/).
+
+CONTACT: 	felix@felixmo.com
+PROJECT PAGE:	https://github.com/felixmo/CitySim
+
+-- COPYRIGHT & LICENSING --
+
+CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+
+Tile art assets used by CitySim are from Micropolis, Unix Version, which was released for the Unix platform in or about 1990 and was modified for inclusion in the One Laptop Per Child program. 
+These assets are licensed under the terms of the GNU General Public License version 3.0, as published by the Free Software Foundation.
+See the LICENSE file in the "images/tiles" directory for more information.
+
+Third-party libraries used, and packaged, by CitySim:
+
+-> DbUtils	
+
+	Licensed under the terms of the Apache Software License, Version 2.0
+	Copyright © 2002-2011 The Apache Software Foundation. 
+	All Rights Reserved.
+
+	org.apache.commons.dbutils.*
+
+	http://commons.apache.org/dbutils/
+
+-> Guava
+
+	Licensed under the terms of the Apache Software License, Version 2.0
+	Copyright (C) 2011 The Guava Authors.
+	All Rights Reserved.
+
+	com.google.guava.*
+
+	http://guava-libraries.googlecode.com
+
+-> log4jdbc
+	
+	Licensed under the terms of the Apache Software License, Version 2.0
+	Copyright © 2007-2012 Arthur Blake.
+	All Rights Reserved.
+
+	net.sf.log4jdbc.*
+
+	http://code.google.com/p/log4jdbc/
+
+-> slf4j
+
+	Licensed under the terms of the MIT License
+	Copyright (c) 2004-2011 QOS.ch.
+	All rights reserved.
+
+	org.slf4j.*
+
+	http://www.slf4j.org/
+
+-> Logback
+
+	Licensed under the terms of the GNU Lesser General Public License version 2.1, as published by the Free Software Foundation.
+	Copyright (c) 2004-2011 QOS.ch.
+	All rights reserved.
+
+	org.slf4j.*
+
+	http://logback.qos.ch/
+
+-> SQLiteJDBC
+
+	Licensed under the terms of the Apache Software License, Version 2.0
+	Copyright (c) 2006, David Crawshaw.
+	All Rights Reserved.
+
+	org.sqlite.*
+
+	http://code.google.com/p/sqlite-jdbc/
+
+
+-- LINKS TO FULL TEXT OF MENTIONED LICENSES --
+
+GNU General Public License (GPL)
+http://www.gnu.org/licenses/gpl.txt
+
+GNU Lesser General Public License (LGPL), Version 2.1
+http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+
+Apache Software License, Version 2.0
+http://www.apache.org/licenses/LICENSE-2.0.txt

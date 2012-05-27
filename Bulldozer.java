@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 
@@ -12,7 +19,8 @@ public class Bulldozer extends Tool
     public static final int TYPE_ID = 1;
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
-
+    public static final String NAME = "Bulldozer";
+    
     public static void bulldoze(Tile tile) {
 
         if (tile.road() == Street.TYPE_ID) Street.subtractFromCount(1);
@@ -31,16 +39,19 @@ public class Bulldozer extends Tool
         int height = ((ArrayList)tiles.get(0)).size();
 
         int zone_type = ((Tile)tiles.get(0).get(0)).zone();
-        switch (zone_type) {
-            case CommercialZone.TYPE_ID: CommercialZone.subtractFromCount(width*height);
-            break;
-            case IndustrialZone.TYPE_ID: IndustrialZone.subtractFromCount(width*height);
-            break;
-            case ResidentialZone.TYPE_ID: ResidentialZone.subtractFromCount(width*height);
-            break;
-            default:
-            break;
+        if (zone_type > 0) {
+            Data.deleteZone(((Tile)tiles.get(0).get(0)).zoneID(), zone_type);
         }
+//         switch (zone_type) {
+//             case CommercialZone.TYPE_ID: CommercialZone.subtractFromCount(width*height);
+//             break;
+//             case IndustrialZone.TYPE_ID: IndustrialZone.subtractFromCount(width*height);
+//             break;
+//             case ResidentialZone.TYPE_ID: ResidentialZone.subtractFromCount(width*height);
+//             break;
+//             default:
+//             break;
+//         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {

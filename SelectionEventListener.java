@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import com.google.common.eventbus.Subscribe;
 import greenfoot.*;
 import java.awt.Point;
@@ -26,6 +33,28 @@ public class SelectionEventListener extends CSEventListener
                 break;
                 case CommercialZone.TYPE_ID: CommercialZone.zoneTiles(event.tiles());
                 break;
+                default: break;
+            }
+        }
+        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_POWERGRID)) {
+
+            switch (PowerGrid.pendingOp()) {
+                case PowerLine.TYPE_ID: PowerLine.buildPowerLine(event.tile(), PowerGrid.activeType());
+                break;
+
+                default: break;
+            }
+        }
+        else if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_POWERGRID)) {
+
+            switch (PowerGrid.pendingOp()) {
+                
+                case CoalPowerPlant.TYPE_ID: CoalPowerPlant.buildPowerPlant(event.tiles());
+                break;
+                
+                case NuclearPowerPlant.TYPE_ID: NuclearPowerPlant.buildPowerPlant(event.tiles());
+                break;
+                
                 default: break;
             }
         }

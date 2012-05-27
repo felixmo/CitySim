@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 /**
  * MenuItemEvent
  * CitySim
@@ -10,23 +17,6 @@
  */
 public class MenuItemEvent extends CSEvent
 {
-    
-    /*                       
-     * MESSAGES / MENU ITEMS *
-     */                      
-    // Zoning
-    public static final String RESIDENTIAL = "Residential";
-    public static final String INDUSTRIAL = "Industrial";
-    public static final String COMMERCIAL = "Commercial";
-    
-    // Transportation
-    public static final String STREETS = "Roads";
- 
-    // Power
-    public static final String WIRE = "Wire";
-    
-    // Tools
-    public static final String BULLDOZER = "Bulldozer";
     
     public MenuItemEvent(String message) {
         super(message);

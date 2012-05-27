@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.util.Random;
 import java.lang.Math;
 import java.text.DecimalFormat;
@@ -6,9 +13,14 @@ import java.text.DecimalFormat;
  * The terrain generator uses a random displacement fractal to generate noise that resemebles landforms 
  * Decimal values are returned and parsed into tiles
  *
- * CREDITS FOR THE MAIN FRACTAL CODE: 
- * "andrew-thompson" & "simon-g" on stackoverflow.com
- * Original code: http://stackoverflow.com/a/5532726/859788
+ * Created with the help of Stack Overflow question:
+ * http://stackoverflow.com/questions/5531019/perlin-noise-in-java/5532726
+ * 
+ * Question by James Thornton (http://stackoverflow.com/users/690007/jt78)
+ * http://stackoverflow.com/questions/5531019/perlin-noise-in-java/5532726
+ * 
+ * Answer by Simon G. (http://stackoverflow.com/users/682965/simon-g) & edited by Andrew Thompson (http://stackoverflow.com/users/418556/andrew-thompson)
+ * http://stackoverflow.com/questions/5531019/perlin-noise-in-java/5532726#5532726
  */
 
 public class TerrainGenerator {

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +21,7 @@ public class ResidentialZone extends Zone
     public static final int[] MARKERS = { 400, 401, 402, 403, 404, 405, 406, 407, 408 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
+    public static final String NAME = "Residential";
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 

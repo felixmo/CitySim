@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import greenfoot.GreenfootImage;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheBuilder;

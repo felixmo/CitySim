@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.util.ArrayList;
 
 /**
@@ -10,6 +17,7 @@ public class Tool
 {
 
     private static int pendingOp = 0; // ID of zone type
+    public static final String NAME = "Tools";
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
 

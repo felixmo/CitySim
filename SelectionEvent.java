@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.util.ArrayList;
 
 /**
@@ -10,6 +17,8 @@ public class SelectionEvent extends CSEvent
 {
 
     public static final String TILES_SELECTED_FOR_ZONING = "TILES_SELECTED_FOR_ZONING";
+    public static final String TILES_SELECTED_FOR_POWERGRID = "TILES_SELECTED_FOR_POWERGRID";
+    public static final String TILE_SELECTED_FOR_POWERGRID = "TILE_SELECTED_FOR_POWERGRID";
     public static final String TILE_SELECTED_FOR_ROAD = "TILE_SELECTED_FOR_ROAD";
     public static final String TILES_SELECTED_FOR_TOOLS = "TILES_SELECTED_FOR_TOOLS";
     public static final String TILE_SELECTED_FOR_TOOL = "TILE_SELECTED_FOR_TOOL";

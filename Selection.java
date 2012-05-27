@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import greenfoot.*;
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -74,6 +81,14 @@ public class Selection extends Actor
                             CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
                         }
                     }
+                    if (PowerGrid.pendingOp() > 0) {
+                        if (size.getWidth() == 1 && size.getHeight() == 1) {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_POWERGRID, activeTile));
+                        }
+                        else {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
+                        }
+                    }
                 }
             } 
             else if (Greenfoot.mouseDragged(this)) {
@@ -85,6 +100,14 @@ public class Selection extends Actor
                     }
                     else {
                         CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
+                    }
+                }
+                if (PowerGrid.pendingOp() > 0) {
+                    if (size.getWidth() == 1 && size.getHeight() == 1) {
+                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_POWERGRID, activeTile));
+                    }
+                    else {
+                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
                     }
                 }
             }
@@ -112,15 +135,16 @@ public class Selection extends Actor
                 Zone.setPendingOp(0);
                 Road.setPendingOp(0);
                 Tool.setPendingOp(0);
+                PowerGrid.setPendingOp(0);
 
                 City.getInstance().removeHint();
             }
         }
-//         else {
-//             if (Greenfoot.mouseClicked(this)) {
-//                 System.out.println(Data.zonesInArea(new Point(activeTile.position().x+1, activeTile.position().y+1), 25).length);
-//             }
-//         }
+        //         else {
+        //             if (Greenfoot.mouseClicked(this)) {
+        //                 System.out.println(Data.zonesInArea(new Point(activeTile.position().x+1, activeTile.position().y+1), 25).length);
+        //             }
+        //         }
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
@@ -216,6 +240,7 @@ public class Selection extends Actor
             this.acceptedTypes.clear();
             this.unacceptedTypes.clear();
             this.unacceptedRoads.clear();
+            this.unacceptedZones.clear();
         }
     }
 
@@ -235,7 +260,15 @@ public class Selection extends Actor
                 int id = Data.tilesInZoneWithID(tile.zoneID())[0];
                 this.activeTile = Data.tileWithID(id);
             }
-            setSize(3, 3);
+            if (this.activeTile.zone() > 0) {
+                if (this.activeTile.zone() <= 3) {
+                    setSize(3, 3);
+                }
+                else if (this.activeTile.zone() > 4 && this.activeTile.zone() <= 6) {
+                    setSize(4, 4);
+                }
+            }
+
             this.customSize = false;
         }
         else {

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +21,7 @@ public class Street extends Road
     public static final int[] MARKERS = { 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111 };
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
+    public static final String NAME = "Streets";
 
     public static void buildStreet(Tile tile, int type) {
 

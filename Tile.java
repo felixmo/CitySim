@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 import java.awt.Point;
 import java.util.HashMap;
@@ -21,9 +28,9 @@ public class Tile
     /*
      * INSTANCE VARIABLES *
      */
-    
+
     private HashMap properties;
-    
+
     /*
      * CONSTANTS *
      */
@@ -101,23 +108,23 @@ public class Tile
         this.properties.put(Data.TILES_ROAD, new Integer(0));
         this.properties.put(Data.TILES_POWERED, new Integer(0));
     }
-    
+
     public Tile(HashMap properties) {
         this.properties = properties;
     }
-    
-//     public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
-//         
-//         properties = new HashMap();
-//         properties.put(Data.TILES_ID, new Integer(dbID));
-//         properties.put(Data.TILES_X, new Integer(position.x));
-//         properties.put(Data.TILES_Y, new Integer(position.y));
-//         properties.put(Data.TILES_TYPE, new Integer(type));
-//         properties.put(Data.TILES_ZONE, new Integer(zone));
-//         properties.put(Data.TILES_ZONEID, new Integer(zoneID));
-//         properties.put(Data.TILES_ROAD, new Integer(road));
-//         properties.put(Data.TILES_POWERED, new Integer(powered));
-//     }
+
+    //     public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
+    //         
+    //         properties = new HashMap();
+    //         properties.put(Data.TILES_ID, new Integer(dbID));
+    //         properties.put(Data.TILES_X, new Integer(position.x));
+    //         properties.put(Data.TILES_Y, new Integer(position.y));
+    //         properties.put(Data.TILES_TYPE, new Integer(type));
+    //         properties.put(Data.TILES_ZONE, new Integer(zone));
+    //         properties.put(Data.TILES_ZONEID, new Integer(zoneID));
+    //         properties.put(Data.TILES_ROAD, new Integer(road));
+    //         properties.put(Data.TILES_POWERED, new Integer(powered));
+    //     }
 
     /*
      * ACCESSORS *
@@ -126,7 +133,7 @@ public class Tile
     public Object get(String key) {
         return this.properties.get(key);
     }
-    
+
     public int dbID() {
         return ((Integer)properties.get(Data.TILES_ID)).intValue();
     }
@@ -150,11 +157,11 @@ public class Tile
     public void setZone(int value) {
         properties.put(Data.TILES_ZONE, new Integer(value));
     }
-    
+
     public int zoneID() {
         return ((Integer)properties.get(Data.TILES_ZONEID)).intValue();
     }
-    
+
     public void setZoneID(int id) {
         properties.put(Data.TILES_ZONEID, new Integer(id));
     }
@@ -166,11 +173,11 @@ public class Tile
     public void setRoad(int value) {
         properties.put(Data.TILES_ROAD, new Integer(value));
     }
-    
+
     public int powered() {
         return ((Integer)properties.get(Data.TILES_POWERED)).intValue();
     }
-    
+
     public void setPowered(int value) {
         properties.put(Data.TILES_POWERED, new Integer(value));
     }
