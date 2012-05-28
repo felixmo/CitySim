@@ -16,7 +16,8 @@ import java.util.ArrayList;
 public class TileDBUpdateThread extends CSThread
 {
     private Tile tile;
-    private ArrayList<ArrayList<Tile>> tiles;
+    private ArrayList<ArrayList<Tile>> tiles_list;
+    private Tile[] tiles;
     private static int count = 0;
 
     public TileDBUpdateThread(Tile tile) {
@@ -26,6 +27,11 @@ public class TileDBUpdateThread extends CSThread
 
     public TileDBUpdateThread(ArrayList<ArrayList<Tile>> tiles) {
         super("TileDBUpdateThread#" + (count+=1));
+        this.tiles_list = tiles;
+    }
+
+    public TileDBUpdateThread(Tile[] tiles) {
+        super("TileDBUpdateThread#" + (count+=1));
         this.tiles = tiles;
     }
 
@@ -33,7 +39,10 @@ public class TileDBUpdateThread extends CSThread
         if (tile != null) {
             DataSource.getInstance().updateTile(tile);
         }
-        else {
+        else if (tiles_list != null) {
+            DataSource.getInstance().updateTiles(tiles_list);
+        }
+        else if (tiles != null) {
             DataSource.getInstance().updateTiles(tiles);
         }
     }

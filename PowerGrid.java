@@ -20,13 +20,82 @@ public class PowerGrid
     private static int pendingOp = 0;
     private static int activeType = 0;
     public static final String NAME = "Power grid";
-    
-    protected static void updateTile(Tile tile) {
+    private static ArrayList<Integer> searched = new ArrayList<Integer>();
+
+    public static void evaluate() {
+
+        CSLogger.sharedLogger().info("Evaluating the power grid...");
         
+        // Clear the search history
+        searched.clear();
+
+        // Kill power in the city in all areas except for power plants
+        DataSource.getInstance().killPower();
+
+        // Get the power lines & nodes surrounding the power plants
+        for (HashMap zone : Data.zonesMatchingCriteria("zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID)) {
+            for (Tile tile : Data.tilesAroundPowerPlant(zone)) {
+                if (tile.powerGridType() == PowerLine.TYPE_ID || tile.powerGridType() == PowerNode.TYPE_ID) {
+                    search(tile);
+                }
+            }
+        }
+
+        // A collection of zones that have been changed and should be updated
+        ArrayList<HashMap> needUpdate = new ArrayList<HashMap>();
+
+        // Iterate through zones all check if they're now powered
+        for (HashMap zone : Data.zones()) {
+            
+            boolean isPowered = false;
+             
+            // Check if zones have nearby powered tiles; if so, power the zone
+            for (Tile tile : Data.tilesAroundPowerPlant(zone)) {
+                if (tile.powered() > 0) {
+                    isPowered = true;
+                }
+            }
+            
+            // If the zone should be powered, change attribute and flag for update
+            if (isPowered) {
+                zone.put(Data.ZONES_POWERED, new Integer(1));
+                needUpdate.add(zone);
+            }
+        }
+
+        // Send updates to the DB
+        HashMap[] batchUpdate = new HashMap[needUpdate.size()];
+        needUpdate.toArray(batchUpdate);
+        Data.updateZones(batchUpdate);
+    }
+
+    private static void search(Tile tile) {
+
+        CSLogger.sharedLogger().debug("Searching tile @ (" + tile.position().x + ", " + tile.position().y + ")");
+
+        Tile[] powerSource = Data.tilesMatchingCriteriaAroundTile(tile, "powered = 1");
+        if (powerSource.length > 0) {
+            CSLogger.sharedLogger().debug("Tile @ (" + tile.position().x + ", " + tile.position().y + ") has power.");
+            tile.setPowered(1);
+            Data.updateTile(tile);
+        }
+        
+        searched.add(new Integer(tile.dbID()));
+
+        for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "(powergrid_type = " + PowerLine.TYPE_ID + " OR powergrid_type = " + PowerNode.TYPE_ID + ")")) {
+            if (!searched.contains(t.dbID())) search(t);
+        }
+    }
+
+    protected static void updateTile(Tile tile) {
+
         Data.updateTile(tile);
+
+        evaluate();
     }
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
+        // Should only be called for power plants
 
         int zoneID = Data.idForNewZone();
 
@@ -61,6 +130,8 @@ public class PowerGrid
 
         Data.insertZoneTiles(zoneTiles);
         Data.updateTiles(selectedTiles);
+
+        evaluate();
     }
 
     /*

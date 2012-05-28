@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.lang.Integer;
+import java.util.HashMap;
 
 /**
  * Write a description of class Selection here.
@@ -140,11 +141,17 @@ public class Selection extends Actor
                 City.getInstance().removeHint();
             }
         }
-        //         else {
-        //             if (Greenfoot.mouseClicked(this)) {
-        //                 System.out.println(Data.zonesInArea(new Point(activeTile.position().x+1, activeTile.position().y+1), 25).length);
-        //             }
-        //         }
+        else {
+            if (Greenfoot.mouseClicked(this)) {
+                if (size.width > 1) {
+                    HashMap zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
+                    System.out.println("Zone powered: " + (((Integer)zone.get(Data.ZONES_POWERED)).intValue() == 1 ? "YES" : "NO"));
+                }
+                else {
+                    System.out.println("Tile powered: " + (this.activeTile.powered() == 1 ? "YES" : "NO"));
+                }
+            }
+        }
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
@@ -264,18 +271,22 @@ public class Selection extends Actor
                 if (this.activeTile.zone() <= 3) {
                     setSize(3, 3);
                 }
-                else if (this.activeTile.zone() > 4 && this.activeTile.zone() <= 6) {
+                else if (this.activeTile.zone() > 3 && this.activeTile.zone() <= 5) {
                     setSize(4, 4);
                 }
             }
 
             this.customSize = false;
+
+            //             System.out.println("POWERED: " + (this.activeTile.powered() > 0 ? "YES" : "NO"));
         }
         else {
             this.activeTile = tile;
             if (!this.customSize) {
                 setSize(1, 1);
             }
+
+            //             System.out.println("POWERED: " + (this.activeTile.powered() > 0 ? "YES" : "NO"));
         }
 
         draw();

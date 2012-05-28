@@ -107,6 +107,7 @@ public class Tile
         this.properties.put(Data.TILES_ZONEID, new Integer(-1));
         this.properties.put(Data.TILES_ROAD, new Integer(0));
         this.properties.put(Data.TILES_POWERED, new Integer(0));
+        this.properties.put(Data.TILES_POWERGRID_TYPE, new Integer(0));
     }
 
     public Tile(HashMap properties) {
@@ -180,6 +181,14 @@ public class Tile
 
     public void setPowered(int value) {
         properties.put(Data.TILES_POWERED, new Integer(value));
+    }
+    
+    public int powerGridType() {
+        return ((Integer)properties.get(Data.TILES_POWERGRID_TYPE)).intValue();
+    }
+    
+    public void setPowerGridType(int value) {
+        properties.put(Data.TILES_POWERGRID_TYPE, new Integer(value));    
     }
 
     public GreenfootImage image() {

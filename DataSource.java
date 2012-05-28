@@ -128,7 +128,7 @@ public class DataSource
 
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
-//             connection = new net.sf.log4jdbc.ConnectionSpy(connection);
+            //             connection = new net.sf.log4jdbc.ConnectionSpy(connection);
             connection.setAutoCommit(true);
             connectionIsOpen = true;
 
@@ -334,7 +334,28 @@ public class DataSource
 
     // - ZONES -
 
-    public HashMap[] zonesWithCriteria(String criteria) {
+    public HashMap[] zones() {
+
+        List results = null;
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            results = (List)runner.query(connection, "SELECT * FROM zones", new MapListHandler());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        HashMap[] zones = new HashMap[results.size()];
+
+        for (int i = 0; i < zones.length; i++) {
+            zones[i] = (HashMap)results.get(i);
+        }
+
+        return zones;
+    }
+
+    public HashMap[] zonesMatchingCriteria(String criteria) {
 
         CSLogger.sharedLogger().debug("Running query for zones with criteria (" + criteria + ")");
 
@@ -409,6 +430,40 @@ public class DataSource
             statement.addBatch();
             statement.executeBatch();
             statement.close();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public void updateZones(HashMap[] zones) {
+
+        try {
+
+            connection.setAutoCommit(false);
+
+            String statementString = "UPDATE " + Data.ZONES + " SET ";
+            for (int i = 1; i < Data.TABLES_MAPPING.get(Data.ZONES).length; i++) {
+                statementString += (Data.TABLES_MAPPING.get(Data.ZONES)[i] + " = ?" + (i < Data.TABLES_MAPPING.get(Data.ZONES).length-1 ? ", " : " "));
+            }
+            statementString += "WHERE id = ?;";
+
+            PreparedStatement statement = connection.prepareStatement(statementString);
+
+            for (HashMap zone : zones) {
+                int i = 1;
+                for (String param : Data.TABLES_MAPPING.get(Data.ZONES)) {
+                    statement.setObject(i, zone.get(param));
+                    i++;
+                }
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+            connection.commit();
+            statement.close();
+
+            connection.setAutoCommit(true);
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -791,6 +846,51 @@ public class DataSource
         }
     }
 
+    public void updateTiles(Tile[] tiles) {
+
+        CSLogger.sharedLogger().debug("Updating " + tiles.length + " tiles, in DB (\"" + dbName + "\")...");
+
+        try {
+
+            connection.setAutoCommit(false);
+
+            String statementString = "UPDATE " + Data.TILES + " SET ";
+            for (int i = 1; i < Data.TABLES_MAPPING.get(Data.TILES).length; i++) {
+                statementString += (Data.TABLES_MAPPING.get(Data.TILES)[i] + " = ?" + (i < Data.TABLES_MAPPING.get(Data.TILES).length-1 ? ", " : " "));
+            }
+            statementString += "WHERE " + Data.TILES_ID +" = ?;";
+            PreparedStatement statement = connection.prepareStatement(statementString);
+
+            //             for (int x = 0; x < tiles.size(); x++) {
+            //                 for (int y = 0; y < tiles.get(x).size(); y++) {
+            for (Tile tile : tiles) {
+                //                     Tile tile = (Tile)tiles.get(x).get(y);
+                int i = 1;
+                for (String param : Data.TABLES_MAPPING.get(Data.TILES)) {
+                    if (!param.equals(Data.TILES_ID)) {
+                        //                             System.out.println("param: " + param + " |  value: " + tile.get(param));
+                        statement.setObject(i, tile.get(param));
+                        i++;
+                    }
+                }
+                statement.setObject(i, tile.get(Data.TILES_ID));
+                statement.addBatch();
+                //                 }
+            }
+
+            statement.executeBatch();
+            connection.commit();
+            statement.close();
+
+            connection.setAutoCommit(true);
+
+            CSLogger.sharedLogger().debug("Finished updating " + tiles.length + " tiles, in DB (\"" + dbName + "\")...");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
     public ArrayList<ArrayList<Tile>> tiles() {
 
         CSLogger.sharedLogger().debug("Retrieving map tiles from DB (\"" + dbName + "\")...");
@@ -834,6 +934,24 @@ public class DataSource
             List results = (List)runner.query(connection, "SELECT * FROM tiles WHERE id = " + id, new MapListHandler());
             HashMap row = (HashMap)results.get(0);
             return new Tile(row);
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Tile[] tilesMatchingCriteria(String criteria) {
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT * FROM tiles WHERE " + criteria + ";", new MapListHandler());
+            Tile[] tiles = new Tile[results.size()];
+            for (int i = 0; i <  results.size(); i++) {
+                tiles[i] = new Tile((HashMap)results.get(i));
+            }
+            return tiles;
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -922,5 +1040,31 @@ public class DataSource
             se.printStackTrace();
         }
     }
+
+    // POWER GRID
+
+    public void killPower() {
+
+        CSLogger.sharedLogger().debug("Killing power in the city");
+
+        try {
+            new QueryRunner().update(connection, "UPDATE tiles SET powered = 0 WHERE NOT (zone = 4 OR zone = 5)");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    //     public void startPowerPlants() {
+    // 
+    //         CSLogger.sharedLogger().debug("Starting power plants");
+    // 
+    //         try {
+    //             new QueryRunner.update(connection, "UPDATE tiles SET powered = 0");
+    //         }
+    //         catch (SQLException se) {
+    //             se.printStackTrace();
+    //         }
+    //     }
 
 }

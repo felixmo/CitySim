@@ -26,8 +26,7 @@ public class Zone
 
         int zoneID = Data.idForNewZone();
         
-        // TODO: check if zone is powered and has water
-        Tile center = (Tile)selectedTiles.get(1).get(1);
+        Tile center = (Tile)selectedTiles.get(0).get(0);
         Data.insertZone(zoneID, pendingOp, center.powered(), center.position().x, center.position().y);
 
         int width = selectedTiles.size();

@@ -27,7 +27,7 @@ public class CityEvaluationThread extends CSThread
 
         // Find nearby C & I zones for R zones
 
-        HashMap[] resZones = Data.zonesWithCriteria("zone = " + ResidentialZone.TYPE_ID);
+        HashMap[] resZones = Data.zonesMatchingCriteria("zone = " + ResidentialZone.TYPE_ID);
         System.out.println("Evaluating " + resZones.length + " residential zones");
 
         for (HashMap res : resZones) {

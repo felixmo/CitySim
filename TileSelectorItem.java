@@ -67,10 +67,7 @@ public class TileSelectorItem extends Actor
 
         if (Greenfoot.mouseClicked(this)) {
 
-            Map.getInstance().selection().setSelectionMode(true);
-            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
-            Map.getInstance().selection().setSize(Street.SIZE_WIDTH, Street.SIZE_HEIGHT);
-            Road.setActiveType(this.type);
+            CSEventBus.post(new TileSelectorEvent(this.type + ""));
         }
     }
 

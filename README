@@ -16,7 +16,7 @@ Third-party libraries used, and packaged, by CitySim:
 -> DbUtils	
 
 	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright © 2002-2011 The Apache Software Foundation. 
+	Copyright (c) 2002-2011 The Apache Software Foundation. 
 	All Rights Reserved.
 
 	org.apache.commons.dbutils.*
@@ -26,7 +26,7 @@ Third-party libraries used, and packaged, by CitySim:
 -> Guava
 
 	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright (C) 2011 The Guava Authors.
+	Copyright (c) 2011 The Guava Authors.
 	All Rights Reserved.
 
 	com.google.guava.*
@@ -36,7 +36,7 @@ Third-party libraries used, and packaged, by CitySim:
 -> log4jdbc
 	
 	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright © 2007-2012 Arthur Blake.
+	Copyright (c) 2007-2012 Arthur Blake.
 	All Rights Reserved.
 
 	net.sf.log4jdbc.*
@@ -55,7 +55,7 @@ Third-party libraries used, and packaged, by CitySim:
 
 -> Logback
 
-	Licensed under the terms of the GNU Lesser General Public License version 2.1, as published by the Free Software Foundation.
+	Licensed under the terms of the GNU Lesser General Public License version 2.1
 	Copyright (c) 2004-2011 QOS.ch.
 	All rights reserved.
 
@@ -66,12 +66,13 @@ Third-party libraries used, and packaged, by CitySim:
 -> SQLiteJDBC
 
 	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright (c) 2006, David Crawshaw.
+	Copyright (c) 2006 David Crawshaw.
 	All Rights Reserved.
 
 	org.sqlite.*
 
 	http://code.google.com/p/sqlite-jdbc/
+
 
 
 -- LINKS TO FULL TEXT OF MENTIONED LICENSES --

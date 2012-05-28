@@ -29,6 +29,7 @@ public class Bulldozer extends Tool
         tile.setRoad(0);
         tile.setZone(0);
         tile.setZoneID(-1);
+        tile.setPowered(0);
 
         Tool.updateTile(tile);
     }
@@ -42,16 +43,6 @@ public class Bulldozer extends Tool
         if (zone_type > 0) {
             Data.deleteZone(((Tile)tiles.get(0).get(0)).zoneID(), zone_type);
         }
-//         switch (zone_type) {
-//             case CommercialZone.TYPE_ID: CommercialZone.subtractFromCount(width*height);
-//             break;
-//             case IndustrialZone.TYPE_ID: IndustrialZone.subtractFromCount(width*height);
-//             break;
-//             case ResidentialZone.TYPE_ID: ResidentialZone.subtractFromCount(width*height);
-//             break;
-//             default:
-//             break;
-//         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -62,6 +53,7 @@ public class Bulldozer extends Tool
                 ((Tile)tiles.get(i).get(j)).setRoad(0);
                 ((Tile)tiles.get(i).get(j)).setZone(0);
                 ((Tile)tiles.get(i).get(j)).setZoneID(-1);
+                ((Tile)tiles.get(i).get(j)).setPowered(0);
             }
         }
 
