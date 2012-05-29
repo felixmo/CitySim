@@ -23,6 +23,10 @@ public class ResidentialZone extends Zone
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Residential";
 
+    public ResidentialZone(HashMap properties) {
+        super(properties);
+    }
+
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 
         int width = selectedTiles.size();

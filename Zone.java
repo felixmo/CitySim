@@ -8,6 +8,7 @@
 import java.util.ArrayList;
 import java.lang.Integer;
 import java.util.HashMap;
+import java.awt.Point;
 
 /**
  * Write a description of class Zoning here.
@@ -20,14 +21,22 @@ public class Zone
     private static int pendingOp = 0; // ID of zone type
     public static final String NAME = "Zoning";
 
+    private HashMap properties;
+
+    //
+
+    public Zone(HashMap properties) {
+        this.properties = properties;
+    }
+
     // - 
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 
         int zoneID = Data.idForNewZone();
-        
+
         Tile center = (Tile)selectedTiles.get(0).get(0);
-        Data.insertZone(zoneID, pendingOp, center.powered(), center.position().x, center.position().y);
+        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, center.powered());
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -37,7 +46,7 @@ public class Zone
         HashMap[] zoneTiles = new HashMap[width*height];
 
         int count = 0;
-        
+
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
@@ -48,15 +57,18 @@ public class Zone
 
                 ((Tile)selectedTiles.get(i).get(j)).setZone(pendingOp);
                 ((Tile)selectedTiles.get(i).get(j)).setZoneID(zoneID);
-                
+
                 count++;
             }
         }
 
         Data.insertZoneTiles(zoneTiles);
         Data.updateTiles(selectedTiles);
+
+//         PowerGrid.evaluate();
+        new PowerGridEvaluationThread().start();
     }
-    
+
     /*
      * ACCESSORS *
      */
@@ -67,5 +79,52 @@ public class Zone
 
     public static void setPendingOp(int value) {
         pendingOp = value;
+    }
+
+    //
+
+    public Object get(String key) {
+        return this.properties.get(key);
+    }
+
+    public int dbID() {
+        return ((Integer)properties.get(Data.ZONES_ID)).intValue();
+    }
+
+    public int zone() {
+        return ((Integer)properties.get(Data.ZONES_ZONE)).intValue();
+    }
+
+    public int age() {
+        return ((Integer)properties.get(Data.ZONES_AGE)).intValue();
+    }
+
+    public int powered() {
+        return ((Integer)properties.get(Data.ZONES_POWERED)).intValue();
+    }
+
+    public void setPowered(int value) {
+        properties.put(Data.ZONES_POWERED, new Integer(value));
+        DataSource.getInstance().powerZone(this);
+    }
+
+    public Point origin() {
+        return new Point((Integer)properties.get(Data.ZONES_X), (Integer)properties.get(Data.ZONES_Y));
+    }
+
+    public int primaryAllocation() {
+        return ((Integer)properties.get(Data.ZONES_PRIMARY_ALLOCATION)).intValue();
+    }
+
+    public int primaryCapacity() {
+        return ((Integer)properties.get(Data.ZONES_PRIMARY_CAPACITY)).intValue();
+    }
+
+    public int secondaryAllocation() {
+        return ((Integer)properties.get(Data.ZONES_SECONDARY_ALLOCATION)).intValue();
+    }
+
+    public int secondaryCapacity() {
+        return ((Integer)properties.get(Data.ZONES_SECONDARY_CAPACITY)).intValue();
     }
 }

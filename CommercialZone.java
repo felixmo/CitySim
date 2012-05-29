@@ -22,6 +22,10 @@ public class CommercialZone extends Zone
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Commercial";
+    
+    public CommercialZone(HashMap properties) {
+        super(properties);
+    }
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 

@@ -128,7 +128,7 @@ public class DataSource
 
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
-            //             connection = new net.sf.log4jdbc.ConnectionSpy(connection);
+            connection = new net.sf.log4jdbc.ConnectionSpy(connection);
             connection.setAutoCommit(true);
             connectionIsOpen = true;
 
@@ -283,7 +283,7 @@ public class DataSource
                 statementString += "?" + (i < Data.TABLES_MAPPING.get(Data.METADATA).length-1 ? ", " : "");
             }
             statementString += ");";
-            System.out.println(statementString);
+            // System.out.println(statementString);
             PreparedStatement statement = connection.prepareStatement(statementString);
 
             int i = 1;
@@ -334,7 +334,7 @@ public class DataSource
 
     // - ZONES -
 
-    public HashMap[] zones() {
+    public Zone[] zones() {
 
         List results = null;
 
@@ -346,16 +346,16 @@ public class DataSource
             se.printStackTrace();
         }
 
-        HashMap[] zones = new HashMap[results.size()];
+        Zone[] zones = new Zone[results.size()];
 
         for (int i = 0; i < zones.length; i++) {
-            zones[i] = (HashMap)results.get(i);
+            zones[i] = new Zone((HashMap)results.get(i));
         }
 
         return zones;
     }
 
-    public HashMap[] zonesMatchingCriteria(String criteria) {
+    public Zone[] zonesMatchingCriteria(String criteria) {
 
         CSLogger.sharedLogger().debug("Running query for zones with criteria (" + criteria + ")");
 
@@ -371,16 +371,16 @@ public class DataSource
             se.printStackTrace();
         }
 
-        HashMap[] zones = new HashMap[results.size()];
+        Zone[] zones = new Zone[results.size()];
 
         for (int i = 0; i < zones.length; i++) {
-            zones[i] = (HashMap)results.get(i);
+            zones[i] = new Zone((HashMap)results.get(i));
         }
 
         return zones;
     }
 
-    public void insertZone(HashMap zone) {
+    public void insertZone(Zone zone) {
 
         CSLogger.sharedLogger().debug("Inserting zone into DB (\"" + dbName + "\")");
 
@@ -408,7 +408,7 @@ public class DataSource
         }
     }
 
-    public void updateZone(HashMap zone) {
+    public void updateZone(Zone zone) {
 
         CSLogger.sharedLogger().debug("Updating zone in DB (\"" + dbName + "\")");
 
@@ -423,9 +423,14 @@ public class DataSource
             PreparedStatement statement = connection.prepareStatement(statementString);
             int i = 1;
             for (String param : Data.TABLES_MAPPING.get(Data.ZONES)) {
-                statement.setObject(i, zone.get(param));
-                i++;
+                if (!param.equals(Data.TILES_ID)) {
+                    //                     System.out.println(param + ": " + zone.get(param));
+                    //                     statement.setInt(i, ((Integer)(zone.get(param))).intValue());
+                    statement.setObject(i, zone.get(param));
+                    i++;
+                }
             }
+            statement.setObject(i, new Integer(zone.dbID()));
 
             statement.addBatch();
             statement.executeBatch();
@@ -436,7 +441,7 @@ public class DataSource
         }
     }
 
-    public void updateZones(HashMap[] zones) {
+    public void updateZones(Zone[] zones) {
 
         try {
 
@@ -448,14 +453,22 @@ public class DataSource
             }
             statementString += "WHERE id = ?;";
 
+            // System.out.println(statementString);
+
             PreparedStatement statement = connection.prepareStatement(statementString);
 
-            for (HashMap zone : zones) {
+            for (Zone zone : zones) {
                 int i = 1;
                 for (String param : Data.TABLES_MAPPING.get(Data.ZONES)) {
-                    statement.setObject(i, zone.get(param));
-                    i++;
+                    if (!param.equals(Data.TILES_ID)) {
+                        //                     System.out.println(param + ": " + zone.get(param));
+                        //                     statement.setInt(i, ((Integer)(zone.get(param))).intValue());
+                        statement.setObject(i, zone.get(param));
+                        i++;
+                    }
                 }
+                statement.setObject(i, new Integer(zone.dbID()));
+
                 statement.addBatch();
             }
 
@@ -1055,16 +1068,14 @@ public class DataSource
         }
     }
 
-    //     public void startPowerPlants() {
-    // 
-    //         CSLogger.sharedLogger().debug("Starting power plants");
-    // 
-    //         try {
-    //             new QueryRunner.update(connection, "UPDATE tiles SET powered = 0");
-    //         }
-    //         catch (SQLException se) {
-    //             se.printStackTrace();
-    //         }
-    //     }
-
+    public void powerZone(Zone zone) {
+        CSLogger.sharedLogger().debug("Powering zone (" + zone.dbID() + ")");
+        
+        try {
+            new QueryRunner().update(connection, "UPDATE tiles SET powered = 1 WHERE zone_id = " + zone.dbID());    
+        }
+        catch (SQLException se) {
+            
+        }
+    }
 }

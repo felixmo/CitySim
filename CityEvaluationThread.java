@@ -21,16 +21,16 @@ public class CityEvaluationThread extends CSThread
     }
 
     public void run() {
-
+/*
         CSLogger.sharedLogger().info("Began evaluating the city...");
         long startTime = System.currentTimeMillis();
 
         // Find nearby C & I zones for R zones
 
-        HashMap[] resZones = Data.zonesMatchingCriteria("zone = " + ResidentialZone.TYPE_ID);
+        Zone[] resZones = Data.zonesMatchingCriteria("zone = " + ResidentialZone.TYPE_ID);
         System.out.println("Evaluating " + resZones.length + " residential zones");
 
-        for (HashMap res : resZones) {
+        for (Zone res : resZones) {
 
             int fifteen = 0;
             int thirty = 0;
@@ -52,5 +52,6 @@ public class CityEvaluationThread extends CSThread
         }
 
         CSLogger.sharedLogger().info("Finished evaluating the city in " + (System.currentTimeMillis() - startTime) + " ms");
+    */
     }
 }

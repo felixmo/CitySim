@@ -11,6 +11,7 @@ import com.google.common.cache.CacheLoader;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.util.Arrays;
 
 /**
  * Data
@@ -214,20 +215,24 @@ public class Data
     }
 
     public static Tile[] tilesMatchingCriteriaAroundTile(Tile tile, String criteria) {
-        return DataSource.getInstance().tilesMatchingCriteria("NOT id = " + tile.dbID() + " AND x >= " + (tile.position().x-1) + " AND x <= " + (tile.position().x+1) + " AND y >= " + (tile.position().y-1) + " AND y <= " + (tile.position().y+1) + " AND " + criteria);
+        Tile[] tiles = DataSource.getInstance().tilesMatchingCriteria("NOT id = " + tile.dbID() + " AND x >= " + (tile.position().x-1) + " AND x <= " + (tile.position().x+1) + " AND y >= " + (tile.position().y-1) + " AND y <= " + (tile.position().y+1) + " AND " + criteria);
+        Arrays.sort(tiles, new TileComparator());
+        return tiles;
     }
 
-    public static Tile[] tilesAroundPowerPlant(HashMap zone) {
-        
-        Tile[] left = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+5));
-        Tile[] top = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+5));
+    public static Tile[] tilesAroundZone(Zone zone) {
+
+        int size = 1 + (((Integer)zone.get(Data.ZONES_ZONE)).intValue() <= 3 ? ResidentialZone.SIZE_WIDTH : CoalPowerPlant.SIZE_WIDTH);
+
+        Tile[] left = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
+        Tile[] top = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
 
         Tile[] c1 = new Tile[left.length + top.length];
         System.arraycopy(left, 0, c1, 0, left.length);
         System.arraycopy(top, 0, c1, left.length, top.length); 
 
-        Tile[] right = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()+4) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+5));
-        Tile[] bottom = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+4) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+5));
+        Tile[] right = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
+        Tile[] bottom = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
 
         Tile[] c2 = new Tile[right.length + bottom.length];
         System.arraycopy(right, 0, c2, 0, right.length);
@@ -236,7 +241,7 @@ public class Data
         Tile[] c3 = new Tile[c1.length + c2.length];
         System.arraycopy(c1, 0, c3, 0, c1.length);
         System.arraycopy(c2, 0, c3, c1.length, c2.length);
-
+        
         return c3;
     }
 
@@ -263,6 +268,19 @@ public class Data
 
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
+
+        // Write changes to DB after displaying the changes
+        new TileDBUpdateThread(tile).start();
+    }
+
+    public static void updateTileWithoutDraw(Tile tile) {
+        
+        CSLogger.sharedLogger().info("Updating map tile without draw");
+
+        // Update the cached map w/ the changes so that the map can be redrawn using the modified cached data
+        // This is much faster than writing the changes to the DB, AND THEN running a query to refresh the cache
+        ArrayList<ArrayList<Tile>> cachedTiles = (ArrayList<ArrayList<Tile>>)get(TILES);
+        cachedTiles.get(tile.position().x).set(tile.position().y, tile);
 
         // Write changes to DB after displaying the changes
         new TileDBUpdateThread(tile).start();
@@ -364,33 +382,33 @@ public class Data
 
     //
 
-    public static HashMap[] zones() {
+    public static Zone[] zones() {
         return DataSource.getInstance().zones();
     }
 
-    public static HashMap[] zonesMatchingCriteria(String criteria) {
+    public static Zone[] zonesMatchingCriteria(String criteria) {
         //         CSLogger.sharedLogger().info("Running query for zones matching criteria (" + criteria + ")");
         return DataSource.getInstance().zonesMatchingCriteria(criteria);
     }
 
-    public static HashMap[] zonesInArea(Point start, int radius) {
+    public static Zone[] zonesInArea(Point start, int radius) {
         return zonesMatchingCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius));
     }
 
-    public static HashMap[] zonesInArea(Point start, int radius, int zone) {
+    public static Zone[] zonesInArea(Point start, int radius, int zone) {
         return zonesMatchingCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius) + " AND zone = " + zone);
     }
 
-    public static HashMap[] zonesInArea(Point start, int radius, int zone1, int zone2) {
+    public static Zone[] zonesInArea(Point start, int radius, int zone1, int zone2) {
         return zonesMatchingCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + ")");
     }
 
-    public static void insertZone(HashMap zone) {
+    public static void insertZone(Zone zone) {
         CSLogger.sharedLogger().info("Inserting zone...");
         DataSource.getInstance().insertZone(zone);
     }
 
-    public static void insertZone(int id, int type, int powered, int x, int y) {
+    public static void insertZone(int id, int type, int x, int y, int powered) {
         //         CSLogger.sharedLogger().info("Inserting zone (" + id + ") of type (" + type + ")");
         HashMap zone = new HashMap(ZONES_PARAMS.length);
         zone.put(ZONES_ID, id);
@@ -399,16 +417,21 @@ public class Data
         zone.put(ZONES_POWERED, powered);
         zone.put(ZONES_X, x);
         zone.put(ZONES_Y, y);
+        zone.put(ZONES_PRIMARY_ALLOCATION, 0);
+        zone.put(ZONES_PRIMARY_CAPACITY, 0);
+        zone.put(ZONES_SECONDARY_ALLOCATION, 0);
+        zone.put(ZONES_SECONDARY_CAPACITY, 0);
         //         DataSource.getInstance().insertZone(zone);
-        insertZone(zone);
+        insertZone(new Zone(zone));
     }
 
-    public static void updateZone(HashMap zone) {
+    public static void updateZone(Zone zone) {
         CSLogger.sharedLogger().info("Updating zone...");
         DataSource.getInstance().updateZone(zone);
     }
-    
-    public static void updateZones(HashMap[] zones) {
+
+    public static void updateZones(Zone[] zones) {
+        CSLogger.sharedLogger().info("Updating " + zones.length + " zones...");
         DataSource.getInstance().updateZones(zones);
     }
 
