@@ -33,47 +33,6 @@ Third-party libraries used, and packaged, by CitySim:
 
 	http://guava-libraries.googlecode.com
 
--> log4jdbc
-	
-	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright (c) 2007-2012 Arthur Blake.
-	All Rights Reserved.
-
-	net.sf.log4jdbc.*
-
-	http://code.google.com/p/log4jdbc/
-
--> slf4j
-
-	Licensed under the terms of the MIT License
-	Copyright (c) 2004-2011 QOS.ch.
-	All rights reserved.
-
-	org.slf4j.*
-
-	http://www.slf4j.org/
-
--> Logback
-
-	Licensed under the terms of the GNU Lesser General Public License version 2.1
-	Copyright (c) 2004-2011 QOS.ch.
-	All rights reserved.
-
-	org.slf4j.*
-
-	http://logback.qos.ch/
-
--> SQLiteJDBC
-
-	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright (c) 2006 David Crawshaw.
-	All Rights Reserved.
-
-	org.sqlite.*
-
-	http://code.google.com/p/sqlite-jdbc/
-
-
 
 -- LINKS TO FULL TEXT OF MENTIONED LICENSES --
 
