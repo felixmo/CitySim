@@ -5,29 +5,29 @@
  * 
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
- * Write a description of class CoalPowerPlant here.
+ * Write a description of class PoliceStation here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class CoalPowerPlant extends PowerGridZone
+public class PoliceStation extends ProtectionZone
 {
-    public static final int TYPE_ID = 4;
-    public static final int[] MARKERS = { 720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735 };
-    public static final int SIZE_WIDTH = 4;
-    public static final int SIZE_HEIGHT = 4;
-    public static final String NAME = "Coal power plant";
-    
-    public CoalPowerPlant(HashMap properties) {
+    public static final int TYPE_ID = 7;
+    public static final int[] MARKERS = { 810, 811, 812, 813, 814, 815, 816, 817, 818 };
+    public static final int SIZE_WIDTH = 3;
+    public static final int SIZE_HEIGHT = 3;
+    public static final String NAME = "Police station";
+
+    public PoliceStation(HashMap properties) {
         super(properties);
     }
 
     public static void build(ArrayList<ArrayList<Tile>> selectedTiles) {
-        
+
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
 
@@ -36,13 +36,13 @@ public class CoalPowerPlant extends PowerGridZone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(CoalPowerPlant.MARKERS[k]);
+                tile.setType(PoliceStation.MARKERS[k]);
                 k++;
             }
         }
 
-        CSLogger.sharedLogger().info("Did build power plant on " + (width*height) + " tiles.");
+        CSLogger.sharedLogger().info("Did build police station on " + (width*height) + " tiles.");
 
-        PowerGridZone.updateTiles(selectedTiles);
+        Zone.updateTiles(selectedTiles);
     }
 }

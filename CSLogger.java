@@ -5,8 +5,7 @@
  * 
  */
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.*;
 
 /**
  * Write a description of class CSLogger here.
@@ -16,7 +15,25 @@ import org.slf4j.LoggerFactory;
  */
 public class CSLogger
 {
-    private final static Logger sharedLogger = LoggerFactory.getLogger("com.felixmo.CitySim");          
+    private static Logger sharedLogger;              // Shared logger
+
+    static {
+
+        if (sharedLogger == null) {
+            // Configure logging
+
+            LogManager manager = LogManager.getLogManager();
+            manager.reset();
+
+            ConsoleHandler handler = new ConsoleHandler();
+            handler.setLevel(Level.FINE);
+            handler.setFormatter(new CSLogFormatter());
+
+            sharedLogger = Logger.getLogger("com.felixmo.CitySim.logger");
+            sharedLogger.addHandler(handler);
+            sharedLogger.setLevel(Level.FINE);
+        }
+    }
 
     // Logging is done via a global instance of 'Logger' rather than through CSLogger so that the caller can be logged as well
     public static Logger sharedLogger() {

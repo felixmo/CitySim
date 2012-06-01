@@ -18,7 +18,7 @@ import java.awt.Point;
  */
 public class Zone  
 {   
-    private static int pendingOp = 0; // ID of zone type
+    protected static int pendingOp = 0; // ID of zone type
     public static final String NAME = "Zoning";
 
     private HashMap properties;

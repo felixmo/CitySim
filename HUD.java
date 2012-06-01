@@ -99,7 +99,7 @@ public class HUD extends Actor {
     // Changes the values in individual labels
     private void refreshLabel(String key, String value) {
 
-        CSLogger.sharedLogger().trace("Updating label (\"" + key + "\")" + " in HUD with value: " + value);
+        CSLogger.sharedLogger().finer("Updating label (\"" + key + "\")" + " in HUD with value: " + value);
 
         Label label = (Label)labels.get(key);
 

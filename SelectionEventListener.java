@@ -20,19 +20,32 @@ public class SelectionEventListener extends CSEventListener
 
     @Subscribe
     public void listen(SelectionEvent event) {
-        CSLogger.sharedLogger().debug("Message received: " + event.message());
+        CSLogger.sharedLogger().fine("Message received: " + event.message());
 
         if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
 
             CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
 
             switch (Zone.pendingOp()) {
-                case ResidentialZone.TYPE_ID: ResidentialZone.zoneTiles(event.tiles());  
-                break;
-                case IndustrialZone.TYPE_ID: IndustrialZone.zoneTiles(event.tiles());
-                break;
-                case CommercialZone.TYPE_ID: CommercialZone.zoneTiles(event.tiles());
-                break;
+                case ResidentialZone.TYPE_ID: 
+                    ResidentialZone.zoneTiles(event.tiles());  
+                    break;
+                case IndustrialZone.TYPE_ID: 
+                    IndustrialZone.zoneTiles(event.tiles());
+                    break;
+                case CommercialZone.TYPE_ID: 
+                    CommercialZone.zoneTiles(event.tiles());
+                    break;
+                case FireStation.TYPE_ID: FireStation.build(event.tiles());
+                    break;
+                case PoliceStation.TYPE_ID: PoliceStation.build(event.tiles());
+                    break;
+                case CoalPowerPlant.TYPE_ID: 
+                    CoalPowerPlant.build(event.tiles());
+                    break;
+                case NuclearPowerPlant.TYPE_ID:
+                    NuclearPowerPlant.build(event.tiles());
+                    break;
                 default: break;
             }
         }
@@ -42,19 +55,6 @@ public class SelectionEventListener extends CSEventListener
                 case PowerLine.TYPE_ID: PowerLine.buildPowerLine(event.tile(), PowerGrid.activeType());
                 break;
 
-                default: break;
-            }
-        }
-        else if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_POWERGRID)) {
-
-            switch (PowerGrid.pendingOp()) {
-                
-                case CoalPowerPlant.TYPE_ID: CoalPowerPlant.buildPowerPlant(event.tiles());
-                break;
-                
-                case NuclearPowerPlant.TYPE_ID: NuclearPowerPlant.buildPowerPlant(event.tiles());
-                break;
-                
                 default: break;
             }
         }

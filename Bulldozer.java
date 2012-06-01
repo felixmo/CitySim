@@ -20,7 +20,7 @@ public class Bulldozer extends Tool
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Bulldozer";
-    
+
     public static void bulldoze(Tile tile) {
 
         if (tile.road() == Street.TYPE_ID) Street.subtractFromCount(1);
@@ -30,8 +30,11 @@ public class Bulldozer extends Tool
         tile.setZone(0);
         tile.setZoneID(-1);
         tile.setPowered(0);
+        tile.setPowerGridType(0);
 
         Tool.updateTile(tile);
+
+        new PowerGridEvaluationThread().start();
     }
 
     public static void bulldoze(ArrayList<ArrayList<Tile>> tiles) {
@@ -54,9 +57,12 @@ public class Bulldozer extends Tool
                 ((Tile)tiles.get(i).get(j)).setZone(0);
                 ((Tile)tiles.get(i).get(j)).setZoneID(-1);
                 ((Tile)tiles.get(i).get(j)).setPowered(0);
+                ((Tile)tiles.get(i).get(j)).setPowerGridType(0);
             }
         }
 
         Tool.updateTiles(tiles);
+
+        new PowerGridEvaluationThread().start();
     }
 }

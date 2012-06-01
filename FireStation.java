@@ -5,24 +5,24 @@
  * 
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
- * Write a description of class CoalPowerPlant here.
+ * Write a description of class FireStation here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class CoalPowerPlant extends PowerGridZone
+public class FireStation extends ProtectionZone
 {
-    public static final int TYPE_ID = 4;
-    public static final int[] MARKERS = { 720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735 };
-    public static final int SIZE_WIDTH = 4;
-    public static final int SIZE_HEIGHT = 4;
-    public static final String NAME = "Coal power plant";
-    
-    public CoalPowerPlant(HashMap properties) {
+    public static final int TYPE_ID = 6;
+    public static final int[] MARKERS = { 800, 801, 802, 803, 804, 805, 806, 807, 808 };
+    public static final int SIZE_WIDTH = 3;
+    public static final int SIZE_HEIGHT = 3;
+    public static final String NAME = "Fire station";
+
+    public FireStation(HashMap properties) {
         super(properties);
     }
 
@@ -36,13 +36,13 @@ public class CoalPowerPlant extends PowerGridZone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(CoalPowerPlant.MARKERS[k]);
+                tile.setType(FireStation.MARKERS[k]);
                 k++;
             }
         }
 
-        CSLogger.sharedLogger().info("Did build power plant on " + (width*height) + " tiles.");
+        CSLogger.sharedLogger().info("Did build fire station on " + (width*height) + " tiles.");
 
-        PowerGridZone.updateTiles(selectedTiles);
+        Zone.updateTiles(selectedTiles);
     }
 }

@@ -25,28 +25,182 @@ public class Street extends Road
 
     public static void buildStreet(Tile tile, int type) {
 
-        tile.setType(type);
+        Tile up = null, down = null, left = null, right = null;
+
+        Tile[] nearby = Data.tilesMatchingCriteriaTouchingTile(tile, "road = 1");
+        for (Tile t : nearby) {
+            if (t.position().x < tile.position().x) {
+                // LEFT
+                left = t;
+            }
+            else if (t.position().x > tile.position().x) {
+                // RIGHT
+                right = t;
+            }
+            else {
+                if (t.position().y < tile.position().y) {
+                    // UP
+                    up = t;
+                }
+                else if (t.position().y > tile.position().y) {
+                    // DOWN
+                    down = t;
+                }
+            }
+        }
+
+        if (up != null && left != null) {
+
+            // Straight (h)
+            up.setType(101);
+            Data.updateTile(up);
+
+            // Straight (v)
+            left.setType(102);
+            Data.updateTile(left);
+
+            // Bend
+            tile.setType(106);
+        }
+        if (up != null && right != null) {
+
+            // Straight (h)
+            up.setType(101);
+            Data.updateTile(up);
+
+            // Straight (v)
+            right.setType(102);
+            Data.updateTile(right);
+
+            // Bend
+            tile.setType(103);
+        }
+        if (down != null && left != null) {
+
+            // Straight (v)
+            down.setType(102);
+            Data.updateTile(down);
+
+            // Straight (h)
+            left.setType(101);
+            Data.updateTile(left);
+
+            // Bend
+            tile.setType(105);
+        }
+        else if (down != null && right != null) {
+
+            // Straight (v)
+            down.setType(102);
+            Data.updateTile(down);
+
+            // Straight (h)
+            right.setType(101);
+            Data.updateTile(right);
+
+            // Bend
+            tile.setType(104);
+        }
+        else if (up != null || down != null) {
+
+            if (up != null) {
+                if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x-1)).length == 1) {
+                    // Check for a road to the LEFT of the upper tile
+                    up.setType(105);
+                    Data.updateTile(up);
+                }
+                else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x+1)).length == 1) {
+                    // Check for a road to the RIGHT of the upper tile
+                    up.setType(104);
+                    Data.updateTile(up);
+                }
+                else {
+                    // Straight (v)
+                    up.setType(102);
+                    Data.updateTile(up);
+                }
+            }
+
+            if (down != null) {
+                if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x-1) + " AND y = " + down.position().y).length == 0) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x) + " AND y = " + (down.position().y+1)).length == 0)) {
+                    // Check for:
+                    // 1. a road LEFT of lower tile
+                    // 2. a road BELOW the lower tile
+
+                    // Bend
+                    down.setType(103);
+                    Data.updateTile(down);
+                }
+                else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x) + " AND y = " + (down.position().y+1)).length == 0) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x+1) + " AND y = " + (down.position().y)).length == 0)) {
+                    // Check for:
+                    // 1. a road BELOW the lower tile
+                    // 2. a road RIGHT of the lower tile
+
+                    // Bend
+                    down.setType(106);
+                    Data.updateTile(down);
+                }
+                else {
+                    // Straight (v)
+                    down.setType(102);
+                    Data.updateTile(up);
+                }
+            }
+
+            // Straight (v)
+            tile.setType(102);
+        }
+        else if (left != null || right != null) {
+
+            if (left != null) {
+                if (Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x-1) + " AND y = " + left.position().y).length == 0) {
+                    // Check for a road to the left of the left tile
+
+                    // Bend
+                    left.setType(103);
+                    Data.updateTile(left);
+                }
+                else {
+                    // Straight (h)
+                    left.setType(101);
+                    Data.updateTile(left);
+                }
+            }
+
+            if (right != null) {
+                if (Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x+1) + " AND y = " + right.position().y).length == 0) {
+                    // Check for a road to the right of the right tile
+
+                    // Bend
+                    right.setType(106);
+                    Data.updateTile(right);
+                }
+                else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (right.position().y+1) + " AND x = " + right.position().x).length == 1) {
+                    // Check for a road above the right tile
+
+                    // Bend
+                    right.setType(105);
+                    Data.updateTile(right);
+                }
+                else {
+                    // Straight (h)
+                    right.setType(101);
+                    Data.updateTile(left);
+                }
+            }
+
+            // Straight (h)
+            tile.setType(101);
+        }
+        else {
+            // Straight (h)
+            tile.setType(101);
+        }
+
         tile.setRoad(TYPE_ID);
         addToCount(1);
 
         Road.updateTile(tile);
-    }
-
-    public static void buildStreets(ArrayList<ArrayList<Tile>> selectedTiles, int type) {
-
-        int width = selectedTiles.size();
-        int height = ((ArrayList)selectedTiles.get(0)).size();
-        addToCount(width*height);
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(type);
-                tile.setRoad(TYPE_ID);
-            }
-        }
-
-        Road.updateTiles(selectedTiles);
     }
 
     public static int count() {

@@ -23,10 +23,10 @@ public class MenuItemEventListener extends CSEventListener
 
     @Subscribe
     public void listen(MenuItemEvent event) {
-        CSLogger.sharedLogger().trace("\"" + event.message() + "\" was selected.");
+        CSLogger.sharedLogger().finer("\"" + event.message() + "\" was selected.");
 
         // * ZONING *
-        if (event.message().equals(ResidentialZone.NAME)) {
+        if (event.message() == ResidentialZone.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setUnacceptedTypes( new int[]{ Tile.WATER } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
@@ -34,7 +34,7 @@ public class MenuItemEventListener extends CSEventListener
             Zone.setPendingOp(ResidentialZone.TYPE_ID);
             City.getInstance().setHint(new Hint("Select the areas you wish to zone as residential. Press 'ESC' when done."));
         }
-        else if (event.message().equals(IndustrialZone.NAME)) {
+        else if (event.message() == IndustrialZone.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
@@ -42,7 +42,7 @@ public class MenuItemEventListener extends CSEventListener
             Zone.setPendingOp(IndustrialZone.TYPE_ID);
             City.getInstance().setHint(new Hint("Select the areas you wish to zone as industrial. Press 'ESC' when done."));
         }
-        else if (event.message().equals(CommercialZone.NAME)) {
+        else if (event.message() == CommercialZone.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
@@ -51,16 +51,16 @@ public class MenuItemEventListener extends CSEventListener
             City.getInstance().setHint(new Hint("Select the areas you wish to zone as commercial. Press 'ESC' when done."));
         }
         // * TRANSPORTATION *
-        else if (event.message().equals(Street.NAME)) {
+        else if (event.message() == Street.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(Street.SIZE_WIDTH, Street.SIZE_HEIGHT);    
             Road.setPendingOp(Street.TYPE_ID);
-            City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
+//             City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
         }
         // * POWER *
-        else if (event.message().equals(PowerLine.NAME)) {
+        else if (event.message() == PowerLine.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
@@ -68,7 +68,7 @@ public class MenuItemEventListener extends CSEventListener
             PowerGrid.setPendingOp(PowerLine.TYPE_ID);
             City.getInstance().setTileSelector(new TileSelector(PowerLine.MARKERS));
         }
-        else if (event.message().equals(PowerNode.NAME)) {
+        else if (event.message() == PowerNode.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
@@ -76,22 +76,36 @@ public class MenuItemEventListener extends CSEventListener
             PowerGrid.setPendingOp(PowerNode.TYPE_ID);
             City.getInstance().setTileSelector(new TileSelector(PowerNode.MARKERS));
         }
-        else if (event.message().equals(CoalPowerPlant.NAME)) {
+        else if (event.message() == FireStation.NAME) {
+            Map.getInstance().selection().setSelectionMode(true);
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
+            Map.getInstance().selection().setSize(FireStation.SIZE_WIDTH, FireStation.SIZE_HEIGHT);
+            Zone.setPendingOp(FireStation.TYPE_ID);
+        }
+        else if (event.message() == PoliceStation.NAME) {
+            Map.getInstance().selection().setSelectionMode(true);
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
+            Map.getInstance().selection().setSize(PoliceStation.SIZE_WIDTH, PoliceStation.SIZE_HEIGHT);
+            Zone.setPendingOp(PoliceStation.TYPE_ID);
+        }
+        else if (event.message() == CoalPowerPlant.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(CoalPowerPlant.SIZE_WIDTH, CoalPowerPlant.SIZE_HEIGHT);
-            PowerGrid.setPendingOp(CoalPowerPlant.TYPE_ID);
+            Zone.setPendingOp(CoalPowerPlant.TYPE_ID);
         }
-        else if (event.message().equals(NuclearPowerPlant.NAME)) {
+        else if (event.message() == NuclearPowerPlant.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(NuclearPowerPlant.SIZE_WIDTH, NuclearPowerPlant.SIZE_HEIGHT);
-            PowerGrid.setPendingOp(NuclearPowerPlant.TYPE_ID);
+            Zone.setPendingOp(NuclearPowerPlant.TYPE_ID);
         }
         // * TOOLS *
-        else if (event.message().equals(Bulldozer.NAME)) {
+        else if (event.message() == Bulldozer.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
             Map.getInstance().selection().setUnacceptedTypes( new int[]{ Tile.WATER } );
             Map.getInstance().selection().setSize(Bulldozer.SIZE_WIDTH, Bulldozer.SIZE_HEIGHT);

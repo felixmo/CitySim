@@ -142,11 +142,11 @@ public class Selection extends Actor
             }
         }
         // FOR TESTING
-        /*
+        
         else {
             if (Greenfoot.mouseClicked(this)) {
                 System.out.print("(" + this.activeTile.position().x + ", " + this.activeTile.position().y + ")");
-				System.out.print("(" + this.activeTile.zoneID() + ")");
+                System.out.print("(" + this.activeTile.zoneID() + ")");
                 if (size.width > 1) {
                     Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
                     System.out.println(" | Zone powered: " + (((Integer)zone.get(Data.ZONES_POWERED)).intValue() == 1 ? "YES" : "NO"));
@@ -156,7 +156,7 @@ public class Selection extends Actor
                 }
             }
         }
-        */
+       
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {
@@ -241,7 +241,7 @@ public class Selection extends Actor
 
     public void setSelectionMode(boolean value) {
 
-        CSLogger.sharedLogger().debug("Setting selection mode: " + (value ? "ON" : "OFF"));
+        CSLogger.sharedLogger().fine("Setting selection mode: " + (value ? "ON" : "OFF"));
 
         this.size.setSize(1, 1);
         this.customSize = false;
@@ -273,7 +273,7 @@ public class Selection extends Actor
                 this.activeTile = Data.tileWithID(id);
             }
             if (this.activeTile.zone() > 0) {
-                if (this.activeTile.zone() <= 3) {
+                if (this.activeTile.zone() <= 3 || this.activeTile.zone() > 5) {
                     setSize(3, 3);
                 }
                 else if (this.activeTile.zone() > 3 && this.activeTile.zone() <= 5) {

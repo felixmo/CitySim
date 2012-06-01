@@ -206,12 +206,14 @@ public class Data
     //
 
     public static ArrayList<ArrayList<Tile>> tiles() {
-        CSLogger.sharedLogger().trace("Returning map tiles");
+        CSLogger.sharedLogger().finer("Returning map tiles");
         return (ArrayList<ArrayList<Tile>>)get(TILES);
     }
 
     public static Tile[] tilesAroundTile(Tile tile) {
-        return DataSource.getInstance().tilesMatchingCriteria("x >= " + (tile.position().x-1) + " AND x <= " + (tile.position().x+1) + " AND y >= " + (tile.position().y-1) + " AND y <= " + (tile.position().y+1) + " AND NOT id = " + tile.dbID());
+        Tile[] tiles = DataSource.getInstance().tilesMatchingCriteria("x >= " + (tile.position().x-1) + " AND x <= " + (tile.position().x+1) + " AND y >= " + (tile.position().y-1) + " AND y <= " + (tile.position().y+1) + " AND NOT id = " + tile.dbID());
+        Arrays.sort(tiles, new TileComparator());
+        return tiles;
     }
 
     public static Tile[] tilesMatchingCriteriaAroundTile(Tile tile, String criteria) {
@@ -219,20 +221,32 @@ public class Data
         Arrays.sort(tiles, new TileComparator());
         return tiles;
     }
+    
+    public static Tile[] tilesMatchingCriteriaTouchingTile(Tile tile, String criteria) {
+        return DataSource.getInstance().tilesMatchingCriteria("NOT id = " + tile.dbID() + (criteria.length() > 0 ? " AND " + criteria : "") + " AND ((x = " + (tile.position().x-1) + " AND y = " + tile.position().y + ") OR (x = " + (tile.position().x+1) + " AND y = " + tile.position().y + ") OR ( x = " + tile.position().x + " AND y = " + (tile.position().y-1) + ") OR ( x = " + tile.position().x + " AND y = " + (tile.position().y+1) + "))"); 
+    }
+    
+    public static Tile[] tilesMatchingCriteriaTouchingTile(Tile tile) {
+        return tilesMatchingCriteriaTouchingTile(tile, "");
+    }
+    
+    public static Tile[] tilesMatchingCriteria(String criteria) {
+        return DataSource.getInstance().tilesMatchingCriteria(criteria);
+    }
 
-    public static Tile[] tilesAroundZone(Zone zone) {
+    public static Tile[] tilesAroundZoneWithCriteria(Zone zone, String criteria) {
 
         int size = 1 + (((Integer)zone.get(Data.ZONES_ZONE)).intValue() <= 3 ? ResidentialZone.SIZE_WIDTH : CoalPowerPlant.SIZE_WIDTH);
 
-        Tile[] left = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
-        Tile[] top = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
+        Tile[] left = DataSource.getInstance().tilesMatchingCriteria(criteria + (criteria.length() > 0 ? " AND " : "") + "x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
+        Tile[] top = DataSource.getInstance().tilesMatchingCriteria(criteria + (criteria.length() > 0 ? " AND " : "") + "y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
 
         Tile[] c1 = new Tile[left.length + top.length];
         System.arraycopy(left, 0, c1, 0, left.length);
         System.arraycopy(top, 0, c1, left.length, top.length); 
 
-        Tile[] right = DataSource.getInstance().tilesMatchingCriteria("x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
-        Tile[] bottom = DataSource.getInstance().tilesMatchingCriteria("y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
+        Tile[] right = DataSource.getInstance().tilesMatchingCriteria(criteria + (criteria.length() > 0 ? " AND " : "") + "x = " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1) + " AND y >= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()-1) + " AND y <= " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1));
+        Tile[] bottom = DataSource.getInstance().tilesMatchingCriteria(criteria + (criteria.length() > 0 ? " AND " : "") + "y = " + (((Integer)zone.get(Data.ZONES_Y)).intValue()+size-1) + " AND x >= " + (((Integer)zone.get(Data.ZONES_X)).intValue()-1) + " AND x <= " + (((Integer)zone.get(Data.ZONES_X)).intValue()+size-1));
 
         Tile[] c2 = new Tile[right.length + bottom.length];
         System.arraycopy(right, 0, c2, 0, right.length);
@@ -241,8 +255,12 @@ public class Data
         Tile[] c3 = new Tile[c1.length + c2.length];
         System.arraycopy(c1, 0, c3, 0, c1.length);
         System.arraycopy(c2, 0, c3, c1.length, c2.length);
-        
+
         return c3;
+    }
+
+    public static Tile[] tilesAroundZone(Zone zone) {
+        return tilesAroundZoneWithCriteria(zone, "");
     }
 
     public static Tile tileWithID(int id) {
@@ -274,7 +292,7 @@ public class Data
     }
 
     public static void updateTileWithoutDraw(Tile tile) {
-        
+
         CSLogger.sharedLogger().info("Updating map tile without draw");
 
         // Update the cached map w/ the changes so that the map can be redrawn using the modified cached data
@@ -392,7 +410,7 @@ public class Data
     }
 
     public static Zone[] zonesInArea(Point start, int radius) {
-        return zonesMatchingCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius));
+        return zonesMatchingCriteria("x >= " + (start.x-radius-2) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius));
     }
 
     public static Zone[] zonesInArea(Point start, int radius, int zone) {
@@ -510,16 +528,16 @@ public class Data
 
         Object data = null;
 
-        if (key.equals(MAPSIZE)) {
+        if (key == MAPSIZE) {
             data = DataSource.getInstance().mapSize();
         }
-        else if (key.equals(METADATA)) {
+        else if (key == METADATA) {
             data = DataSource.getInstance().mapMetadata();
         }
-        else if (key.equals(TILES)) {
+        else if (key == TILES) {
             data = DataSource.getInstance().tiles();
         }
-        else if (key.equals(CITYSTATS)) {
+        else if (key == CITYSTATS) {
             data = DataSource.getInstance().cityStats();
         }
 

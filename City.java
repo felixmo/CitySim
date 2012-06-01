@@ -77,6 +77,9 @@ public class City extends World
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
 
+        // Mark a new session in the logs
+        CSLogger.sharedLogger().info("***** NEW SESSION *****");
+        
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
@@ -145,10 +148,11 @@ public class City extends World
         addObject(menuBar, 512, 14);
 
         // - Menu bar items -
-        ArrayList<String> menuBarItems = new ArrayList(4);
+        ArrayList<String> menuBarItems = new ArrayList(5);
         menuBarItems.add(Zone.NAME);
         menuBarItems.add(Road.NAME);
         menuBarItems.add(PowerGrid.NAME);
+        menuBarItems.add(ProtectionZone.NAME);
         menuBarItems.add(Tool.NAME);
         menuBar.setItems(menuBarItems);
 
@@ -178,6 +182,12 @@ public class City extends World
         powerItems.add(CoalPowerPlant.NAME);
         powerItems.add(NuclearPowerPlant.NAME);
         menuBar.setMenuItemsForItem(PowerGrid.NAME, powerItems);
+        
+        // -> Protection
+        ArrayList<String> protectionItems = new ArrayList(2);
+        protectionItems.add(FireStation.NAME);
+        protectionItems.add(PoliceStation.NAME);
+        menuBar.setMenuItemsForItem(ProtectionZone.NAME, protectionItems);
 
         // -> Tools (last)
         ArrayList<String> toolItems = new ArrayList(1);

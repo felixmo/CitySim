@@ -18,7 +18,7 @@ public class TileSelectorEventListener extends CSEventListener
 
     @Subscribe
     public void listen(TileSelectorEvent event) {
-        CSLogger.sharedLogger().debug("\"" + event.message() + "\" was selected.");
+        CSLogger.sharedLogger().fine("\"" + event.message() + "\" was selected.");
 
         if (Road.pendingOp() > 0) {
             Road.setActiveType(event.type());
