@@ -79,7 +79,7 @@ public class City extends World
 
         // Mark a new session in the logs
         CSLogger.sharedLogger().info("***** NEW SESSION *****");
-        
+
         // Set Greenfoot paint order to ensure that Actors are layered properly
         setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
@@ -89,7 +89,7 @@ public class City extends World
         //         new File("maps/test.db").delete();
 
         System.setProperty("logback.configurationFile", "./external/logback.xml");
-        
+
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
         if (Data.dbIsNew()) {
 
@@ -174,7 +174,7 @@ public class City extends World
         ArrayList<String> roadItems = new ArrayList(1);
         roadItems.add(Street.NAME);
         menuBar.setMenuItemsForItem(Road.NAME, roadItems);
-        
+
         // -> Power
         ArrayList<String> powerItems = new ArrayList(4);
         powerItems.add(PowerLine.NAME);
@@ -182,7 +182,7 @@ public class City extends World
         powerItems.add(CoalPowerPlant.NAME);
         powerItems.add(NuclearPowerPlant.NAME);
         menuBar.setMenuItemsForItem(PowerGrid.NAME, powerItems);
-        
+
         // -> Protection
         ArrayList<String> protectionItems = new ArrayList(2);
         protectionItems.add(FireStation.NAME);
@@ -257,9 +257,9 @@ public class City extends World
         }
 
         if (writeCountdown == FREQ_WRITE) {
-            
-//             new CityEvaluationThread().start();
-            
+
+            //             new CityEvaluationThread().start();
+
             Data.updateCityStats(currentCityStats());  
             writeCountdown = 0;
 
@@ -276,6 +276,9 @@ public class City extends World
             Minimap.getInstance().setShouldUpdate(false);
         }
 
+        if (writeCountdown % 3 == 0 && PowerGrid.shouldEvaluate()) {
+            new PowerGridEvaluationThread().start();
+        }
     }
 
     // ---------------------------------------------------------------------------------------------------------------------

@@ -21,43 +21,66 @@ public class PowerGrid
     private static int activeType = 0;
     public static final String NAME = "Power grid";
     private static ArrayList<Integer> searched = new ArrayList<Integer>();
+    private static ArrayList<Integer> searchedZones = new ArrayList<Integer>();
+    private static boolean shouldEvaluate = false;
 
     public static void evaluate() {
 
         CSLogger.sharedLogger().info("Evaluating the power grid...");
 
         // Kill power in the city in all areas except for power plants
-        DataSource.getInstance().killPower();
+        new KillPowerDBUpdateThread().start();
 
-        for (Zone zone : Data.zones()) {
-            searched.clear();
-            for (Tile tile : Data.tilesAroundZone(zone)) {
-                if (tile.powerGridType() == PowerLine.TYPE_ID || tile.powerGridType() == PowerNode.TYPE_ID) {
-                    search(tile);
-                }
+        // Clear search history
+        searched.clear();
+        searchedZones.clear();
+
+        // Search outward from the power lines leading from the power plants
+        for (Zone zone : Data.zonesMatchingCriteria("zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID)) {
+            for (Tile tile : Data.tilesAroundZoneWithCriteria(zone, "powergrid_type = " + PowerLine.TYPE_ID + " OR powergrid_type = " + PowerNode.TYPE_ID)) {
+                new PowerGridEvaluationTileSearchThread(tile).start();
             }
+        }
+
+        setShouldEvaluate(false);
+    }
+
+    public static void searchTile(Tile tile) {
+
+        // Add tile to search history
+        searched.add(new Integer(tile.dbID()));
+
+        // Power the tile
+        tile.setPowered(1);
+        Data.updateTileWithoutDraw(tile);
+
+        // Power and search outward from surrounding zones
+        for (Zone z : Data.zonesInArea(tile.position(), 1)) {
+            z.setPowered(1);
+            if (!searchedZones.contains(z.dbID())) {
+                searchedZones.add(z.dbID());
+                new PowerGridEvaluationZoneSearchThread(z).start();
+            }
+        }
+
+        // Search outward from power lines & nodes
+        for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "(powergrid_type = " + PowerLine.TYPE_ID + " OR powergrid_type = " + PowerNode.TYPE_ID + ")")) {
+            if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
         }
     }
 
-    private static void search(Tile tile) {
+    public static void searchZone(Zone zone) {
 
-        searched.add(new Integer(tile.dbID()));
+        for (Zone z : Data.zonesAroundZone(zone)) {
+            z.setPowered(1);
 
-        // Locate a power source
-        Tile[] powerSource = Data.tilesMatchingCriteriaAroundTile(tile, "powered = 1");
-        if (powerSource.length > 0) {
-
-            tile.setPowered(1);
-            Data.updateTileWithoutDraw(tile);
-
-            for (Zone z : Data.zonesInArea(tile.position(), 1)) {
-                if (Data.tilesAroundZoneWithCriteria(z, "powered = 1").length > 0) {
-                    z.setPowered(1);
-                }
+            for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "(powergrid_type = " + PowerLine.TYPE_ID + " OR powergrid_type = " + PowerNode.TYPE_ID + ")")) {
+                if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
             }
 
-            for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "(powergrid_type = " + PowerLine.TYPE_ID + " OR powergrid_type = " + PowerNode.TYPE_ID + ")")) {
-                if (!searched.contains(t.dbID())) search(t);
+            if (!searchedZones.contains(z.dbID())) {
+                searchedZones.add(z.dbID());
+                new PowerGridEvaluationZoneSearchThread(z).start();
             }
         }
     }
@@ -66,11 +89,12 @@ public class PowerGrid
 
         Data.updateTile(tile);
 
-//         new PowerGridEvaluationThread().start();
+        //         new PowerGridEvaluationThread().start();
+        PowerGrid.setShouldEvaluate(true);
     }
-    
+
     protected static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
-        
+
         Data.updateTiles(tiles);
     }
 
@@ -92,6 +116,14 @@ public class PowerGrid
 
     public static void setActiveType(int value) {
         activeType = value;
+    }
+
+    public static boolean shouldEvaluate() {
+        return shouldEvaluate;
+    }
+
+    public static void setShouldEvaluate(boolean value) {
+        shouldEvaluate = value;
     }
 
 }

@@ -53,7 +53,9 @@ public class SelectionEventListener extends CSEventListener
 
             switch (PowerGrid.pendingOp()) {
                 case PowerLine.TYPE_ID: PowerLine.buildPowerLine(event.tile(), PowerGrid.activeType());
-                break;
+                    break;
+                case PowerNode.TYPE_ID: PowerNode.buildPowerNode(event.tile(), PowerGrid.activeType());
+                    break;
 
                 default: break;
             }

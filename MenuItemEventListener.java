@@ -57,7 +57,7 @@ public class MenuItemEventListener extends CSEventListener
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(Street.SIZE_WIDTH, Street.SIZE_HEIGHT);    
             Road.setPendingOp(Street.TYPE_ID);
-//             City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
+            City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
         }
         // * POWER *
         else if (event.message() == PowerLine.NAME) {

@@ -10,6 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.awt.Point;
 import java.util.Arrays;
 
@@ -420,6 +421,18 @@ public class Data
     public static Zone[] zonesInArea(Point start, int radius, int zone1, int zone2) {
         return zonesMatchingCriteria("x >= " + (start.x-radius) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + ")");
     }
+    
+    public static Zone[] zonesAroundZone(Zone zone) {
+       Tile[] tiles = tilesAroundZone(zone);
+       HashSet set = new HashSet();
+       for (Tile tile : tiles) {
+           Zone z = zoneWithTile(tile);
+           if (z != null) set.add(z);
+        }
+       Zone[] zones = new Zone[set.size()];
+       set.toArray(zones);
+       return zones;
+    }
 
     public static void insertZone(Zone zone) {
         CSLogger.sharedLogger().info("Inserting zone...");
@@ -481,6 +494,10 @@ public class Data
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public static Zone zoneWithTile(Tile tile) {
+        return DataSource.getInstance().zoneWithTile(tile);
     }
 
     public static void insertZoneTiles(HashMap[] zoneTiles) {

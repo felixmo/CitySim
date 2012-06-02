@@ -20,20 +20,12 @@ public class PowerNode extends PowerGrid
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Power node";
-   
-    private HashMap propreties;
-    
-    public PowerNode(HashMap properties) {
-        
-    }
-    
-        public static void buildPowerNode(Tile tile, int type) {
-        
+
+    public static void buildPowerNode(Tile tile, int type) {
+
         tile.setType(type);
         tile.setPowerGridType(TYPE_ID);
-        
+
         PowerGrid.updateTile(tile);
     }
-    
-//     public 
 }

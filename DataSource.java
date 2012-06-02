@@ -16,6 +16,13 @@ import java.lang.Integer;
 import org.apache.commons.dbutils.*;
 import org.apache.commons.dbutils.handlers.*;
 import java.awt.Point;
+import java.util.concurrent.Callable;
+// import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.lang.InterruptedException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * DataSource
@@ -51,6 +58,8 @@ public class DataSource
      */
 
     private static final String mapsDirectory = "maps";
+
+    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     // ---------------------------------------------------------------------------------------------------------------
 
@@ -531,6 +540,25 @@ public class DataSource
         return null;
     }
 
+    public Zone zoneWithTile(Tile tile) {
+
+        try {
+            List results = (List)(new QueryRunner().query(connection, "SELECT zone_id FROM zone_tile WHERE tile_id = " + tile.dbID(), new MapListHandler()));
+            if (results.size() > 0) {
+                Map row = (Map)results.get(0);
+                return zonesMatchingCriteria("id = " + ((Integer)row.get("zone_id")).intValue())[0];
+            }
+            else {
+                return null;
+            }
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+        
+        return null;
+    }
+
     public void insertZoneTiles(HashMap[] zoneTiles) {
 
         CSLogger.sharedLogger().fine("Inserting zone into DB (\"" + dbName + "\")");
@@ -957,16 +985,20 @@ public class DataSource
     public Tile[] tilesMatchingCriteria(String criteria) {
 
         try {
-            QueryRunner runner = new QueryRunner();
-            List results = (List)runner.query(connection, "SELECT * FROM tiles WHERE " + criteria + ";", new MapListHandler());
-            Tile[] tiles = new Tile[results.size()];
-            for (int i = 0; i <  results.size(); i++) {
-                tiles[i] = new Tile((HashMap)results.get(i));
+
+            FutureTask<Tile[]> task = new FutureTask<Tile[]>(new TilesMatchingCriteriaQueryCallable(connection, criteria));
+            executorService.submit(task);
+
+            try {
+                return task.get();
             }
-            return tiles;
+            catch (ExecutionException ee) {
+                ee.printStackTrace();    
+            }
+
         }
-        catch (SQLException se) {
-            se.printStackTrace();
+        catch (InterruptedException ie) {
+            ie.printStackTrace();
         }
 
         return null;
@@ -1070,13 +1102,13 @@ public class DataSource
 
     public void powerZone(Zone zone) {
         CSLogger.sharedLogger().fine("Powering zone (" + zone.dbID() + ")");
-        
+
         try {
             new QueryRunner().update(connection, "UPDATE tiles SET powered = 1 WHERE zone_id = " + zone.dbID());    
             new QueryRunner().update(connection, "UPDATE zones SET powered = 1 WHERE id = " + zone.dbID());
         }
         catch (SQLException se) {
-            
+
         }
     }
 }

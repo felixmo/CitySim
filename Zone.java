@@ -66,7 +66,8 @@ public class Zone
         Data.updateTiles(selectedTiles);
 
 //         PowerGrid.evaluate();
-        new PowerGridEvaluationThread().start();
+//         new PowerGridEvaluationThread().start();
+        PowerGrid.setShouldEvaluate(true);
     }
 
     /*
@@ -105,7 +106,8 @@ public class Zone
 
     public void setPowered(int value) {
         properties.put(Data.ZONES_POWERED, new Integer(value));
-        DataSource.getInstance().powerZone(this);
+//         DataSource.getInstance().powerZone(this);
+        new PowerZoneDBUpdateThread(this).start();
     }
 
     public Point origin() {
