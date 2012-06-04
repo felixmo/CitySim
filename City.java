@@ -52,7 +52,6 @@ public class City extends World
     private Date date;                              // Current date (in-game) / time elapsed
     private HUD hud;                                // HUD display containing game info and controls
     private Minimap_Viewport minimap_viewport;      // Representation of the viewport in the minimap
-    private Cash cash;                              // Current avaliable cash (in-game)
     private MenuBar menuBar;                        // Menu bar containing game controls
     private Hint hint;                              // Active hint
     private TileSelector tileSelector;              // Active tile selector
@@ -130,7 +129,8 @@ public class City extends World
         // Resume tracking date from last saved date
         HashMap cityStats = Data.cityStats();
         date = new Date((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
-
+        Population.set((Integer)cityStats.get(Data.CITYSTATS_POPULATION));
+        
         // Create and add a new map for the city
         map = new Map();
         addObject(map, 512, 333);
@@ -197,7 +197,7 @@ public class City extends World
         // * END of menu items *
 
         // Initalize the cash store from the last known value in the DB
-        cash = new Cash((Integer)cityStats.get(Data.CITYSTATS_CASH));
+        Cash.set(((Integer)cityStats.get(Data.CITYSTATS_CASH)));
 
         instance = this;
     }
@@ -252,8 +252,9 @@ public class City extends World
         // Write to DB
         writeCountdown++;
 
-        if (writeCountdown % 5 == 0) {
-            new ZoneAgeDBUpdateThread(5).start();
+        if (writeCountdown % 6 == 0) {
+//             new ZoneAgeDBUpdateThread(5).start();
+            new CitySimulationThread().start();
         }
 
         if (writeCountdown == FREQ_WRITE) {
@@ -344,10 +345,10 @@ public class City extends World
 
         HashMap values = new HashMap(4);
 
-        values.put(HUD.NAME, "Toronto");  // TESTING
-        values.put(HUD.POPULATION, 0);    // TESTING
+        values.put(HUD.NAME, Population.category() + " of Toronto");  // TESTING
+        values.put(HUD.POPULATION, Population.size());    // TESTING
         values.put(HUD.DATE, date.toString());
-        values.put(HUD.CASH, cash.toString());
+        values.put(HUD.CASH, Cash.asString());
 
         return values;
     }
@@ -360,8 +361,8 @@ public class City extends World
         stats.put(Data.CITYSTATS_DAYS, date.days());
         stats.put(Data.CITYSTATS_MONTHS, date.months());
         stats.put(Data.CITYSTATS_YEARS, date.years());
-        stats.put(Data.CITYSTATS_POPULATION, 0);
-        stats.put(Data.CITYSTATS_CASH, cash.value());
+        stats.put(Data.CITYSTATS_POPULATION, Population.size());
+        stats.put(Data.CITYSTATS_CASH, Cash.value());
 
         return stats;
     }

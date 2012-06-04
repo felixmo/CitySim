@@ -21,32 +21,29 @@ public class Cash
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
-    
-    /*
-     * INSTANCE VARIABLES *
-     */
-    private Integer value = 0;
+
+    private static Integer value = 0;
     
     /*
      * CONSTANTS *
      */
-    private final DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0");
     
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Cash(int value) {
-        this.value = value;
+    public static void set(int x) {
+        value = x;
     }
 
-    public void addValue(int change) {
-        this.value += change;
+    public static void add(int change) {
+        value += change;
     }
 
-    public void subtractValue(int change) {
-        this.value -= change;
+    public static void subtract(int change) {
+        value -= change;
     }
 
-    public String toString() {
+    public static String asString() {
         return decimalFormat.format(value).toString();
     }
     
@@ -54,7 +51,7 @@ public class Cash
      * ACCESSORS *
      */
 
-    public int value() {
+    public static int value() {
         return value;
     }
 }

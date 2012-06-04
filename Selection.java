@@ -142,21 +142,14 @@ public class Selection extends Actor
             }
         }
         // FOR TESTING
-        
         else {
             if (Greenfoot.mouseClicked(this)) {
-                System.out.print("(" + this.activeTile.position().x + ", " + this.activeTile.position().y + ")");
-                System.out.print("(" + this.activeTile.zoneID() + ")");
                 if (size.width > 1) {
                     Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
-                    System.out.println(" | Zone powered: " + (((Integer)zone.get(Data.ZONES_POWERED)).intValue() == 1 ? "YES" : "NO"));
-                }
-                else {
-                    System.out.println(" | Tile powered: " + (this.activeTile.powered() == 1 ? "YES" : "NO"));
+                    System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity());
                 }
             }
         }
-       
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {

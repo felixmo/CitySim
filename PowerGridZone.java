@@ -27,14 +27,14 @@ public class PowerGridZone extends Zone
 
         // TODO: check if zone is powered and has water
         Tile center = (Tile)selectedTiles.get(0).get(0);
-        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, 1);
+        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, 1, 0);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
 
         int count = 0;
 
-        CSLogger.sharedLogger().info("Zoning " + width*height + " tiles as type " + pendingOp);
+//         CSLogger.sharedLogger().info("Zoning " + width*height + " tiles as type " + pendingOp);
 
         HashMap[] zoneTiles = new HashMap[width*height];
 

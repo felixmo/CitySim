@@ -22,6 +22,7 @@ public class Street extends Road
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Streets";
+    public static final int PRICE = 1;
 
     /*
     public static void buildStreet(Tile tile, int type) {
@@ -207,6 +208,8 @@ public class Street extends Road
 
     public static void buildStreet(Tile tile, int type) {
 
+        Cash.subtract(PRICE);
+        
         tile.setType(type);
         tile.setRoad(TYPE_ID);
         addToCount(1);

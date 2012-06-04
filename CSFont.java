@@ -26,7 +26,7 @@ public class CSFont
         .build(
             new CacheLoader<String, Font>() {
                 public Font load(String path) throws Exception {
-                    CSLogger.sharedLogger().info("Caching font at path: " + path);
+                    CSLogger.sharedLogger().fine("Caching font at path: " + path);
                     return loadFont(path);
                 }
             }

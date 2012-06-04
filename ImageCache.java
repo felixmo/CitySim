@@ -34,7 +34,7 @@ public class ImageCache
         .build(
             new CacheLoader<Integer, GreenfootImage>() {
                 public GreenfootImage load(Integer key) throws Exception {
-                    CSLogger.sharedLogger().info("Caching image (" + key.intValue() + ")");
+                    CSLogger.sharedLogger().fine("Caching image (" + key.intValue() + ")");
                     return Tile.imageFromDiskForType(key);
                 }
             }

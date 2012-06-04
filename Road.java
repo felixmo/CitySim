@@ -21,7 +21,7 @@ public class Road
 
     protected static void updateTile(Tile selectedTile) {
 
-        CSLogger.sharedLogger().info("Building road on tile (" + selectedTile.position().x + ", " + selectedTile.position().y + ") of type " + pendingOp);
+        CSLogger.sharedLogger().fine("Building road on tile (" + selectedTile.position().x + ", " + selectedTile.position().y + ") of type " + pendingOp);
 
         Data.updateTile(selectedTile);
     }

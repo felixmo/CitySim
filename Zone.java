@@ -33,15 +33,27 @@ public class Zone
 
     protected static void updateTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
 
+        int capacity = 0;
+
+        if (pendingOp == ResidentialZone.TYPE_ID) {
+            capacity = ResidentialZone.STAGE_MAXCAPACITY[0];
+        }
+        else if (pendingOp == CommercialZone.TYPE_ID) {
+            capacity = CommercialZone.STAGE_MAXCAPACITY[0];
+        }
+        else if (pendingOp == IndustrialZone.TYPE_ID) {
+            capacity = IndustrialZone.STAGE_MAXCAPACITY[0];
+        }
+
         int zoneID = Data.idForNewZone();
 
-        Tile center = (Tile)selectedTiles.get(0).get(0);
-        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, center.powered());
+        Tile origin = (Tile)selectedTiles.get(0).get(0);
+        Data.insertZone(zoneID, pendingOp, origin.position().x, origin.position().y, origin.powered(), capacity);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
 
-        CSLogger.sharedLogger().info("Zoning " + width*height + " tiles as type " + pendingOp);
+        //         CSLogger.sharedLogger().info("Zoning " + width*height + " tiles as type " + pendingOp);
 
         HashMap[] zoneTiles = new HashMap[width*height];
 
@@ -53,6 +65,7 @@ public class Zone
                 HashMap zone = new HashMap(2);
                 zone.put(Data.ZONETILE_ZONEID, zoneID);
                 zone.put(Data.ZONETILE_TILEID, ((Tile)selectedTiles.get(i).get(j)).dbID());
+
                 zoneTiles[count] = zone;
 
                 ((Tile)selectedTiles.get(i).get(j)).setZone(pendingOp);
@@ -65,8 +78,8 @@ public class Zone
         Data.insertZoneTiles(zoneTiles);
         Data.updateTiles(selectedTiles);
 
-//         PowerGrid.evaluate();
-//         new PowerGridEvaluationThread().start();
+        //         PowerGrid.evaluate();
+        //         new PowerGridEvaluationThread().start();
         PowerGrid.setShouldEvaluate(true);
     }
 
@@ -106,7 +119,7 @@ public class Zone
 
     public void setPowered(int value) {
         properties.put(Data.ZONES_POWERED, new Integer(value));
-//         DataSource.getInstance().powerZone(this);
+        //         DataSource.getInstance().powerZone(this);
         new PowerZoneDBUpdateThread(this).start();
     }
 
@@ -114,19 +127,67 @@ public class Zone
         return new Point((Integer)properties.get(Data.ZONES_X), (Integer)properties.get(Data.ZONES_Y));
     }
 
-    public int primaryAllocation() {
-        return ((Integer)properties.get(Data.ZONES_PRIMARY_ALLOCATION)).intValue();
+    public int score() {
+        return ((Integer)properties.get(Data.ZONES_SCORE)).intValue();
     }
 
-    public int primaryCapacity() {
-        return ((Integer)properties.get(Data.ZONES_PRIMARY_CAPACITY)).intValue();
+    public void setScore(int value) {
+        properties.put(Data.ZONES_SCORE, new Integer(value));
     }
 
-    public int secondaryAllocation() {
-        return ((Integer)properties.get(Data.ZONES_SECONDARY_ALLOCATION)).intValue();
+    public int pollution() {
+        return ((Integer)properties.get(Data.ZONES_POLLUTION)).intValue();
     }
 
-    public int secondaryCapacity() {
-        return ((Integer)properties.get(Data.ZONES_SECONDARY_CAPACITY)).intValue();
+    public void setPollution(int value) {
+        properties.put(Data.ZONES_POLLUTION, new Integer(value));
+    }
+
+    public int fireProtection() {
+        return ((Integer)properties.get(Data.ZONES_FIRE_PROTECTION)).intValue();
+    }
+
+    public int policeProtection() {
+        return ((Integer)properties.get(Data.ZONES_POLICE_PROTECTION)).intValue();
+    }
+
+    public int crime() {
+        return ((Integer)properties.get(Data.ZONES_CRIME)).intValue();
+    }
+
+    public int food() {
+        return ((Integer)properties.get(Data.ZONES_FOOD)).intValue();
+    }
+
+    public void setFood(int value) {
+        properties.put(Data.ZONES_FOOD, new Integer(value));
+    }
+
+    public int jobs() {
+        return ((Integer)properties.get(Data.ZONES_JOBS)).intValue();
+    }
+
+    public int allocation() {
+        return ((Integer)properties.get(Data.ZONES_ALLOCATION)).intValue();
+    }
+
+    public void setAllocation(int value) {
+        properties.put(Data.ZONES_ALLOCATION, new Integer(value));
+    }
+
+    public int capacity() {
+        return ((Integer)properties.get(Data.ZONES_CAPACITY)).intValue();
+    }
+
+    public void setCapacity(int value) {
+        properties.put(Data.ZONES_CAPACITY, new Integer(value));
+    }
+
+    public int stage() {
+        return ((Integer)properties.get(Data.ZONES_STAGE)).intValue();
+    }
+
+    public void setStage(int value) {
+        properties.put(Data.ZONES_STAGE, new Integer(value));
     }
 }

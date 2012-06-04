@@ -27,6 +27,7 @@ public class PowerGrid
     public static void evaluate() {
 
         CSLogger.sharedLogger().info("Evaluating the power grid...");
+        long startTime = System.currentTimeMillis();
 
         // Kill power in the city in all areas except for power plants
         new KillPowerDBUpdateThread().start();
@@ -43,6 +44,9 @@ public class PowerGrid
         }
 
         setShouldEvaluate(false);
+
+        long endTime = System.currentTimeMillis();
+        CSLogger.sharedLogger().info("Finished power grid evaluation (" + (endTime - startTime) + " ms).");
     }
 
     public static void searchTile(Tile tile) {

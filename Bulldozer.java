@@ -20,6 +20,7 @@ public class Bulldozer extends Tool
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Bulldozer";
+    public static final int PRICE = 1;
 
     public static void bulldoze(Tile tile) {
 
@@ -41,6 +42,8 @@ public class Bulldozer extends Tool
 
         int width = tiles.size();
         int height = ((ArrayList)tiles.get(0)).size();
+
+        Cash.subtract(PRICE * (width*height));
 
         int zone_type = ((Tile)tiles.get(0).get(0)).zone();
         if (zone_type > 0) {

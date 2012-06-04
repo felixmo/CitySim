@@ -21,12 +21,15 @@ public class NuclearPowerPlant extends PowerGridZone
     public static final int SIZE_WIDTH = 4;
     public static final int SIZE_HEIGHT = 4;
     public static final String NAME = "Nuclear power plant";
+    public static final int PRICE = 5000;
 
     public NuclearPowerPlant(HashMap properties) {
         super(properties);
     }
 
     public static void build(ArrayList<ArrayList<Tile>> selectedTiles) {
+        
+        Cash.subtract(PRICE);
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -41,7 +44,7 @@ public class NuclearPowerPlant extends PowerGridZone
             }
         }
 
-        CSLogger.sharedLogger().info("Did build power plant on " + (width*height) + " tiles.");
+        CSLogger.sharedLogger().info("Building nuclear power plant on " + (width*height) + " tiles...");
 
         PowerGridZone.updateTiles(selectedTiles);
     }

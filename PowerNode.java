@@ -20,9 +20,12 @@ public class PowerNode extends PowerGrid
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Power node";
+    public static final int PRICE = 5;
 
     public static void buildPowerNode(Tile tile, int type) {
 
+        Cash.subtract(PRICE);
+        
         tile.setType(type);
         tile.setPowerGridType(TYPE_ID);
 

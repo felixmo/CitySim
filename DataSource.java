@@ -363,6 +363,69 @@ public class DataSource
         return zones;
     }
 
+    public ResidentialZone[] residentialZones() {
+
+        List results = null;
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            results = (List)runner.query(connection, "SELECT * FROM zones WHERE zone = 1", new MapListHandler());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        ResidentialZone[] zones = new ResidentialZone[results.size()];
+
+        for (int i = 0; i < zones.length; i++) {
+            zones[i] = new ResidentialZone((HashMap)results.get(i));
+        }
+
+        return zones;
+    }
+
+    public CommercialZone[] commercialZones() {
+
+        List results = null;
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            results = (List)runner.query(connection, "SELECT * FROM zones WHERE zone = 2", new MapListHandler());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        CommercialZone[] zones = new CommercialZone[results.size()];
+
+        for (int i = 0; i < zones.length; i++) {
+            zones[i] = new CommercialZone((HashMap)results.get(i));
+        }
+
+        return zones;
+    }
+
+    public IndustrialZone[] industrialZones() {
+
+        List results = null;
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            results = (List)runner.query(connection, "SELECT * FROM zones WHERE zone = 3", new MapListHandler());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        IndustrialZone[] zones = new IndustrialZone[results.size()];
+
+        for (int i = 0; i < zones.length; i++) {
+            zones[i] = new IndustrialZone((HashMap)results.get(i));
+        }
+
+        return zones;
+    }
+
     public Zone[] zonesMatchingCriteria(String criteria) {
 
         CSLogger.sharedLogger().fine("Running query for zones with criteria (" + criteria + ")");
@@ -453,6 +516,7 @@ public class DataSource
 
         try {
 
+            //             Connection dbConn = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
             connection.setAutoCommit(false);
 
             String statementString = "UPDATE " + Data.ZONES + " SET ";
@@ -485,6 +549,8 @@ public class DataSource
             statement.close();
 
             connection.setAutoCommit(true);
+
+            //             dbConn.close();
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -555,7 +621,7 @@ public class DataSource
         catch (SQLException se) {
             se.printStackTrace();
         }
-        
+
         return null;
     }
 
@@ -1108,7 +1174,31 @@ public class DataSource
             new QueryRunner().update(connection, "UPDATE zones SET powered = 1 WHERE id = " + zone.dbID());
         }
         catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
 
+    // SIMULATION
+
+    public void resetJobAllocations() {
+
+        CSLogger.sharedLogger().fine("Reseting job allocations...");
+
+        try {
+            new QueryRunner().update(connection, "UPDATE zones SET allocation = 0 WHERE zone = 2 OR zone = 3");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+    
+    public void increaseJobAllocationForZone(int value, Zone zone) {
+        
+        try {
+            new QueryRunner().update(connection, "UPDATE zones SET allocation = allocation + " + value + " WHERE id = " + zone.dbID());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
         }
     }
 }

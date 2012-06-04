@@ -21,12 +21,15 @@ public class FireStation extends ProtectionZone
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Fire station";
+    public static final int PRICE = 500;
 
     public FireStation(HashMap properties) {
         super(properties);
     }
 
     public static void build(ArrayList<ArrayList<Tile>> selectedTiles) {
+        
+        Cash.subtract(PRICE);
         
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -41,7 +44,7 @@ public class FireStation extends ProtectionZone
             }
         }
 
-        CSLogger.sharedLogger().info("Did build fire station on " + (width*height) + " tiles.");
+        CSLogger.sharedLogger().info("Building fire station on " + (width*height) + " tiles...");
 
         Zone.updateTiles(selectedTiles);
     }

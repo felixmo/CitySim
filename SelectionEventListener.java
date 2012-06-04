@@ -24,7 +24,7 @@ public class SelectionEventListener extends CSEventListener
 
         if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
 
-            CSLogger.sharedLogger().info("Pending zone op: " + Zone.pendingOp());
+            CSLogger.sharedLogger().fine("Pending zone op: " + Zone.pendingOp());
 
             switch (Zone.pendingOp()) {
                 case ResidentialZone.TYPE_ID: 

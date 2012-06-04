@@ -8,19 +8,16 @@
 import java.util.HashMap;
 
 /**
- * Write a description of class Stadium here.
+ * Write a description of class RecreationZone here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Stadium extends RecreationZone
+public class RecreationZone extends Zone
 {
+    public static final String NAME = "Recreation";
 
-    /**
-     * Constructor for objects of class Stadium
-     */
-    public Stadium(HashMap properties)
-    {
+    public RecreationZone(HashMap properties) {
         super(properties);
     }
 }

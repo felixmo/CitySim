@@ -108,24 +108,12 @@ public class Tile
         this.properties.put(Data.TILES_ROAD, new Integer(0));
         this.properties.put(Data.TILES_POWERED, new Integer(0));
         this.properties.put(Data.TILES_POWERGRID_TYPE, new Integer(0));
+        this.properties.put(Data.TILES_RECREATION_TYPE, new Integer(0));
     }
 
     public Tile(HashMap properties) {
         this.properties = properties;
     }
-
-    //     public Tile(int dbID, Point position, int type, int zone, int zoneID, int road, int powered, int hasWater) {
-    //         
-    //         properties = new HashMap();
-    //         properties.put(Data.TILES_ID, new Integer(dbID));
-    //         properties.put(Data.TILES_X, new Integer(position.x));
-    //         properties.put(Data.TILES_Y, new Integer(position.y));
-    //         properties.put(Data.TILES_TYPE, new Integer(type));
-    //         properties.put(Data.TILES_ZONE, new Integer(zone));
-    //         properties.put(Data.TILES_ZONEID, new Integer(zoneID));
-    //         properties.put(Data.TILES_ROAD, new Integer(road));
-    //         properties.put(Data.TILES_POWERED, new Integer(powered));
-    //     }
 
     /*
      * ACCESSORS *
@@ -191,6 +179,10 @@ public class Tile
         properties.put(Data.TILES_POWERGRID_TYPE, new Integer(value));    
     }
 
+    public int recreationType() {
+        return ((Integer)properties.get(Data.TILES_RECREATION_TYPE)).intValue();
+    }
+    
     public GreenfootImage image() {
         return ImageCache.get(((Integer)this.properties.get(Data.TILES_TYPE)).intValue());
     }
