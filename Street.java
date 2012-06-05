@@ -130,6 +130,14 @@ public class Street extends Road
                     // Bend
                     down.setType(106);
                 }
+                else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x) + " AND y = " + (down.position().y+1)).length == 0) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (down.position().x+1) + " AND y = " + (down.position().y)).length == 0)) {
+                    // Check for:
+                    // 1. a road LEFT of the lower tile
+                    // 2. a road RIGHT of the lower tile
+                    
+                    // 3-way
+                    down.setType(107);
+                }
                 else {
                     // Straight (v)
                     down.setType(102);
