@@ -18,20 +18,19 @@ public class TileDBUpdateThread extends CSThread
     private Tile tile;
     private ArrayList<ArrayList<Tile>> tiles_list;
     private Tile[] tiles;
-    private static int count = 0;
 
     public TileDBUpdateThread(Tile tile) {
-        super("TileDBUpdateThread#" + (count+=1));
+        super("TileDBUpdateThread");
         this.tile = tile;
     }
 
     public TileDBUpdateThread(ArrayList<ArrayList<Tile>> tiles) {
-        super("TileDBUpdateThread#" + (count+=1));
+        super("TileDBUpdateThread");
         this.tiles_list = tiles;
     }
 
     public TileDBUpdateThread(Tile[] tiles) {
-        super("TileDBUpdateThread#" + (count+=1));
+        super("TileDBUpdateThread");
         this.tiles = tiles;
     }
 

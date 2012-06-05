@@ -9,7 +9,7 @@ public class PowerZoneDBUpdateThread extends CSThread
     private Zone zone;
 
     public PowerZoneDBUpdateThread(Zone zone) {
-        super("");
+        super("PowerZoneDBUpdateThread");
         this.zone = zone;
     }
 

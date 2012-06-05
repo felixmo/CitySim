@@ -78,8 +78,6 @@ public class Zone
         Data.insertZoneTiles(zoneTiles);
         Data.updateTiles(selectedTiles);
 
-        //         PowerGrid.evaluate();
-        //         new PowerGridEvaluationThread().start();
         PowerGrid.setShouldEvaluate(true);
     }
 

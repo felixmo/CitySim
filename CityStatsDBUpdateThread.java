@@ -15,11 +15,10 @@ import java.util.HashMap;
  */
 public class CityStatsDBUpdateThread extends CSThread 
 {
-    private static int count = 0;
     private HashMap cityStats;
 
     public CityStatsDBUpdateThread(HashMap cityStats) {
-        super("CityStatsDBUpdateThread#" + (count+=1));
+        super("CityStatsDBUpdateThread");
         this.cityStats = cityStats;
     }
 

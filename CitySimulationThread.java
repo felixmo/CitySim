@@ -17,41 +17,36 @@ import java.awt.Point;
 public class CitySimulationThread extends CSThread
 {
     public CitySimulationThread() {
-        super("");
+        super("CitySimulationThread");
     }
 
     public void run() {
         CSLogger.sharedLogger().info("Began simulating the city...");
         long startTime = System.currentTimeMillis();
 
-        DataSource.getInstance().resetJobAllocations();
+        //         DataSource.getInstance().resetJobAllocations();
+        Employment.reset();
 
-        ResidentialZone[] rZones = Data.residentialZones();
-        CSLogger.sharedLogger().fine("Simulating " + rZones.length + " residential zones");
-        for (ResidentialZone zone : rZones) {
-            new ResidentialZoneSimulationThread(zone).start();
-            //             zone.simulate();
-        }
-
-        CommercialZone[] cZones = Data.commercialZones();
-        CSLogger.sharedLogger().fine("Simulating " + cZones.length + " commercial zones");
-
-        for (CommercialZone zone : cZones) {
+        // Commercial zones
+        for (CommercialZone zone : Data.commercialZones()) {
             new CommercialZoneSimulationThread(zone).start();
-            //             zone.simulate();
         }
 
-        IndustrialZone[] iZones = Data.industrialZones();
-        //         CSLogger.sharedLogger().info("Simulating " + iZones.length + " industrial zones");
-
-        for (IndustrialZone zone : iZones) {
+        // Industrial zones
+        for (IndustrialZone zone : Data.industrialZones()) {
             new IndustrialZoneSimulationThread(zone).start();
-            //             zone.simulate();
         }
 
+//         Employment.reset();
+
+        // Residential zones
+        for (ResidentialZone zone : Data.residentialZones()) {
+            new ResidentialZoneSimulationThread(zone).start();
+        }
+
+        // Do census to determine population
         int population = 0;
         for (ResidentialZone zone : Data.residentialZones()) {
-            //             new ResidentialZoneSimulationThread(zone).start();
             population += zone.allocation();
         }
         Population.set(population);

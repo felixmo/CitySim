@@ -9,7 +9,7 @@ public class ResidentialZoneSimulationThread extends CSThread
     private ResidentialZone zone;
     
     public ResidentialZoneSimulationThread(ResidentialZone zone) {
-        super("");
+        super("ResidentialZoneSimulationThread");
         this.zone = zone;
     }
     

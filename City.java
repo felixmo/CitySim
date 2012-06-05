@@ -230,7 +230,12 @@ public class City extends World
         // TO DO: pause timer when in menu
         date.stop();
 
-        Data.closeConnection();
+//         if (citySimulationThread.isAlive()) {
+//             citySimulationThread.setCloseConnection(true);
+//         }
+//         else {
+            Data.closeConnection();
+//         }
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -258,8 +263,6 @@ public class City extends World
         }
 
         if (writeCountdown == FREQ_WRITE) {
-
-            //             new CityEvaluationThread().start();
 
             Data.updateCityStats(currentCityStats());  
             writeCountdown = 0;

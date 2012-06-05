@@ -1191,11 +1191,39 @@ public class DataSource
             se.printStackTrace();
         }
     }
-    
+
+    public int allocationForZone(Zone zone) {
+
+        try {
+
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT allocation FROM zones WHERE id = " + zone.dbID(), new MapListHandler());
+
+            HashMap z = (HashMap)results.listIterator().next();
+
+            return ((Integer)(z.get(Data.ZONES_ALLOCATION))).intValue();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public void increaseJobAllocationForZone(int value, Zone zone) {
-        
+
         try {
             new QueryRunner().update(connection, "UPDATE zones SET allocation = allocation + " + value + " WHERE id = " + zone.dbID());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    public void updateJobAllocationForZone(int value, Zone zone) {
+
+        try {
+            new QueryRunner().update(connection, "UPDATE zones SET allocation = " + value + " WHERE id = " + zone.dbID()); 
         }
         catch (SQLException se) {
             se.printStackTrace();

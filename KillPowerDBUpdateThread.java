@@ -14,7 +14,7 @@
 public class KillPowerDBUpdateThread extends CSThread
 {
     public KillPowerDBUpdateThread() {
-        super("");
+        super("KillPowerDBUpdateThread");
     }
 
     public void run() {

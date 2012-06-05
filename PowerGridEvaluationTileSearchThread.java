@@ -16,7 +16,7 @@ public class PowerGridEvaluationTileSearchThread extends CSThread
     private Tile tile;
 
     public PowerGridEvaluationTileSearchThread(Tile tile) {
-        super("");
+        super("PowerGridEvaluationTileSearchThread");
         this.tile = tile;
     }
     

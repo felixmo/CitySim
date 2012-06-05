@@ -16,7 +16,21 @@ import java.lang.Thread;
 public abstract class CSThread extends Thread
 {
 
+    private static CSThreadGroup threadGroup = new CSThreadGroup();
+    
+    private static int count = 0;
+    private int id = 0;
+    
     public CSThread(String name) {
-        super(name);
+        super(threadGroup, name + "(" + (count+=1) + ")");
+        this.id = count;
+    }
+    
+    public int id() {
+        return this.id;
+    }
+    
+    public static int count() {
+        return threadGroup.activeCount();
     }
 }

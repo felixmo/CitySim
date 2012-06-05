@@ -51,11 +51,11 @@ public class CommercialZone extends Zone
         }
 
         // Accessiblity to consumers
-        score += Data.zonesInAreaOfZone(this, 20, ResidentialZone.TYPE_ID).length * 20;
+        score += Data.zonesInAreaOfZone(this, 20, ResidentialZone.TYPE_ID).length * 10;
 
         // Accessibility to suppliers
         Zone[] iZones = Data.zonesInAreaOfZone(this, 20, IndustrialZone.TYPE_ID);
-        score += iZones.length * 15;
+        score += iZones.length * 10;
 
         // Calculate pollution levels based on surroundings
         // 0     = NONE
@@ -68,10 +68,10 @@ public class CommercialZone extends Zone
         pollution += Data.zonesInAreaOfZone(this, 20, CoalPowerPlant.TYPE_ID, NuclearPowerPlant.TYPE_ID).length * 20;   // Power plants (+20 / zone)
         this.setPollution(pollution);
 
-        score -= (int)pollution/3;
+        score -= pollution;
 
         if (this.score() > 0) {
-            if ((((score / this.score()) * 100)-100) >= 50 && this.stage() < CommercialZone.STAGE_MAXCAPACITY.length) {
+            if ((((score / this.score()) * 100)-100) >= 25 && this.stage() < CommercialZone.STAGE_MAXCAPACITY.length) {
                 this.setStage(this.stage()+1);
                 this.setCapacity(Math.max((Greenfoot.getRandomNumber(CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
             }

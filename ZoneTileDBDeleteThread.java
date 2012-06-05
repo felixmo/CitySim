@@ -17,7 +17,7 @@ public class ZoneTileDBDeleteThread extends CSThread
     private int zoneID;
 
     public ZoneTileDBDeleteThread(int zoneID) {
-        super("");
+        super("ZoneTileDBDeleteThread");
         this.zoneID = zoneID;
     }
 

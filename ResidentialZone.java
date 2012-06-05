@@ -53,9 +53,8 @@ public class ResidentialZone extends Zone
             score += 20;
         }
 
-        // Assign jobs
-        Zone[] iZones = Data.zonesInAreaOfZone(this, 20, IndustrialZone.TYPE_ID);
-        Zone[] cZones = Data.zonesInAreaOfZone(this, 20, CommercialZone.TYPE_ID);
+        Zone[] iZones = Data.zonesInAreaOfZone(this, 15, IndustrialZone.TYPE_ID);
+        Zone[] cZones = Data.zonesInAreaOfZone(this, 15, CommercialZone.TYPE_ID);
 
         // Food
         if (cZones.length > 0) {
@@ -128,23 +127,9 @@ public class ResidentialZone extends Zone
         this.setAllocation(this.allocation() + births);
 
         if (this.allocation() > 0) {
-            // Combine arrays and shuffle so jobs can be distributed
-            ArrayList<Zone> workplaces = new ArrayList<Zone>(Arrays.asList(iZones));
-            workplaces.addAll(Arrays.asList(cZones));
-            Collections.shuffle(workplaces);
-
-            // Reset I & C zone allocations (should be done at beginning)
-
-            int avaliableWorkers = this.allocation();
-
-            for (Zone workplace : workplaces) {
-                if (workplace.allocation() < workplace.capacity()) {
-                    int hires = Math.max(1, (int)this.allocation()/workplaces.size());
-                    DataSource.getInstance().increaseJobAllocationForZone(hires, workplace);
-                    avaliableWorkers -= hires;
-                }
-            }
-
+            
+            int avaliableWorkers = Employment.employResidents(this);
+            
             if (avaliableWorkers < this.allocation()) {
                 score += 50;
             }

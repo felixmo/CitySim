@@ -255,39 +255,43 @@ public class Selection extends Actor
 
     public void setActiveTile(Tile tile) {
 
-        if (this.activeTile == tile) return;
+        try {
 
-        if ((!selectionMode || Tool.pendingOp() == Bulldozer.TYPE_ID) && tile.zoneID() > -1) {
-            // ONLY SNAP IF:
-            // - normal mode
-            // - bulldozer
-            if (this.activeTile.zoneID() != tile.zoneID()) {
-                int id = Data.tilesInZoneWithID(tile.zoneID())[0];
-                this.activeTile = Data.tileWithID(id);
-            }
-            if (this.activeTile.zone() > 0) {
-                if (this.activeTile.zone() <= 3 || this.activeTile.zone() > 5) {
-                    setSize(3, 3);
+            if (this.activeTile == tile) return;
+
+            if ((!selectionMode || Tool.pendingOp() == Bulldozer.TYPE_ID) && tile.zoneID() > -1) {
+                // ONLY SNAP IF:
+                // - normal mode
+                // - bulldozer
+
+                if (this.activeTile.zoneID() != tile.zoneID()) {
+                    int id = Data.tilesInZoneWithID(tile.zoneID())[0];
+                    this.activeTile = Data.tileWithID(id);
                 }
-                else if (this.activeTile.zone() > 3 && this.activeTile.zone() <= 5) {
-                    setSize(4, 4);
+                if (this.activeTile.zone() > 0) {
+                    if (this.activeTile.zone() <= 3 || this.activeTile.zone() > 5) {
+                        setSize(3, 3);
+                    }
+                    else if (this.activeTile.zone() > 3 && this.activeTile.zone() <= 5) {
+                        setSize(4, 4);
+                    }
+                }
+
+                this.customSize = false;
+            }
+            else {
+                this.activeTile = tile;
+                if (!this.customSize) {
+                    setSize(1, 1);
                 }
             }
 
-            this.customSize = false;
+            draw();
 
-            //             System.out.println("POWERED: " + (this.activeTile.powered() > 0 ? "YES" : "NO"));
         }
-        else {
-            this.activeTile = tile;
-            if (!this.customSize) {
-                setSize(1, 1);
-            }
-
-            //             System.out.println("POWERED: " + (this.activeTile.powered() > 0 ? "YES" : "NO"));
+        catch (NullPointerException npe) {
+            npe.printStackTrace();
         }
-
-        draw();
     }
 
     public void setViewport(Rectangle viewport) {

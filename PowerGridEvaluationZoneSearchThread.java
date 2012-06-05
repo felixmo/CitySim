@@ -16,7 +16,7 @@ public class PowerGridEvaluationZoneSearchThread extends CSThread
     private Zone zone;
 
     public PowerGridEvaluationZoneSearchThread(Zone zone) {
-        super("");
+        super("PowerGridEvaluationZoneSearchThread");
         this.zone = zone;
     }
         

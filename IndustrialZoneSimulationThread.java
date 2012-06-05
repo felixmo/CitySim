@@ -9,7 +9,7 @@ public class IndustrialZoneSimulationThread extends CSThread
     private IndustrialZone zone;
     
     public IndustrialZoneSimulationThread(IndustrialZone zone) {
-        super("");
+        super("IndustrialZoneSimulationThread");
         this.zone = zone;
     }
     

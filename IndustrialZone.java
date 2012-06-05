@@ -50,7 +50,7 @@ public class IndustrialZone extends Zone
         score += Data.zonesInAreaOfZone(this, 20, CommercialZone.TYPE_ID).length * 20;
 
         if (this.score() > 0) {
-            if ((((score / this.score()) * 100)-100) >= 50 && this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length) {
+            if ((((score / this.score()) * 100)-100) >= 25 && this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length) {
                 this.setStage(this.stage()+1);
                 this.setCapacity(Math.max((Greenfoot.getRandomNumber(IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
             }

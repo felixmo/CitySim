@@ -16,7 +16,7 @@ public class ZoneAgeDBUpdateThread extends CSThread
     private int age = 0;
 
     public ZoneAgeDBUpdateThread(int age) {
-        super("");
+        super("ZoneAgeDBUpdateThread");
         this.age = age;
     }
     

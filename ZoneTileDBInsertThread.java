@@ -19,7 +19,7 @@ public class ZoneTileDBInsertThread extends CSThread
     private HashMap[] zoneTiles;    
 
     public ZoneTileDBInsertThread(HashMap[] zoneTiles) {
-        super("");
+        super("ZoneTileDBInsertThread");
         this.zoneTiles = zoneTiles;
     }
 

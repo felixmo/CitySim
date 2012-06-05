@@ -13,11 +13,9 @@
  */
 public class MinimapDrawThread extends CSThread
 {
-
-    private static int count = 0;
     
     public MinimapDrawThread() {
-        super("MinimapDrawThread#" + (count+=1));
+        super("MinimapDrawThread");
     }
 
     public void run() {

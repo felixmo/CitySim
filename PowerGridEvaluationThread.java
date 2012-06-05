@@ -15,10 +15,10 @@ public class PowerGridEvaluationThread extends CSThread
 {
     public PowerGridEvaluationThread()
     {
-        super("");
+        super("PowerGridEvaluationThread");
     }
     
     public void run() {
-        PowerGrid.evaluate();
+//         PowerGrid.evaluate();
     }
 }

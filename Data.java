@@ -174,6 +174,14 @@ public class Data
 
         CSLogger.sharedLogger().fine("Asking data source to close connection...");
 
+        boolean logged = false;
+        while (CSThread.count() > 0) {
+            if (!logged) {
+                CSLogger.sharedLogger().info(CSThread.count() + " threads still running; waiting for them to finish...");   
+                logged = true;
+            }
+        }
+
         // Close connection to DB
         DataSource.getInstance().closeConnection();
 
@@ -311,6 +319,8 @@ public class Data
     }
 
     public static void updateTile(Tile tile) {
+        
+        if (tile == null) return;
 
         CSLogger.sharedLogger().fine("Updating map tile");
 
