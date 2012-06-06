@@ -53,11 +53,10 @@ public class MenuItemEventListener extends CSEventListener
         // * TRANSPORTATION *
         else if (event.message() == Street.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
-            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND, 740, 741 } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(Street.SIZE_WIDTH, Street.SIZE_HEIGHT);    
             Road.setPendingOp(Street.TYPE_ID);
-//             City.getInstance().setTileSelector(new TileSelector(Street.MARKERS));
         }
         // * POWER *
         else if (event.message() == PowerLine.NAME) {

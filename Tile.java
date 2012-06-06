@@ -171,11 +171,11 @@ public class Tile
         properties.put(Data.TILES_POWERED, new Integer(value));
     }
     
-    public int powerGridType() {
+    public int powerGrid() {
         return ((Integer)properties.get(Data.TILES_POWERGRID_TYPE)).intValue();
     }
     
-    public void setPowerGridType(int value) {
+    public void setPowerGrid(int value) {
         properties.put(Data.TILES_POWERGRID_TYPE, new Integer(value));    
     }
 

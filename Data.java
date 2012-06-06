@@ -114,8 +114,8 @@ public class Data
     public static final String TILES_ZONEID = "zone_id";
     public static final String TILES_ROAD = "road";
     public static final String TILES_POWERED = "powered";
-    public static final String TILES_POWERGRID_TYPE = "powergrid_type";
-    public static final String TILES_RECREATION_TYPE = "recreation_type";
+    public static final String TILES_POWERGRID_TYPE = "powergrid";
+    public static final String TILES_RECREATION_TYPE = "recreation";
     public static final String[] TILES_PARAMS = { TILES_ID, TILES_X, TILES_Y, TILES_TYPE, TILES_ZONE, TILES_ZONEID, TILES_ROAD, TILES_POWERED, TILES_POWERGRID_TYPE, TILES_RECREATION_TYPE };
     // Map size
     public static final String MAPSIZE_ROWS = "rows";

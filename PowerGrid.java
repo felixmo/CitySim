@@ -38,7 +38,7 @@ public class PowerGrid
 
         // Search outward from the power lines leading from the power plants
         for (Zone zone : Data.zonesMatchingCriteria("zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID)) {
-            for (Tile tile : Data.tilesAroundZoneWithCriteria(zone, "powergrid_type = " + PowerLine.TYPE_ID)) {
+            for (Tile tile : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
                 new PowerGridEvaluationTileSearchThread(tile).start();
             }
         }
@@ -68,7 +68,7 @@ public class PowerGrid
         }
 
         // Search outward from power lines & nodes
-        for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "powergrid_type = " + PowerLine.TYPE_ID)) {
+        for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "powergrid = " + PowerLine.TYPE_ID)) {
             if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
         }
     }
@@ -78,7 +78,7 @@ public class PowerGrid
         for (Zone z : Data.zonesAroundZone(zone)) {
             z.setPowered(1);
 
-            for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "powergrid_type = " + PowerLine.TYPE_ID)) {
+            for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
                 if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
             }
 

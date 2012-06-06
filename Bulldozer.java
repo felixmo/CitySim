@@ -31,7 +31,7 @@ public class Bulldozer extends Tool
         tile.setZone(0);
         tile.setZoneID(-1);
         tile.setPowered(0);
-        tile.setPowerGridType(0);
+        tile.setPowerGrid(0);
 
         Tool.updateTile(tile);
 
@@ -60,7 +60,7 @@ public class Bulldozer extends Tool
                 ((Tile)tiles.get(i).get(j)).setZone(0);
                 ((Tile)tiles.get(i).get(j)).setZoneID(-1);
                 ((Tile)tiles.get(i).get(j)).setPowered(0);
-                ((Tile)tiles.get(i).get(j)).setPowerGridType(0);
+                ((Tile)tiles.get(i).get(j)).setPowerGrid(0);
             }
         }
 

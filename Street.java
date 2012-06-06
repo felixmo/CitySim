@@ -55,10 +55,10 @@ public class Street extends Road
         if (up != null && left != null) {
 
             // Straight (v)
-            up.setType(102);
+            up.setType(up.type() == 113 ? 113 : 102);
 
             // Straight (h)
-            left.setType(101);
+            left.setType(left.type() == 112 ? 112 : 101);
 
             // Bend
             tile.setType(106);
@@ -66,10 +66,10 @@ public class Street extends Road
         else if (up != null && right != null) {
 
             // Straight (v)
-            up.setType(102);
+            up.setType(up.type() == 113 ? 113 : 102);
 
             // Straight (h)
-            right.setType(101);
+            right.setType(right.type() == 112 ? 112 : 101);
 
             // Bend
             tile.setType(103);
@@ -77,10 +77,10 @@ public class Street extends Road
         else if (down != null && left != null) {
 
             // Straight (v)
-            down.setType(102);
+            down.setType(up.type() == 113 ? 113 : 102);
 
             // Straight (h)
-            left.setType(101);
+            left.setType(left.type() == 112 ? 112 : 101);
 
             // Bend
             tile.setType(105);
@@ -88,10 +88,10 @@ public class Street extends Road
         else if (down != null && right != null) {
 
             // Straight (v)
-            down.setType(102);
+            down.setType(up.type() == 113 ? 113 : 102);
 
             // Straight (h)
-            right.setType(101);
+            right.setType(right.type() == 112 ? 112 : 101);
 
             // Bend
             tile.setType(104);
@@ -148,7 +148,9 @@ public class Street extends Road
                 else {
 
                     // Straight (v)
-                    up.setType(102);
+                    if (up.powerGrid() == 0) {
+                        up.setType(102);
+                    }
                 }
             }
 
@@ -200,14 +202,21 @@ public class Street extends Road
                     }
                 }
                 else {
-                    
-                    // Straight (h)
-                    down.setType(102);
+
+                    if (down.powerGrid() == 0) {
+                        // Straight (h)
+                        down.setType(102);
+                    }
                 }
             }
 
-            // Straight (v)
-            tile.setType(102);
+            if (tile.type() == 740 || tile.type() == 113) {
+                tile.setType(113);
+            }
+            else {
+                // Straight (v)
+                tile.setType(102);
+            }
         }
         else if (left != null || right != null) {
 
@@ -251,8 +260,11 @@ public class Street extends Road
                     left.setType(104);
                 }
                 else {
-                    // Straight (h)
-                    left.setType(101);
+
+                    if (left.powerGrid() == 0) {
+                        // Straight (h)
+                        left.setType(101);
+                    }
                 }
             }
 
@@ -297,17 +309,31 @@ public class Street extends Road
                     right.setType(105);
                 }
                 else {
-                    // Straight (h)
-                    right.setType(101);
+
+                    if (right.powerGrid() == 0) {
+                        // Straight (h)
+                        right.setType(101);
+                    }
                 }
             }
-            // Straight (h)
-            tile.setType(101);
+
+            if (tile.type() == 741 || tile.type() == 112) {
+                tile.setType(112);
+            }
+            else {
+                // Straight (h)
+                tile.setType(101);
+            }
         }
         else {
 
-            // Straight (h)
-            tile.setType(101);
+            if (tile.type() == 741 || tile.type() == 112) {
+                tile.setType(112);
+            }
+            else {
+                // Straight (h)
+                tile.setType(101);
+            }
         }
 
         if (left != null) {
