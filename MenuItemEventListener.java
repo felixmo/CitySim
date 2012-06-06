@@ -62,7 +62,7 @@ public class MenuItemEventListener extends CSEventListener
         // * POWER *
         else if (event.message() == PowerLine.NAME) {
             Map.getInstance().selection().setSelectionMode(true);
-            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
+            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND, 101, 102 } );
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(PowerLine.SIZE_WIDTH, PowerLine.SIZE_HEIGHT);    
             PowerGrid.setPendingOp(PowerLine.TYPE_ID);

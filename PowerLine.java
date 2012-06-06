@@ -144,7 +144,9 @@ public class PowerLine extends PowerGrid
                 else {
 
                     // Straight (v)
-                    up.setType(741);
+                    if (up.road() == 0) {
+                        up.setType(741);
+                    }
                 }
             }
 
@@ -196,13 +198,20 @@ public class PowerLine extends PowerGrid
                     }
                 }
                 else {
-                    // Straight (v)
-                    down.setType(741);
+                    // Straight (h)
+                    if (down.road() == 0) {
+                        down.setType(741);
+                    }
                 }
             }
 
-            // Straight (v)
-            tile.setType(741);
+            if (tile.type() == 101 || tile.type() == 112) {
+                tile.setType(112);
+            }
+            else {
+                // Straight (v)
+                tile.setType(741);
+            }
         }
         else if (left != null || right != null) {
 
@@ -247,7 +256,9 @@ public class PowerLine extends PowerGrid
                 }
                 else {
                     // Straight (h)
-                    left.setType(740);
+                    if (left.road() == 0) {
+                        left.setType(740);
+                    }
                 }
             }
 
@@ -293,35 +304,49 @@ public class PowerLine extends PowerGrid
                 }
                 else {
                     // Straight (h)
-                    right.setType(740);
+                    if (right.road() == 0) {
+                        right.setType(740);
+                    }
                 }
             }
-
-            // Straight (h)
-            tile.setType(740);
+            if (tile.type() == 102 || tile.type() == 113) {
+                tile.setType(113);
+            }
+            else {
+                // Straight (h)
+                tile.setType(740);
+            }
         }
         else {
 
-            // Straight (h)
-            tile.setType(740);
+            if (tile.type() == 102 || tile.type() == 113) {
+                tile.setType(113);
+            }
+            else {
+                // Straight (h)
+                tile.setType(740);
+            }
+        }
+
+        if (left != null) {
+            left.setPowerGridType(TYPE_ID);
+            Data.updateTile(left);
+        }
+        if (right != null) {
+            right.setPowerGridType(TYPE_ID);
+            Data.updateTile(right);
+        }
+        if (down != null) {
+            down.setPowerGridType(TYPE_ID);
+            Data.updateTile(down);
+        }
+        if (up != null) {
+            up.setPowerGridType(TYPE_ID);
+            Data.updateTile(up);
         }
 
         tile.setPowerGridType(TYPE_ID);
 
-        Data.updateTile(left);
-        Data.updateTile(right);
-        Data.updateTile(down);
-        Data.updateTile(up);
-
         PowerGrid.updateTile(tile);
     }
-    /*
-    public static void buildPowerLine(Tile tile, int type) {
-    Cash.subtract(PRICE);
-    tile.setType(type);
-    tile.setPowerGridType(TYPE_ID);
-
-    PowerGrid.updateTile(tile);
-    }
-     */
 }

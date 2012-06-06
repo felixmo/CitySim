@@ -148,6 +148,9 @@ public class Selection extends Actor
                     Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
                     System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity());
                 }
+                else {
+                    System.out.println("Type: " + this.activeTile.type());
+                }
             }
         }
     }
