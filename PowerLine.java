@@ -26,7 +26,7 @@ public class PowerLine extends PowerGrid
 
         Tile up = null, down = null, left = null, right = null;
 
-        Tile[] nearby = Data.tilesMatchingCriteriaTouchingTile(tile, "(powergrid_type = 1 OR powergrid_type = 2)");
+        Tile[] nearby = Data.tilesMatchingCriteriaTouchingTile(tile, "powergrid_type = 1");
         for (Tile t : nearby) {
             if (t.position().x < tile.position().x) {
                 // LEFT
@@ -96,12 +96,12 @@ public class PowerLine extends PowerGrid
 
             if (up != null) {
 
-                if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (up.position().x-1) + " AND y = " + (up.position().y)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (up.position().x+1) + " AND y = " + (up.position().y)).length == 1)) {
+                if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (up.position().x-1) + " AND y = " + (up.position().y)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (up.position().x+1) + " AND y = " + (up.position().y)).length == 1)) {
                     // Check for:
                     // 1. a power line LEFT of the upper tile
                     // 2. a power line RIGHT of the upper tile
 
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (up.position().x) + " AND y = " + (up.position().y-1)).length == 1) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (up.position().x) + " AND y = " + (up.position().y-1)).length == 1) {
                         // Check for:
                         // 1. a power line ON TOP of the upper tile
 
@@ -114,11 +114,11 @@ public class PowerLine extends PowerGrid
                         up.setType(748);
                     }
                 }
-                else if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (up.position().y) + " AND x = " + (up.position().x-1)).length == 1) {
+                else if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x-1)).length == 1) {
                     // Check for a power line to the LEFT of the upper tile
 
                     // Check for a power line on TOP of the upper tile
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
                         up.setType(744);
                     }
@@ -127,12 +127,12 @@ public class PowerLine extends PowerGrid
                         up.setType(749);
                     }
                 }
-                else if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (up.position().y) + " AND x = " + (up.position().x+1)).length == 1) {
+                else if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x+1)).length == 1) {
 
                     // Check for a power line to the RIGHT of the upper tile
 
                     // Check for a power line on TOP of the upper tile
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
                         up.setType(743);
                     }
@@ -152,12 +152,12 @@ public class PowerLine extends PowerGrid
 
             if (down != null) {               
 
-                if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (down.position().x-1) + " AND y = " + (down.position().y)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (down.position().x+1) + " AND y = " + (down.position().y)).length == 1)) {
+                if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (down.position().x-1) + " AND y = " + (down.position().y)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (down.position().x+1) + " AND y = " + (down.position().y)).length == 1)) {
                     // Check for:
                     // 1. a power line LEFT of the lower tile
                     // 2. a power line RIGHT of the lower tile
 
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (down.position().x) + " AND y = " + (down.position().y+1)).length == 1) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (down.position().x) + " AND y = " + (down.position().y+1)).length == 1) {
                         // Check for:
                         // 1. a power line BELOW the lower tile
 
@@ -170,11 +170,11 @@ public class PowerLine extends PowerGrid
                         down.setType(746);
                     }
                 }
-                else if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (down.position().y) + " AND x = " + (down.position().x-1)).length == 1) {
+                else if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x-1)).length == 1) {
                     // Check for a power line to the LEFT of the lower tile
 
                     // Check for a power line BELOW the lower tile
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
                         down.setType(745);
                     }
@@ -183,12 +183,12 @@ public class PowerLine extends PowerGrid
                         down.setType(749);
                     }
                 }
-                else if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (down.position().y) + " AND x = " + (down.position().x+1)).length == 1) {
+                else if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x+1)).length == 1) {
 
                     // Check for a power line to the RIGHT of the lower tile
 
                     // Check for a power line BELOW the lower tile
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
                         down.setType(742);
                     }
@@ -216,10 +216,10 @@ public class PowerLine extends PowerGrid
         else if (left != null || right != null) {
 
             if (left != null) {
-                if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1)) {
+                if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1)) {
                     // Check for a power line on top and below the left tile
 
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1) {
                         // Check for a power line to the left of the left tile
 
                         // 4-way
@@ -230,25 +230,25 @@ public class PowerLine extends PowerGrid
                         left.setType(747);
                     }
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a power line on top of, and left of, the left tile
 
                     // 3-way (up)
                     left.setType(746);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a power line below, and left of, the left tile
 
                     // 3-way (down)
                     left.setType(748);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 0)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 0)) {
                     // Check for a power line on top of, and below, the left tile
 
                     // Bend
                     left.setType(742);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (left.position().y-1) + " AND x = " + left.position().x).length == 0) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (left.position().y+1) + " AND x = " + left.position().x).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (left.position().y-1) + " AND x = " + left.position().x).length == 0) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (left.position().y+1) + " AND x = " + left.position().x).length == 1)) {
                     // Check for a power line on top of, and below, the left tile
 
                     // Bend
@@ -264,10 +264,10 @@ public class PowerLine extends PowerGrid
 
             if (right != null) {
 
-                if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1)) {
+                if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1)) {
                     // Check for a power line on top and below the right tile
 
-                    if (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1) {
+                    if (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1) {
                         // Check for a power line to the right of the right tile
 
                         // 4-way
@@ -278,25 +278,25 @@ public class PowerLine extends PowerGrid
                         right.setType(749);
                     }
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a power line on top of the right tile
 
                     // 3-way (up)
                     right.setType(746);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a power line below right tile
 
                     // 3-way (down)
                     right.setType(748);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 0)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 0)) {
                     // Check for a power line on top of, and below, the right tile
 
                     // Bend
                     right.setType(745);
                 }
-                else if ((Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (right.position().y-1) + " AND x = " + right.position().x).length == 0) && (Data.tilesMatchingCriteria("(powergrid_type = 1 OR powergrid_type = 2) AND y = " + (right.position().y+1) + " AND x = " + right.position().x).length == 1)) {
+                else if ((Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (right.position().y-1) + " AND x = " + right.position().x).length == 0) && (Data.tilesMatchingCriteria("powergrid_type = 1 AND y = " + (right.position().y+1) + " AND x = " + right.position().x).length == 1)) {
                     // Check for a power line on top of, and below, the right tile
 
                     // Bend

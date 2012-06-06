@@ -66,15 +66,6 @@ public class MenuItemEventListener extends CSEventListener
             Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
             Map.getInstance().selection().setSize(PowerLine.SIZE_WIDTH, PowerLine.SIZE_HEIGHT);    
             PowerGrid.setPendingOp(PowerLine.TYPE_ID);
-//             City.getInstance().setTileSelector(new TileSelector(PowerLine.MARKERS));
-        }
-        else if (event.message() == PowerNode.NAME) {
-            Map.getInstance().selection().setSelectionMode(true);
-            Map.getInstance().selection().setAcceptedTypes( new int[]{ Tile.GROUND } );
-            Map.getInstance().selection().setUnacceptedZones( new int[] { ResidentialZone.TYPE_ID, CommercialZone.TYPE_ID, IndustrialZone.TYPE_ID });
-            Map.getInstance().selection().setSize(PowerNode.SIZE_WIDTH, PowerNode.SIZE_HEIGHT);    
-            PowerGrid.setPendingOp(PowerNode.TYPE_ID);
-            City.getInstance().setTileSelector(new TileSelector(PowerNode.MARKERS));
         }
         else if (event.message() == FireStation.NAME) {
             Map.getInstance().selection().setSelectionMode(true);

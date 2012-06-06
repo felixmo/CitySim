@@ -1,5 +1,5 @@
 #Greenfoot properties
-#Tue Jun 05 23:52:05 EDT 2012
+#Wed Jun 06 08:59:24 EDT 2012
 target5.height=50
 target15.width=150
 class.PowerGridEvaluationThread.superclass=CSThread
@@ -863,7 +863,7 @@ dependency189.from=Bulldozer
 target13.naviview.expanded=false
 dependency233.to=PowerLine
 dependency146.type=UsesDependency
-target72.editor.width=1680
+target72.editor.width=960
 dependency317.type=UsesDependency
 dependency187.to=CommercialZone
 dependency179.type=UsesDependency
@@ -1635,7 +1635,7 @@ target44.editor.y=42
 target72.editor.y=22
 target44.editor.x=40
 dependency215.from=City
-target72.editor.x=0
+target72.editor.x=960
 dependency171.type=UsesDependency
 target75.editor.width=840
 dependency342.type=UsesDependency
@@ -1723,7 +1723,7 @@ target13.x=190
 dependency165.type=UsesDependency
 dependency142.to=TileSelector
 class.Population.superclass=
-target72.editor.height=1024
+target72.editor.height=1174
 dependency231.to=TileSelectorEventListener
 class.CityStatsDBUpdateThread.superclass=CSThread
 dependency185.to=Data

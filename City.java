@@ -176,9 +176,8 @@ public class City extends World
         menuBar.setMenuItemsForItem(Road.NAME, roadItems);
 
         // -> Power
-        ArrayList<String> powerItems = new ArrayList(4);
+        ArrayList<String> powerItems = new ArrayList(3);
         powerItems.add(PowerLine.NAME);
-        powerItems.add(PowerNode.NAME);
         powerItems.add(CoalPowerPlant.NAME);
         powerItems.add(NuclearPowerPlant.NAME);
         menuBar.setMenuItemsForItem(PowerGrid.NAME, powerItems);
