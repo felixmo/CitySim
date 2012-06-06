@@ -49,7 +49,7 @@ public class ResidentialZone extends Zone
         score += this.fireProtection() > 0 ? 15 : -5;
 
         // Check for nearby recreational areas
-        if (Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "recreation_type > 0").length > 0) {
+        if (Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "recreation > 0").length > 0) {
             score += 20;
         }
 

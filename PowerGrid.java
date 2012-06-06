@@ -75,7 +75,7 @@ public class PowerGrid
 
     public static void searchZone(Zone zone) {
 
-        for (Zone z : Data.zonesAroundZone(zone)) {
+        for (Zone z : Data.zonesAroundZoneInclusive(zone)) {
             z.setPowered(1);
 
             for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
@@ -93,7 +93,6 @@ public class PowerGrid
 
         Data.updateTile(tile);
 
-        //         new PowerGridEvaluationThread().start();
         PowerGrid.setShouldEvaluate(true);
     }
 

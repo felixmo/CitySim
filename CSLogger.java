@@ -26,12 +26,12 @@ public class CSLogger
             manager.reset();
 
             ConsoleHandler handler = new ConsoleHandler();
-            handler.setLevel(Level.INFO);
+            handler.setLevel(Level.FINE);
             handler.setFormatter(new CSLogFormatter());
 
             sharedLogger = Logger.getLogger("com.felixmo.CitySim.logger");
             sharedLogger.addHandler(handler);
-            sharedLogger.setLevel(Level.INFO);
+            sharedLogger.setLevel(Level.FINE);
         }
     }
 

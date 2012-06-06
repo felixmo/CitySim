@@ -359,18 +359,6 @@ public class Street extends Road
         Road.updateTile(tile);
     }
 
-    /*
-    public static void buildStreet(Tile tile, int type) {
-
-    Cash.subtract(PRICE);
-
-    tile.setType(type);
-    tile.setRoad(TYPE_ID);
-    addToCount(1);
-
-    Road.updateTile(tile); 
-    }
-     */
     public static int count() {
         return ((Integer)Data.roadStats().get(Data.ROADSTATS_STREETCOUNT)).intValue();
     }

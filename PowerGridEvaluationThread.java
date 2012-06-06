@@ -19,6 +19,6 @@ public class PowerGridEvaluationThread extends CSThread
     }
     
     public void run() {
-//         PowerGrid.evaluate();
+        PowerGrid.evaluate();
     }
 }

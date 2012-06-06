@@ -319,7 +319,7 @@ public class Data
     }
 
     public static void updateTile(Tile tile) {
-        
+
         if (tile == null) return;
 
         CSLogger.sharedLogger().fine("Updating map tile");
@@ -498,6 +498,19 @@ public class Data
             Zone z = zoneWithTile(tile);
             if (z != null) set.add(z);
         }
+        Zone[] zones = new Zone[set.size()];
+        set.toArray(zones);
+        return zones;
+    }
+
+    public static Zone[] zonesAroundZoneInclusive(Zone zone) {
+        Tile[] tiles = tilesAroundZone(zone);
+        HashSet set = new HashSet();
+        for (Tile tile : tiles) {
+            Zone z = zoneWithTile(tile);
+            if (z != null) set.add(z);
+        }
+        set.add(zone);
         Zone[] zones = new Zone[set.size()];
         set.toArray(zones);
         return zones;

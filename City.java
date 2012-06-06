@@ -130,7 +130,7 @@ public class City extends World
         HashMap cityStats = Data.cityStats();
         date = new Date((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
         Population.set((Integer)cityStats.get(Data.CITYSTATS_POPULATION));
-        
+
         // Create and add a new map for the city
         map = new Map();
         addObject(map, 512, 333);
@@ -229,12 +229,7 @@ public class City extends World
         // TO DO: pause timer when in menu
         date.stop();
 
-//         if (citySimulationThread.isAlive()) {
-//             citySimulationThread.setCloseConnection(true);
-//         }
-//         else {
-            Data.closeConnection();
-//         }
+        Data.closeConnection();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -256,9 +251,10 @@ public class City extends World
         // Write to DB
         writeCountdown++;
 
-        if (writeCountdown % 6 == 0) {
-//             new ZoneAgeDBUpdateThread(5).start();
-            new CitySimulationThread().start();
+        if (writeCountdown % 5 == 0) {
+            if (CSThread.count() == 0) {
+                new CitySimulationThread().start();
+            }
         }
 
         if (writeCountdown == FREQ_WRITE) {

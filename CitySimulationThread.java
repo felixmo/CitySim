@@ -24,7 +24,6 @@ public class CitySimulationThread extends CSThread
         CSLogger.sharedLogger().info("Began simulating the city...");
         long startTime = System.currentTimeMillis();
 
-        //         DataSource.getInstance().resetJobAllocations();
         Employment.reset();
 
         // Commercial zones
@@ -36,8 +35,6 @@ public class CitySimulationThread extends CSThread
         for (IndustrialZone zone : Data.industrialZones()) {
             new IndustrialZoneSimulationThread(zone).start();
         }
-
-//         Employment.reset();
 
         // Residential zones
         for (ResidentialZone zone : Data.residentialZones()) {
