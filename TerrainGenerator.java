@@ -218,6 +218,7 @@ public class TerrainGenerator {
     }
 
     // NOT IN USE
+    /*
     private void smooth() {
 
         for (int x = 0; x < tiles.length; x++) {
@@ -304,7 +305,8 @@ public class TerrainGenerator {
             }
         }
     }
-
+    */
+   
     /**
      * Dump out as a CSV
      */

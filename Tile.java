@@ -42,54 +42,50 @@ public class Tile
      */
 
     public static final int EMPTY = 0;
-    public static final int GROUND = 100;
-    public static final int WATER = 200;
-    // BEACH
-    public static final int BEACH_TOP = 201;
-    public static final int BEACH_TOP_LEFT = 202;
-    public static final int BEACH_TOP_RIGHT = 203;
-    public static final int BEACH_BOTTOM = 204;
-    public static final int BEACH_BOTTOM_LEFT = 205;
-    public static final int BEACH_BOTTOM_RIGHT = 206;
-    public static final int BEACH_LEFT = 207;
-    public static final int BEACH_RIGHT = 208;
+    public static final int GROUND = 1;
+    public static final int WATER = 3;
+
     // GRASS
-    public static final int GRASS_1 = 301;
-    public static final int GRASS_2 = 302;
-    public static final int GRASS_3 = 303;
-    public static final int GRASS_4 = 304;
-    public static final int GRASS_5 = 305;
-    public static final int GRASS_TOP_LEFT = 306;
-    public static final int GRASS_TOP = 307;
-    public static final int GRASS_TOP_RIGHT = 308;
-    public static final int GRASS_LEFT = 309;
-    // RES. ZONE
-    public static final int RESIDENTIAL_TOP_LEFT = 400;
-    public static final int RESIDENTIAL_TOP = 401;
-    public static final int RESIDENTIAL_TOP_RIGHT = 402;
-    public static final int RESIDENTIAL_LEFT = 403;
-    public static final int RESIDENTIAL = 404;
-    public static final int RESIDENTIAL_RIGHT = 405;
-    public static final int RESIDENTIAL_BOTTOM_LEFT = 406;
-    public static final int RESIDENTIAL_BOTTOM = 407;
-    public static final int RESIDENTIAL_BOTTOM_RIGHT = 408;
+    public static final int GRASS_1 = 38;
 
     // STREETS
+    // H = horizontal
+    // V = vertical
     // U = up
     // D = down
     // L = left
     // R = right
-    public static final int STREET_HORIZONTAL = 101;
-    public static final int STREET_VERTICAL = 102;
-    public static final int STREET_BEND_TOPRIGHT = 103;
-    public static final int STREET_BEND_BOTTOMRIGHT = 104;
-    public static final int STREET_BEND_BOTTOMLEFT = 105;
-    public static final int STREET_BEND_TOPLEFT = 106;
-    public static final int STREET_HORIZONTAL_D_VERTICAL_U = 107;
-    public static final int STREET_VERTICAL_L_HORIZTONAL_R = 108;
-    public static final int STREET_HORIZONTAL_U_VERTICAL_D = 109;
-    public static final int STREET_VERTICAL_R_HORIZTONAL_L = 110;
-    public static final int STREET_INTERSECTION = 111;
+    // T = top
+    // D = down
+    // L = left
+    // R = right
+    public static final int STREET_H = 67;
+    public static final int STREET_V = 68;
+    public static final int STREET_B_TR = 69;
+    public static final int STREET_B_BR = 70;
+    public static final int STREET_B_BL = 71;
+    public static final int STREET_B_TL = 72;
+    public static final int STREET_H_U = 73;
+    public static final int STREET_V_R = 74;
+    public static final int STREET_H_D = 75;
+    public static final int STREET_V_L = 76;
+    public static final int STREET_INTERSECTION = 77;
+
+    // POWER GRID
+    public static final int POWERLINE_ROAD_H = 78;
+    public static final int POWERLINE_ROAD_V = 79;
+    public static final int POWERLINE_H = 211;
+    public static final int POWERLINE_V = 212;
+    public static final int POWERLINE_B_TR = 213;
+    public static final int POWERLINE_B_BR = 214;
+    public static final int POWERLINE_B_BL = 215;
+    public static final int POWERLINE_B_TL = 216;
+    public static final int POWERLINE_H_U = 217;
+    public static final int POWERLINE_V_R = 218;
+    public static final int POWERLINE_H_D = 219;
+    public static final int POWERLINE_V_L = 220;
+    public static final int POWERLINE_INTERSECTION = 221;
+    
 
     /*
      * IMAGE FILES *
@@ -170,19 +166,23 @@ public class Tile
     public void setPowered(int value) {
         properties.put(Data.TILES_POWERED, new Integer(value));
     }
-    
+
     public int powerGrid() {
         return ((Integer)properties.get(Data.TILES_POWERGRID_TYPE)).intValue();
     }
-    
+
     public void setPowerGrid(int value) {
         properties.put(Data.TILES_POWERGRID_TYPE, new Integer(value));    
     }
 
-    public int recreationType() {
+    public int recreation() {
         return ((Integer)properties.get(Data.TILES_RECREATION_TYPE)).intValue();
     }
-    
+
+    public void setRecreation(int value) {
+        properties.put(Data.TILES_RECREATION_TYPE, new Integer(value));    
+    }
+
     public GreenfootImage image() {
         return ImageCache.get(((Integer)this.properties.get(Data.TILES_TYPE)).intValue());
     }

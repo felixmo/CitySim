@@ -41,6 +41,7 @@ public class PowerGrid
             for (Tile tile : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
                 new PowerGridEvaluationTileSearchThread(tile).start();
             }
+            // TODO: search for zones touching power plants
         }
 
         setShouldEvaluate(false);

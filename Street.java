@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class Street extends Road
 {
     public static final int TYPE_ID = 1;
-    public static final int[] MARKERS = { 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111 };
+//     public static final int[] MARKERS = { STREET_H, STREET_V, STREET_B_TR, STREET_B_BR, STREET_B_BL, STREET_B_TL, STREET_H_U, STREET_V_R, STREET_H_D, STREET_V_L, STREET_INTERSECTION };
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Streets";
@@ -55,46 +55,46 @@ public class Street extends Road
         if (up != null && left != null) {
 
             // Straight (v)
-            up.setType(up.type() == 113 ? 113 : 102);
+            up.setType(up.type() == Tile.POWERLINE_ROAD_V ? Tile.POWERLINE_ROAD_V : Tile.STREET_V);
 
             // Straight (h)
-            left.setType(left.type() == 112 ? 112 : 101);
+            left.setType(left.type() == Tile.POWERLINE_ROAD_H ? Tile.POWERLINE_ROAD_H : Tile.STREET_H);
 
             // Bend
-            tile.setType(106);
+            tile.setType(Tile.STREET_B_TL);
         }
         else if (up != null && right != null) {
 
             // Straight (v)
-            up.setType(up.type() == 113 ? 113 : 102);
+            up.setType(up.type() == Tile.POWERLINE_ROAD_V ? Tile.POWERLINE_ROAD_V : Tile.STREET_V);
 
             // Straight (h)
-            right.setType(right.type() == 112 ? 112 : 101);
+            right.setType(right.type() == Tile.POWERLINE_ROAD_H ? Tile.POWERLINE_ROAD_H : Tile.STREET_H);
 
             // Bend
-            tile.setType(103);
+            tile.setType(Tile.STREET_B_TR);
         }
         else if (down != null && left != null) {
 
             // Straight (v)
-            down.setType(up.type() == 113 ? 113 : 102);
+            down.setType(down.type() == Tile.POWERLINE_ROAD_V ? Tile.POWERLINE_ROAD_V : Tile.STREET_V);
 
             // Straight (h)
-            left.setType(left.type() == 112 ? 112 : 101);
+            left.setType(left.type() == Tile.POWERLINE_ROAD_H ? Tile.POWERLINE_ROAD_H : Tile.STREET_H);
 
             // Bend
-            tile.setType(105);
+            tile.setType(Tile.STREET_B_BL);
         }
         else if (down != null && right != null) {
 
             // Straight (v)
-            down.setType(up.type() == 113 ? 113 : 102);
+            down.setType(down.type() == Tile.POWERLINE_ROAD_V ? Tile.POWERLINE_ROAD_V : Tile.STREET_V);
 
             // Straight (h)
-            right.setType(right.type() == 112 ? 112 : 101);
+            right.setType(right.type() == Tile.POWERLINE_ROAD_H ? Tile.POWERLINE_ROAD_H : Tile.STREET_H);
 
             // Bend
-            tile.setType(104);
+            tile.setType(Tile.STREET_B_BR);
         }
         else if (up != null || down != null) {
 
@@ -110,12 +110,12 @@ public class Street extends Road
                         // 1. a road ON TOP of the upper tile
 
                         // 4-way
-                        up.setType(111);
+                        up.setType(Tile.STREET_INTERSECTION);
                     }
                     else {
 
                         // 3-way (down)
-                        up.setType(109);
+                        up.setType(Tile.STREET_H_D);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x-1)).length == 1) {
@@ -124,11 +124,11 @@ public class Street extends Road
                     // Check for a road on TOP of the upper tile
                     if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
-                        up.setType(105);
+                        up.setType(Tile.STREET_B_BL);
                     }
                     else {
                         // 3 way (left)
-                        up.setType(110);
+                        up.setType(Tile.STREET_V_L);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x+1)).length == 1) {
@@ -138,18 +138,18 @@ public class Street extends Road
                     // Check for a road on TOP of the upper tile
                     if (Data.tilesMatchingCriteria("road = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
-                        up.setType(104);
+                        up.setType(Tile.STREET_B_BR);
                     }
                     else {
                         // 3 way (right)
-                        up.setType(108);
+                        up.setType(Tile.STREET_V_R);
                     }
                 }
                 else {
 
                     // Straight (v)
                     if (up.powerGrid() == 0) {
-                        up.setType(102);
+                        up.setType(Tile.STREET_V);
                     }
                 }
             }
@@ -166,12 +166,12 @@ public class Street extends Road
                         // 1. a road BELOW the lower tile
 
                         // 4-way
-                        down.setType(111);
+                        down.setType(Tile.STREET_INTERSECTION);
                     }
                     else {
 
                         // 3-way (up)
-                        down.setType(107);
+                        down.setType(Tile.STREET_H_U);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x-1)).length == 1) {
@@ -180,11 +180,11 @@ public class Street extends Road
                     // Check for a road BELOW the lower tile
                     if (Data.tilesMatchingCriteria("road = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
-                        down.setType(106);
+                        down.setType(Tile.STREET_B_TL);
                     }
                     else {
                         // 3 way (left)
-                        down.setType(110);
+                        down.setType(Tile.STREET_V_L);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("road = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x+1)).length == 1) {
@@ -194,28 +194,28 @@ public class Street extends Road
                     // Check for a road BELOW the lower tile
                     if (Data.tilesMatchingCriteria("road = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
-                        down.setType(103);
+                        down.setType(Tile.STREET_B_TR);
                     }
                     else {
                         // 3 way (right)
-                        down.setType(108);
+                        down.setType(Tile.STREET_V_R);
                     }
                 }
                 else {
 
                     if (down.powerGrid() == 0) {
                         // Straight (h)
-                        down.setType(102);
+                        down.setType(Tile.STREET_V);
                     }
                 }
             }
 
-            if (tile.type() == 740 || tile.type() == 113) {
-                tile.setType(113);
+            if (tile.type() == Tile.POWERLINE_H || tile.type() == Tile.POWERLINE_ROAD_V) {
+                tile.setType(Tile.POWERLINE_ROAD_V);
             }
             else {
                 // Straight (v)
-                tile.setType(102);
+                tile.setType(Tile.STREET_V);
             }
         }
         else if (left != null || right != null) {
@@ -228,42 +228,42 @@ public class Street extends Road
                         // Check for a road to the left of the left tile
 
                         // 4-way
-                        left.setType(111);
+                        left.setType(Tile.STREET_INTERSECTION);
                     }
                     else {
                         // 3-way (right)
-                        left.setType(108);
+                        left.setType(Tile.STREET_V_R);
                     }
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a road on top of, and left of, the left tile
 
                     // 3-way (up)
-                    left.setType(107);
+                    left.setType(Tile.STREET_H_U);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a road below, and left of, the left tile
 
                     // 3-way (down)
-                    left.setType(109);
+                    left.setType(Tile.STREET_H_D);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 0)) {
                     // Check for a road on top of, and below, the left tile
 
                     // Bend
-                    left.setType(103);
+                    left.setType(Tile.STREET_B_TR);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND y = " + (left.position().y-1) + " AND x = " + left.position().x).length == 0) && (Data.tilesMatchingCriteria("road = 1 AND y = " + (left.position().y+1) + " AND x = " + left.position().x).length == 1)) {
                     // Check for a road on top of, and below, the left tile
 
                     // Bend
-                    left.setType(104);
+                    left.setType(Tile.STREET_B_BR);
                 }
                 else {
 
                     if (left.powerGrid() == 0) {
                         // Straight (h)
-                        left.setType(101);
+                        left.setType(Tile.STREET_H);
                     }
                 }
             }
@@ -277,62 +277,62 @@ public class Street extends Road
                         // Check for a road to the right of the right tile
 
                         // 4-way
-                        right.setType(111);
+                        right.setType(Tile.STREET_INTERSECTION);
                     }
                     else {
                         // 3-way (left)
-                        right.setType(110);
+                        right.setType(Tile.STREET_V_L);
                     }
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a road on top of the right tile
 
                     // 3-way (up)
-                    right.setType(107);
+                    right.setType(Tile.STREET_H_U);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a road below right tile
 
                     // 3-way (down)
-                    right.setType(109);
+                    right.setType(Tile.STREET_H_D);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("road = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 0)) {
                     // Check for a road on top of, and below, the right tile
 
                     // Bend
-                    right.setType(106);
+                    right.setType(Tile.STREET_B_TL);
                 }
                 else if ((Data.tilesMatchingCriteria("road = 1 AND y = " + (right.position().y-1) + " AND x = " + right.position().x).length == 0) && (Data.tilesMatchingCriteria("road = 1 AND y = " + (right.position().y+1) + " AND x = " + right.position().x).length == 1)) {
                     // Check for a road on top of, and below, the right tile
 
                     // Bend
-                    right.setType(105);
+                    right.setType(Tile.STREET_B_BL);
                 }
                 else {
 
                     if (right.powerGrid() == 0) {
                         // Straight (h)
-                        right.setType(101);
+                        right.setType(Tile.STREET_H);
                     }
                 }
             }
 
-            if (tile.type() == 741 || tile.type() == 112) {
-                tile.setType(112);
+            if (tile.type() == Tile.POWERLINE_V || tile.type() == Tile.POWERLINE_ROAD_H) {
+                tile.setType(Tile.POWERLINE_ROAD_H);
             }
             else {
                 // Straight (h)
-                tile.setType(101);
+                tile.setType(Tile.STREET_H);
             }
         }
         else {
 
-            if (tile.type() == 741 || tile.type() == 112) {
-                tile.setType(112);
+            if (tile.type() == Tile.POWERLINE_V || tile.type() == Tile.POWERLINE_ROAD_H) {
+                tile.setType(Tile.POWERLINE_ROAD_H);
             }
             else {
                 // Straight (h)
-                tile.setType(101);
+                tile.setType(Tile.STREET_H);
             }
         }
 

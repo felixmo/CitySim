@@ -15,7 +15,7 @@ import java.util.logging.*;
  */
 public class CSLogger
 {
-    private static Logger sharedLogger;              // Shared logger
+    private static Logger sharedLogger;              
 
     static {
 
@@ -26,12 +26,12 @@ public class CSLogger
             manager.reset();
 
             ConsoleHandler handler = new ConsoleHandler();
-            handler.setLevel(Level.FINE);
+            handler.setLevel(Level.INFO);
             handler.setFormatter(new CSLogFormatter());
 
             sharedLogger = Logger.getLogger("com.felixmo.CitySim.logger");
             sharedLogger.addHandler(handler);
-            sharedLogger.setLevel(Level.FINE);
+            sharedLogger.setLevel(Level.INFO);
         }
     }
 

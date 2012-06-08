@@ -14,7 +14,7 @@
 public class PowerLine extends PowerGrid
 {
     public static final int TYPE_ID = 1;
-    public static final int[] MARKERS = { 740, 741, 742, 743, 744, 745 };
+//     public static final int[] MARKERS = { Tile.POWERLINE_H, Tile.POWERLINE_V, Tile.POWERLINE_B_TR, Tile.POWERLINE_B_BR, Tile.POWERLINE_B_BL, Tile.POWERLINE_B_TL };
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
     public static final String NAME = "Power line";
@@ -51,46 +51,46 @@ public class PowerLine extends PowerGrid
         if (up != null && left != null) {
 
             // Straight (v)
-            up.setType(741);
+            up.setType(Tile.POWERLINE_V);
 
             // Straight (v)
-            left.setType(740);
+            left.setType(Tile.POWERLINE_H);
 
             // Bend
-            tile.setType(745);
+            tile.setType(Tile.POWERLINE_B_TL);
         }
         else if (up != null && right != null) {
 
             // Straight (h)
-            up.setType(741);
+            up.setType(Tile.POWERLINE_V);
 
             // Straight (h)
-            right.setType(740);
+            right.setType(Tile.POWERLINE_H);
 
             // Bend
-            tile.setType(742);
+            tile.setType(Tile.POWERLINE_B_TR);
         }
         else if (down != null && left != null) {
 
             // Straight (v)
-            down.setType(741);
+            down.setType(Tile.POWERLINE_V);
 
             // Straight (h)
-            left.setType(740);
+            left.setType(Tile.POWERLINE_H);
 
             // Bend
-            tile.setType(744);
+            tile.setType(Tile.POWERLINE_B_BL);
         }
         else if (down != null && right != null) {
 
             // Straight (v)
-            down.setType(741);
+            down.setType(Tile.POWERLINE_V);
 
             // Straight (h)
-            right.setType(740);
+            right.setType(Tile.POWERLINE_H);
 
             // Bend
-            tile.setType(743);
+            tile.setType(Tile.POWERLINE_B_BR);
         }
         else if (up != null || down != null) {
 
@@ -106,12 +106,12 @@ public class PowerLine extends PowerGrid
                         // 1. a power line ON TOP of the upper tile
 
                         // 4-way
-                        up.setType(750);
+                        up.setType(Tile.POWERLINE_INTERSECTION);
                     }
                     else {
 
                         // 3-way (down)
-                        up.setType(748);
+                        up.setType(Tile.POWERLINE_H_D);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x-1)).length == 1) {
@@ -120,11 +120,11 @@ public class PowerLine extends PowerGrid
                     // Check for a power line on TOP of the upper tile
                     if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
-                        up.setType(744);
+                        up.setType(Tile.POWERLINE_B_BL);
                     }
                     else {
                         // 3 way (left)
-                        up.setType(749);
+                        up.setType(Tile.POWERLINE_V_L);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (up.position().y) + " AND x = " + (up.position().x+1)).length == 1) {
@@ -134,18 +134,18 @@ public class PowerLine extends PowerGrid
                     // Check for a power line on TOP of the upper tile
                     if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (up.position().y-1) + " AND x = " + (up.position().x)).length == 0) {
                         // Bend
-                        up.setType(743);
+                        up.setType(Tile.POWERLINE_B_BR);
                     }
                     else {
                         // 3 way (right)
-                        up.setType(747);
+                        up.setType(Tile.POWERLINE_V_R);
                     }
                 }
                 else {
 
                     // Straight (v)
                     if (up.road() == 0) {
-                        up.setType(741);
+                        up.setType(Tile.POWERLINE_V);
                     }
                 }
             }
@@ -162,12 +162,12 @@ public class PowerLine extends PowerGrid
                         // 1. a power line BELOW the lower tile
 
                         // 4-way
-                        down.setType(750);
+                        down.setType(Tile.POWERLINE_INTERSECTION);
                     }
                     else {
 
                         // 3-way (up)
-                        down.setType(746);
+                        down.setType(Tile.POWERLINE_H_U);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x-1)).length == 1) {
@@ -176,11 +176,11 @@ public class PowerLine extends PowerGrid
                     // Check for a power line BELOW the lower tile
                     if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
-                        down.setType(745);
+                        down.setType(Tile.POWERLINE_B_TL);
                     }
                     else {
                         // 3 way (left)
-                        down.setType(749);
+                        down.setType(Tile.POWERLINE_V_L);
                     }
                 }
                 else if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (down.position().y) + " AND x = " + (down.position().x+1)).length == 1) {
@@ -190,27 +190,27 @@ public class PowerLine extends PowerGrid
                     // Check for a power line BELOW the lower tile
                     if (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (down.position().y-1) + " AND x = " + (down.position().x)).length == 0) {
                         // Bend
-                        down.setType(742);
+                        down.setType(Tile.POWERLINE_B_TR);
                     }
                     else {
                         // 3 way (right)
-                        down.setType(747);
+                        down.setType(Tile.POWERLINE_V_R);
                     }
                 }
                 else {
                     // Straight (h)
                     if (down.road() == 0) {
-                        down.setType(741);
+                        down.setType(Tile.POWERLINE_V);
                     }
                 }
             }
 
-            if (tile.type() == 101 || tile.type() == 112) {
-                tile.setType(112);
+            if (tile.type() == Tile.STREET_H || tile.type() == Tile.POWERLINE_ROAD_H) {
+                tile.setType(Tile.POWERLINE_ROAD_H);
             }
             else {
                 // Straight (v)
-                tile.setType(741);
+                tile.setType(Tile.POWERLINE_V);
             }
         }
         else if (left != null || right != null) {
@@ -223,41 +223,41 @@ public class PowerLine extends PowerGrid
                         // Check for a power line to the left of the left tile
 
                         // 4-way
-                        left.setType(750);
+                        left.setType(Tile.POWERLINE_INTERSECTION);
                     }
                     else {
                         // 3-way (right)
-                        left.setType(747);
+                        left.setType(Tile.POWERLINE_V_R);
                     }
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a power line on top of, and left of, the left tile
 
                     // 3-way (up)
-                    left.setType(746);
+                    left.setType(Tile.POWERLINE_H_U);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x-1) + " AND y = " + (left.position().y)).length == 1)) {
                     // Check for a power line below, and left of, the left tile
 
                     // 3-way (down)
-                    left.setType(748);
+                    left.setType(Tile.POWERLINE_H_D);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (left.position().x) + " AND y = " + (left.position().y+1)).length == 0)) {
                     // Check for a power line on top of, and below, the left tile
 
                     // Bend
-                    left.setType(742);
+                    left.setType(Tile.POWERLINE_B_TR);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (left.position().y-1) + " AND x = " + left.position().x).length == 0) && (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (left.position().y+1) + " AND x = " + left.position().x).length == 1)) {
                     // Check for a power line on top of, and below, the left tile
 
                     // Bend
-                    left.setType(743);
+                    left.setType(Tile.POWERLINE_B_BR);
                 }
                 else {
                     // Straight (h)
                     if (left.road() == 0) {
-                        left.setType(740);
+                        left.setType(Tile.POWERLINE_H);
                     }
                 }
             }
@@ -271,60 +271,60 @@ public class PowerLine extends PowerGrid
                         // Check for a power line to the right of the right tile
 
                         // 4-way
-                        right.setType(750);
+                        right.setType(Tile.POWERLINE_INTERSECTION);
                     }
                     else {
                         // 3-way (left)
-                        right.setType(749);
+                        right.setType(Tile.POWERLINE_V_L);
                     }
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a power line on top of the right tile
 
                     // 3-way (up)
-                    right.setType(746);
+                    right.setType(Tile.POWERLINE_H_U);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x+1) + " AND y = " + (right.position().y)).length == 1)) {
                     // Check for a power line below right tile
 
                     // 3-way (down)
-                    right.setType(748);
+                    right.setType(Tile.POWERLINE_H_D);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y-1)).length == 1) && (Data.tilesMatchingCriteria("powergrid = 1 AND x = " + (right.position().x) + " AND y = " + (right.position().y+1)).length == 0)) {
                     // Check for a power line on top of, and below, the right tile
 
                     // Bend
-                    right.setType(745);
+                    right.setType(Tile.POWERLINE_B_TL);
                 }
                 else if ((Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (right.position().y-1) + " AND x = " + right.position().x).length == 0) && (Data.tilesMatchingCriteria("powergrid = 1 AND y = " + (right.position().y+1) + " AND x = " + right.position().x).length == 1)) {
                     // Check for a power line on top of, and below, the right tile
 
                     // Bend
-                    right.setType(744);
+                    right.setType(Tile.POWERLINE_B_BL);
                 }
                 else {
                     // Straight (h)
                     if (right.road() == 0) {
-                        right.setType(740);
+                        right.setType(Tile.POWERLINE_H);
                     }
                 }
             }
-            if (tile.type() == 102 || tile.type() == 113) {
-                tile.setType(113);
+            if (tile.type() == Tile.STREET_V || tile.type() == Tile.POWERLINE_ROAD_V) {
+                tile.setType(Tile.POWERLINE_ROAD_V);
             }
             else {
                 // Straight (h)
-                tile.setType(740);
+                tile.setType(Tile.POWERLINE_H);
             }
         }
         else {
 
-            if (tile.type() == 102 || tile.type() == 113) {
-                tile.setType(113);
+            if (tile.type() == Tile.STREET_V || tile.type() == Tile.POWERLINE_ROAD_V) {
+                tile.setType(Tile.POWERLINE_ROAD_V);
             }
             else {
                 // Straight (h)
-                tile.setType(740);
+                tile.setType(Tile.POWERLINE_H);
             }
         }
 

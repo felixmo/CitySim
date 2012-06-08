@@ -56,11 +56,12 @@ public class Bulldozer extends Tool
                 if (((Tile)tiles.get(i).get(j)).road() == Street.TYPE_ID) Street.subtractFromCount(1);
 
                 ((Tile)tiles.get(i).get(j)).setType(Tile.GROUND);
-                ((Tile)tiles.get(i).get(j)).setRoad(0);
                 ((Tile)tiles.get(i).get(j)).setZone(0);
                 ((Tile)tiles.get(i).get(j)).setZoneID(-1);
+                ((Tile)tiles.get(i).get(j)).setRoad(0);
                 ((Tile)tiles.get(i).get(j)).setPowered(0);
                 ((Tile)tiles.get(i).get(j)).setPowerGrid(0);
+                ((Tile)tiles.get(i).get(j)).setRecreation(0);
             }
         }
 

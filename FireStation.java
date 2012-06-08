@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class FireStation extends ProtectionZone
 {
     public static final int TYPE_ID = 6;
-    public static final int[] MARKERS = { 800, 801, 802, 803, 804, 805, 806, 807, 808 };
+    public static final int[] MARKERS = { 762, 763, 764, 765, 766, 767, 768, 769, 770 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Fire station";

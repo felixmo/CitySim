@@ -21,7 +21,7 @@ import java.util.Collections;
 public class ResidentialZone extends Zone
 {
     public static final int TYPE_ID = 1;
-    public static final int[] MARKERS = { 400, 401, 402, 403, 404, 405, 406, 407, 408 };
+    public static final int[] MARKERS = { 241, 242, 243, 244, 245, 246, 247, 248, 249 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Residential";

@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class NuclearPowerPlant extends PowerGridZone
 {
     public static final int TYPE_ID = 5;
-    public static final int[] MARKERS = { 700, 701, 702, 703, 704, 705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 715 };
+    public static final int[] MARKERS = { 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827 };
     public static final int SIZE_WIDTH = 4;
     public static final int SIZE_HEIGHT = 4;
     public static final String NAME = "Nuclear power plant";

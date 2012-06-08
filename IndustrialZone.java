@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class IndustrialZone extends Zone
 {
     public static final int TYPE_ID = 3;
-    public static final int[] MARKERS = { 500, 501, 502, 503, 504, 505, 506, 507, 508 };
+    public static final int[] MARKERS = { 613, 614, 615, 616, 617, 618, 619, 620, 621 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Industrial";
