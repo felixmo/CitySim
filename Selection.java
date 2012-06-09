@@ -146,6 +146,7 @@ public class Selection extends Actor
             if (Greenfoot.mouseClicked(this)) {
                 if (size.width > 1) {
                     Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
+                    zone.incrementStage();
                     System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity() + " | POWERED: " + (zone.powered() == 1 ? "YES" : "NO"));
                 }
                 else {

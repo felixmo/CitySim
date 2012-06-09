@@ -305,6 +305,18 @@ public class Data
         return tilesMatchingCriteria("x >= " + (tile.position().x-radius) + " AND x <= " + (tile.position().x+radius) + " AND y >= " + (tile.position().y-radius) + " AND y <= " + (tile.position().y+radius) + " AND " + criteria);
     }
 
+    public static Tile[] tilesInZone(Zone zone) {
+
+        int[] tile_ids = Data.tilesInZoneWithID(zone.dbID());
+        Tile[] tiles = new Tile[tile_ids.length];
+
+        for (int i = 0; i < tile_ids.length; i++) {
+            tiles[i] = Data.tileWithID(tile_ids[i]);
+        }
+
+        return tiles;
+    }
+
     public static Tile[] tilesAroundZone(Zone zone) {
         return tilesAroundZoneWithCriteria(zone, "");
     }

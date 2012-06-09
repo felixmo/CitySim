@@ -19,12 +19,30 @@ import java.util.HashMap;
 public class CommercialZone extends Zone
 {
     public static final int TYPE_ID = 2;
-    public static final int[] MARKERS = { 424, 425, 426, 427, 428, 429, 430, 431, 432 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Commercial";
-    public static final int[] STAGE_MAXCAPACITY = { 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
     public static final int PRICE = 100;
+
+    // STAGES
+    public static int[][] stages = new int[14][];
+    public static final int[] STAGE_INITIALTILE = { 424, 568, 478, 532, 577, 451, 460, 496, 514, 550, 541, 559, 586, 604 };
+    public static final int[] STAGE_MAXCAPACITY = { 0, 16, 32, 128, 256, 512, 1024, 2048, 3072, 4096, 5120, 6144, 7168, 8192 };
+
+    static {
+        for (int stage = 0; stage < STAGE_INITIALTILE.length; stage++) {
+
+            // Initialize stage
+            stages[stage] = new int[SIZE_WIDTH * SIZE_HEIGHT];
+
+            int tile = STAGE_INITIALTILE[stage];
+
+            for (int e = 0; e < SIZE_WIDTH * SIZE_HEIGHT; e++) {
+                stages[stage][e] = tile;
+                tile++;
+            }
+        }
+    }
 
     public CommercialZone(HashMap properties) {
         super(properties);
@@ -78,12 +96,12 @@ public class CommercialZone extends Zone
         }
 
         this.setScore(Math.max(1, score));   
-        
+
         new ZoneDBUpdateThread(this).start();
     }
 
     public static void zoneTiles(ArrayList<ArrayList<Tile>> selectedTiles) {
-        
+
         Cash.subtract(PRICE);
 
         int width = selectedTiles.size();
@@ -95,7 +113,7 @@ public class CommercialZone extends Zone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(CommercialZone.MARKERS[k]);
+                tile.setType(CommercialZone.stages[0][k]);
                 k++;
             }
         }

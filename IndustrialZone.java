@@ -19,12 +19,31 @@ import java.util.HashMap;
 public class IndustrialZone extends Zone
 {
     public static final int TYPE_ID = 3;
-    public static final int[] MARKERS = { 613, 614, 615, 616, 617, 618, 619, 620, 621 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Industrial";
-    public static final int[] STAGE_MAXCAPACITY = { 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
     public static final int PRICE = 100;
+
+    // STAGES (10 stages, incl. initial stage)
+    public static int[][] stages = new int[9][];
+    public static final int[] STAGE_INITIALTILE = { 613, 658, 622, 631, 640, 667, 649, 676, 685 };
+    public static final int[] STAGE_MAXCAPACITY = { 0, 16, 32, 64, 128, 256, 512, 1024, 1152 };
+
+    static {
+
+        for (int stage = 0; stage < STAGE_INITIALTILE.length; stage++) {
+
+            // Initialize stage
+            stages[stage] = new int[SIZE_WIDTH * SIZE_HEIGHT];
+
+            int tile = STAGE_INITIALTILE[stage];
+
+            for (int e = 0; e < SIZE_WIDTH * SIZE_HEIGHT; e++) {
+                stages[stage][e] = tile;
+                tile++;
+            }
+        }
+    }
 
     public IndustrialZone(HashMap properties) {
         super(properties);
@@ -75,7 +94,7 @@ public class IndustrialZone extends Zone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(IndustrialZone.MARKERS[k]);
+                tile.setType(IndustrialZone.stages[0][k]);
                 k++;
             }
         }

@@ -21,12 +21,40 @@ import java.util.Collections;
 public class ResidentialZone extends Zone
 {
     public static final int TYPE_ID = 1;
-    public static final int[] MARKERS = { 241, 242, 243, 244, 245, 246, 247, 248, 249 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Residential";
-    public static final int[] STAGE_MAXCAPACITY = { 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
     public static final int PRICE = 100;
+
+    // STAGES (10 stages, incl. initial stage)
+    public static int[][] stages = new int[10][];
+    public static final int[] STAGE_INITIALTILE = { 241, 241, 241, 241, 241, 241, 262, 271, 388, 397 };
+    public static final int[] STAGE_MAXCAPACITY = { 0, 4, 8, 32, 48, 64, 512, 1024, 4096, 5120 };
+
+    static {
+
+        for (int stage = 0; stage < STAGE_INITIALTILE.length; stage++) {
+
+            // Initialize stage
+            stages[stage] = new int[SIZE_WIDTH * SIZE_HEIGHT];
+
+            int tile = STAGE_INITIALTILE[stage];
+
+            for (int e = 0; e < SIZE_WIDTH * SIZE_HEIGHT; e++) {
+                stages[stage][e] = tile;
+                tile++;
+            }
+
+            if (stage < 6) {
+                int y = 250;
+                for (int x = 0; x < stage; x++) {
+                    // Don't replace the 'R' tile with a house
+                    stages[stage][x] = y;
+                    y++;
+                }
+            }
+        }
+    }
 
     public ResidentialZone(HashMap properties) {
         super(properties);
@@ -127,9 +155,9 @@ public class ResidentialZone extends Zone
         this.setAllocation(this.allocation() + births);
 
         if (this.allocation() > 0) {
-            
+
             int avaliableWorkers = Employment.employResidents(this);
-            
+
             if (avaliableWorkers < this.allocation()) {
                 score += 50;
             }
@@ -170,7 +198,7 @@ public class ResidentialZone extends Zone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(ResidentialZone.MARKERS[k]);
+                tile.setType(ResidentialZone.stages[0][k]);
                 k++;
             }
         }

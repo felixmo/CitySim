@@ -188,4 +188,85 @@ public class Zone
     public void setStage(int value) {
         properties.put(Data.ZONES_STAGE, new Integer(value));
     }
+
+    public void incrementStage() {
+
+        if (stage() >= stagesForZoneType(zone()).length-1) return;
+
+        int stage = stage() + 1;
+
+        Tile[] tiles = Data.tilesInZone(this);
+
+        // Initial x coordinate
+        int xi = tiles[0].position().x;
+        // First column of zone
+        int a = 0;
+        // Second column of zone
+        int b = 1;
+        // Thrid column of zone
+        int c = 2;
+        // Element 
+        int x = 0;
+
+        for (int i = 0; i < tiles.length; i++) {
+            Tile tile = tiles[i];
+            if (i > 0) {
+                if (tile.position().x == xi) {
+                    x = a;
+                    a += 3;
+                }
+                else if (tile.position().x == xi+1) {
+                    x = b;
+                    b += 3;
+                }
+                else {
+                    x = c;
+                    c += 3;
+                }
+            }
+            else {
+                a += 3;
+            }
+            tile.setType(tilesForStageOfZoneType(stage, zone())[x]);
+        }
+
+        Data.updateTiles(tiles);
+
+        setStage(stage);
+        new ZoneDBUpdateThread(this).start();
+    }
+
+    //
+
+    private int[][] stagesForZoneType(int type) {
+
+        switch (type) {
+            case ResidentialZone.TYPE_ID:
+            return ResidentialZone.stages;
+            case IndustrialZone.TYPE_ID:
+            return IndustrialZone.stages;
+            case CommercialZone.TYPE_ID:
+            return CommercialZone.stages;
+            default:
+            break;
+        }
+
+        return null;
+    }
+
+    private int[] tilesForStageOfZoneType(int stage, int type) {
+
+        switch (type) {
+            case ResidentialZone.TYPE_ID:
+            return ResidentialZone.stages[stage];
+            case IndustrialZone.TYPE_ID:
+            return IndustrialZone.stages[stage];
+            case CommercialZone.TYPE_ID:
+            return CommercialZone.stages[stage];
+            default:
+            break;
+        }
+
+        return null;
+    }
 }
