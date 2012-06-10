@@ -322,6 +322,9 @@ public class PowerLine extends PowerGrid
             if (tile.type() == Tile.STREET_V || tile.type() == Tile.POWERLINE_ROAD_V) {
                 tile.setType(Tile.POWERLINE_ROAD_V);
             }
+            else if (tile.type() == Tile.STREET_H || tile.type() == Tile.POWERLINE_ROAD_H) {
+                tile.setType(Tile.POWERLINE_ROAD_H);
+            }
             else {
                 // Straight (h)
                 tile.setType(Tile.POWERLINE_H);

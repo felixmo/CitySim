@@ -26,7 +26,9 @@ public class Employment
         for (Zone employer : employers) {
             if (employer.allocation() < employer.capacity()) {
                 int hired = Math.min(avaliableWorkers, employer.capacity()-employer.allocation());
-                DataSource.getInstance().updateJobAllocationForZone(employer.allocation() + hired, employer);
+                int newAlloc = employer.allocation() + hired;
+                employer.setAllocation(newAlloc);
+                DataSource.getInstance().updateJobAllocationForZone(newAlloc, employer);
                 avaliableWorkers -= hired;
             }
         }

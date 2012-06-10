@@ -342,7 +342,7 @@ public class Data
         cachedTiles.get(tile.position().x).set(tile.position().y, tile);
 
         // Re-draw map
-        Map.getInstance().draw();
+        Map.getInstance().setShouldUpdate(true);
 
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
@@ -379,7 +379,7 @@ public class Data
         }
 
         // Re-draw map
-        Map.getInstance().draw();
+        Map.getInstance().setShouldUpdate(true);
 
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
@@ -396,8 +396,9 @@ public class Data
         }
 
         // Re-draw map
-        Map.getInstance().draw();
-
+//         Map.getInstance().draw();
+        Map.getInstance().setShouldUpdate(true);
+        
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
 

@@ -209,11 +209,11 @@ public class DataSource
             PreparedStatement tilesIdIndex = connection.prepareStatement("CREATE INDEX tiles_id_idx ON tiles(id)");
             tilesIdIndex.execute();
             tilesIdIndex.close();
-            
+
             PreparedStatement tilesXIndex = connection.prepareStatement("CREATE INDEX tiles_x_idx ON tiles(x)");
             tilesXIndex.execute();
             tilesXIndex.close();
-            
+
             PreparedStatement tilesYIndex = connection.prepareStatement("CREATE INDEX tiles_y_idx ON tiles(y)");
             tilesYIndex.execute();
             tilesYIndex.close();
@@ -221,15 +221,15 @@ public class DataSource
             PreparedStatement zonesIdIndex = connection.prepareStatement("CREATE INDEX zones_id_idx ON zones(id)");
             zonesIdIndex.execute();
             zonesIdIndex.close();
-            
+
             PreparedStatement zonesXIndex = connection.prepareStatement("CREATE INDEX zones_x_idx ON zones(x)");
             zonesXIndex.execute();
             zonesXIndex.close();
-            
+
             PreparedStatement zonesYIndex = connection.prepareStatement("CREATE INDEX zones_y_idx ON zones(y)");
             zonesYIndex.execute();
             zonesYIndex.close();
-            
+
             PreparedStatement zonesZoneIndex = connection.prepareStatement("CREATE INDEX zones_zone_idx ON zones(zone)");
             zonesZoneIndex.execute();
             zonesZoneIndex.close();
@@ -1239,6 +1239,46 @@ public class DataSource
             HashMap z = (HashMap)results.listIterator().next();
 
             return ((Integer)(z.get(Data.ZONES_ALLOCATION))).intValue();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int totalIndustrialCapacity() {
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT SUM(capacity) AS capacity_sum FROM zones WHERE zone = " + IndustrialZone.TYPE_ID, new MapListHandler());
+            HashMap map = (HashMap)results.listIterator().next();
+
+            if (map.get("capacity_sum") == null) {
+                return 0;
+            }
+
+            return ((Integer)map.get("capacity_sum")).intValue();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int totalCommercialCapacity() {
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT SUM(capacity) AS capacity_sum FROM zones WHERE zone = " + CommercialZone.TYPE_ID, new MapListHandler());
+            HashMap map = (HashMap)results.listIterator().next();
+
+            if (map.get("capacity_sum") == null) {
+                return 0;
+            }
+
+            return ((Integer)map.get("capacity_sum")).intValue();
         }
         catch (SQLException se) {
             se.printStackTrace();

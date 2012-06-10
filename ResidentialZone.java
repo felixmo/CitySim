@@ -127,7 +127,7 @@ public class ResidentialZone extends Zone
                 Point dToPolice = new Point(Math.abs(closetPolice.x - this.origin().x), Math.abs(closetPolice.y - this.origin().y));
                 dP = (dToPolice.x + dToPolice.y) / 2;
             }
-            int crime = (int)(((this.allocation() / this.capacity()) * 100) / dP == 0 ? 2 : (20 - dP));
+            int crime = (int)(((this.allocation() / this.capacity()) * 100) / (dP == 0 ? 2 : (20 - dP)));
             setCrime(crime);
 
             if (crime < 6) {
@@ -221,8 +221,8 @@ public class ResidentialZone extends Zone
         }
 
         if (this.score() > 0) {
-            if ((((score / this.score()) * 100)-100) >= 50 && this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length) {
-                this.setCapacity(Math.max((Greenfoot.getRandomNumber(ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
+            if (((((score / this.score()) * 100)-100) >= 50 && this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0) {
+                this.setCapacity(Math.max((Greenfoot.getRandomNumber(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
                 this.incrementStage();
             }
         }

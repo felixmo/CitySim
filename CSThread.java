@@ -17,6 +17,7 @@ public abstract class CSThread extends Thread
 {
 
     private static CSThreadGroup threadGroup = new CSThreadGroup();
+    private static Thread mainThread = null;
     
     private static int count = 0;
     private int id = 0;
@@ -32,5 +33,13 @@ public abstract class CSThread extends Thread
     
     public static int count() {
         return threadGroup.activeCount();
+    }
+    
+    public static Thread mainThread() {
+        return mainThread;
+    }
+    
+    public static void setMainThread(Thread thread) {
+        mainThread = thread;
     }
 }

@@ -53,6 +53,8 @@ public class Map extends Actor
     private MouseInfo mouseInfo = null;
 
     private Selection selection = new Selection(viewport.width, viewport.height);
+    
+    private boolean shouldUpdate = false;
 
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -97,7 +99,11 @@ public class Map extends Actor
     // This method is called at every action step in the environment; frequently
     public void act() 
     {   
-
+        if (this.shouldUpdate) {
+            draw();
+            this.shouldUpdate = false;
+        }
+        
         // Listen for keystrokes and mouse movement and move accordingly, only if viewport is within bounds of map
 
         int offset_x = 0;
@@ -297,5 +303,9 @@ public class Map extends Actor
 
     public Selection selection() {
         return this.selection;
+    }
+    
+    public void setShouldUpdate(boolean value) {
+        this.shouldUpdate = value;
     }
 }

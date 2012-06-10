@@ -61,6 +61,7 @@ public class Date
         if (months == 12) {
             years++;
             months = 0;
+            new FinancesThread().start();
         }
 
         City.getInstance().didIncrementDate();

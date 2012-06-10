@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.io.File;
 import java.awt.Point;
 import java.util.Arrays;
+import java.lang.Thread;
 
 /**
  * 'City' acts as a container for all objects / "Actors" in the game (incl. map, HUD, etc.)
@@ -82,8 +83,6 @@ public class City extends World
         // Delete the DB so that map re-generates each run
 
         //         new File("maps/test.db").delete();
-
-        System.setProperty("logback.configurationFile", "./external/logback.xml");
 
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
         if (Data.dbIsNew()) {

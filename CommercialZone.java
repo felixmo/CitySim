@@ -9,6 +9,7 @@ import greenfoot.*;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.awt.Point;
 
 /**
  * Write a description of class CommercialZone here.
@@ -125,8 +126,8 @@ public class CommercialZone extends Zone
         }
 
         if (this.score() > 0) {
-            if ((((score / this.score()) * 100)-100) >= 25 && this.stage() < CommercialZone.STAGE_MAXCAPACITY.length) {
-                this.setCapacity(Math.max((Greenfoot.getRandomNumber(CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + CommercialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
+            if (((((score / this.score()) * 100)-100) >= 25 && this.stage() < CommercialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0) {
+                this.setCapacity(Math.max((Greenfoot.getRandomNumber(CommercialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(CommercialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + CommercialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
                 this.incrementStage();
             }
         }
