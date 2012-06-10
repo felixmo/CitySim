@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class FireStation extends ProtectionZone
 {
     public static final int TYPE_ID = 6;
-    public static final int[] MARKERS = { 762, 763, 764, 765, 766, 767, 768, 769, 770 };
+    public static final int[] TILES = { 762, 763, 764, 765, 766, 767, 768, 769, 770 };
     public static final int SIZE_WIDTH = 3;
     public static final int SIZE_HEIGHT = 3;
     public static final String NAME = "Fire station";
@@ -39,7 +39,7 @@ public class FireStation extends ProtectionZone
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Tile tile = selectedTiles.get(j).get(i);
-                tile.setType(FireStation.MARKERS[k]);
+                tile.setType(FireStation.TILES[k]);
                 k++;
             }
         }

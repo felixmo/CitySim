@@ -48,10 +48,6 @@ public class City extends World
      * REFERENCES *
      */
 
-    private Map map;                                // Map of the city
-    private Date date;                              // Current date (in-game) / time elapsed
-    private HUD hud;                                // HUD display containing game info and controls
-    private Minimap_Viewport minimap_viewport;      // Representation of the viewport in the minimap
     private MenuBar menuBar;                        // Menu bar containing game controls
     private Hint hint;                              // Active hint
     private TileSelector tileSelector;              // Active tile selector
@@ -80,7 +76,7 @@ public class City extends World
         CSLogger.sharedLogger().info("***** NEW SESSION *****");
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, Minimap_Viewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
+        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
@@ -128,31 +124,29 @@ public class City extends World
 
         // Resume tracking date from last saved date
         HashMap cityStats = Data.cityStats();
-        date = new Date((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
+        Date.set((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
         Population.set((Integer)cityStats.get(Data.CITYSTATS_POPULATION));
 
         // Create and add a new map for the city
-        map = new Map();
-        addObject(map, 512, 333);
+        addObject(new Map(), 512, 333);
 
         // Create and add HUD
-        hud = new HUD();
-        addObject(hud, 512, 653);
+        addObject(new HUD(), 512, 653);
 
         // Create and add the representation of the viewport into the minimap
-        minimap_viewport = new Minimap_Viewport(new Point(0, 0));
-        addObject(minimap_viewport, 112, 658);
+        addObject(new MinimapViewport(new Point(0, 0)), 112, 658);
 
         // Create and add the menubar
         menuBar = new MenuBar();
         addObject(menuBar, 512, 14);
 
         // - Menu bar items -
-        ArrayList<String> menuBarItems = new ArrayList(5);
+        ArrayList<String> menuBarItems = new ArrayList(6);
         menuBarItems.add(Zone.NAME);
         menuBarItems.add(Road.NAME);
         menuBarItems.add(PowerGrid.NAME);
         menuBarItems.add(ProtectionZone.NAME);
+        menuBarItems.add(Recreation.NAME);
         menuBarItems.add(Tool.NAME);
         menuBar.setItems(menuBarItems);
 
@@ -187,6 +181,12 @@ public class City extends World
         protectionItems.add(FireStation.NAME);
         protectionItems.add(PoliceStation.NAME);
         menuBar.setMenuItemsForItem(ProtectionZone.NAME, protectionItems);
+        
+        // Recreation
+        ArrayList<String> recreationItems = new ArrayList(2);
+        recreationItems.add(Park.NAME);
+        recreationItems.add(Stadium.NAME);
+        menuBar.setMenuItemsForItem(Recreation.NAME, recreationItems);
 
         // -> Tools (last)
         ArrayList<String> toolItems = new ArrayList(1);
@@ -217,7 +217,7 @@ public class City extends World
         }
 
         // TO DO: start timer when game has actually started (i.e. not in menu)
-        date.start();
+        Date.start();
     }
 
     /**
@@ -227,7 +227,7 @@ public class City extends World
         CSLogger.sharedLogger().info("Game has stopped.");
 
         // TO DO: pause timer when in menu
-        date.stop();
+        Date.stop();
 
         Data.closeConnection();
     }
@@ -267,7 +267,7 @@ public class City extends World
         }
 
         // Refresh values for HUD every 1 sec
-        hud.refresh(valuesForHUD());
+        HUD.getInstance().refresh(valuesForHUD());
 
         // Refresh minimap if there are changes to map
         if (Minimap.getInstance().shouldUpdate()) {
@@ -293,7 +293,7 @@ public class City extends World
      */
     public void didMoveViewportTo(int x, int y) {
         // Move the map
-        map.viewportDidMoveTo(x, y);
+        Map.getInstance().viewportDidMoveTo(x, y);
     }
 
     /**
@@ -310,7 +310,7 @@ public class City extends World
      */
     public void didMoveMapTo(int x, int y) {
         // Move the representation of the viewport in the minimap
-        minimap_viewport.didMoveViewportToCell(x, y);
+        MinimapViewport.getInstance().didMoveViewportToCell(x, y);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -345,7 +345,7 @@ public class City extends World
 
         values.put(HUD.NAME, Population.category() + " of Toronto");  // TESTING
         values.put(HUD.POPULATION, Population.size());    // TESTING
-        values.put(HUD.DATE, date.toString());
+        values.put(HUD.DATE, Date.asString());
         values.put(HUD.CASH, Cash.asString());
 
         return values;
@@ -356,9 +356,9 @@ public class City extends World
 
         HashMap stats = new HashMap(5);
 
-        stats.put(Data.CITYSTATS_DAYS, date.days());
-        stats.put(Data.CITYSTATS_MONTHS, date.months());
-        stats.put(Data.CITYSTATS_YEARS, date.years());
+        stats.put(Data.CITYSTATS_DAYS, Date.days());
+        stats.put(Data.CITYSTATS_MONTHS, Date.months());
+        stats.put(Data.CITYSTATS_YEARS, Date.years());
         stats.put(Data.CITYSTATS_POPULATION, Population.size());
         stats.put(Data.CITYSTATS_CASH, Cash.value());
 

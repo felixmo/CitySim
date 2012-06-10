@@ -21,11 +21,13 @@ import java.awt.Point;
  *
  */
 
-public class Minimap_Viewport extends Actor
+public class MinimapViewport extends Actor
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
 
+    private static MinimapViewport instance;
+    
     /*
      * INSTANCE VARIABLES *
      */
@@ -38,7 +40,9 @@ public class Minimap_Viewport extends Actor
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Minimap_Viewport(Point origin) {
+    public MinimapViewport(Point origin) {
+        
+        MinimapViewport.instance = this;
 
         this.origin = origin;
 
@@ -88,5 +92,9 @@ public class Minimap_Viewport extends Actor
 
         image.setColor(Color.RED);
         image.drawRect(origin.x, origin.y, 35, 18);
+    }
+    
+    public static MinimapViewport getInstance() {
+        return instance;
     }
 }

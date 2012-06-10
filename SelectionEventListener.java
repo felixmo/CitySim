@@ -22,7 +22,7 @@ public class SelectionEventListener extends CSEventListener
     public void listen(SelectionEvent event) {
         CSLogger.sharedLogger().fine("Message received: " + event.message());
 
-        if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_ZONING)) {
+        if (event.message() == SelectionEvent.TILES_SELECTED_FOR_ZONING) {
 
             CSLogger.sharedLogger().fine("Pending zone op: " + Zone.pendingOp());
 
@@ -36,9 +36,11 @@ public class SelectionEventListener extends CSEventListener
                 case CommercialZone.TYPE_ID: 
                     CommercialZone.zoneTiles(event.tiles());
                     break;
-                case FireStation.TYPE_ID: FireStation.build(event.tiles());
+                case FireStation.TYPE_ID: 
+                    FireStation.build(event.tiles());
                     break;
-                case PoliceStation.TYPE_ID: PoliceStation.build(event.tiles());
+                case PoliceStation.TYPE_ID: 
+                    PoliceStation.build(event.tiles());
                     break;
                 case CoalPowerPlant.TYPE_ID: 
                     CoalPowerPlant.build(event.tiles());
@@ -46,44 +48,32 @@ public class SelectionEventListener extends CSEventListener
                 case NuclearPowerPlant.TYPE_ID:
                     NuclearPowerPlant.build(event.tiles());
                     break;
-                default: break;
-            }
-        }
-        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_POWERGRID)) {
-
-            switch (PowerGrid.pendingOp()) {
-                case PowerLine.TYPE_ID: PowerLine.buildPowerLine(event.tile(), PowerGrid.activeType());
+                case Stadium.TYPE_ID:
+                    Stadium.build(event.tiles());
                     break;
-
-                default: break;
+                default: 
+                    break;
             }
         }
-        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_ROAD)) {
+        else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_POWERGRID) {
 
-            switch (Road.pendingOp()) {
-                case Street.TYPE_ID: Street.buildStreet(event.tile(), Road.activeType());
-                break;
-
-                default: break;
-            }
+            PowerLine.buildPowerLine(event.tile(), PowerGrid.activeType());
         }
-        else if (event.message().equals(SelectionEvent.TILE_SELECTED_FOR_TOOL)) {
+        else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_ROAD) {
 
-            switch (Tool.pendingOp()) {
-                case Bulldozer.TYPE_ID: Bulldozer.bulldoze(event.tile());
-                break;
-
-                default: break;
-            }
+            Street.buildStreet(event.tile(), Road.activeType());
         }
-        else if (event.message().equals(SelectionEvent.TILES_SELECTED_FOR_TOOLS)) {
+        else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_TOOL) {
 
-            switch (Tool.pendingOp()) {
-                case Bulldozer.TYPE_ID: Bulldozer.bulldoze(event.tiles());
-                break;
+            Bulldozer.bulldoze(event.tile());
+        }
+        else if (event.message() == SelectionEvent.TILES_SELECTED_FOR_TOOLS) {
 
-                default: break;
-            }
+            Bulldozer.bulldoze(event.tiles());
+        }
+        else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_RECREATION) {
+
+            Park.build(event.tile());
         }
     }
 }

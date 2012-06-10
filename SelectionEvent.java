@@ -22,6 +22,8 @@ public class SelectionEvent extends CSEvent
     public static final String TILE_SELECTED_FOR_ROAD = "TILE_SELECTED_FOR_ROAD";
     public static final String TILES_SELECTED_FOR_TOOLS = "TILES_SELECTED_FOR_TOOLS";
     public static final String TILE_SELECTED_FOR_TOOL = "TILE_SELECTED_FOR_TOOL";
+    public static final String TILE_SELECTED_FOR_RECREATION = "TILE_SELECTED_FOR_RECREATION";
+    public static final String TILES_SELECTED_FOR_RECREATION = "TILES_SELECTED_FOR_RECREATION";
     
     private ArrayList<ArrayList<Tile>> tiles;
     private Tile tile;

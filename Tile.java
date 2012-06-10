@@ -86,6 +86,8 @@ public class Tile
     public static final int POWERLINE_V_L = 220;
     public static final int POWERLINE_INTERSECTION = 221;
     
+    // RECREATION
+    public static final int PARK = 841;
 
     /*
      * IMAGE FILES *

@@ -26,6 +26,8 @@ public class HUD extends Actor {
 
     // ---------------------------------------------------------------------------------------------------------------------
 
+    private static HUD instance;
+    
     /*
      * INSTANCE VARIABLES
      */
@@ -54,6 +56,8 @@ public class HUD extends Actor {
     // ---------------------------------------------------------------------------------------------------------------------
 
     public HUD() {
+        
+        HUD.instance = this;
 
         this.minimap = new Minimap();
 
@@ -116,5 +120,9 @@ public class HUD extends Actor {
 
     public Minimap minimap() {
         return minimap;
+    }
+    
+    public static HUD getInstance() {
+        return instance;
     }
 }

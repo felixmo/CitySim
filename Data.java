@@ -494,6 +494,13 @@ public class Data
         return zonesMatchingCriteria("x >= " + (start.x-radius-4) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius-4) + " AND y <= " + (start.y+radius) + " AND zone = " + type);
     }
 
+    public static Zone[] sortedZonesInAreaOfZone(Zone zone, int radius, int type) {
+        Point start = zone.origin();
+        Zone[] zones = zonesMatchingCriteria("x >= " + (start.x-radius-4) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius-4) + " AND y <= " + (start.y+radius) + " AND zone = " + type);
+        Arrays.sort(zones, new ZoneComparator(zone.origin()));
+        return zones;
+    }
+
     public static Zone[] zonesInAreaOfZone(Zone zone, int radius, int zone1, int zone2) {
         Point start = zone.origin();
         return zonesMatchingCriteria("x >= " + (start.x-radius-4) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius-4) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + ")");

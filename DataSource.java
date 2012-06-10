@@ -84,7 +84,8 @@ public class DataSource
 
         // If the database was just created, create the schema for it
         if (dbIsNew) {
-            createSchema();
+            createTables();
+            createIndexes();
         }
     }
 
@@ -175,8 +176,8 @@ public class DataSource
      *
      */
 
-    // Create the database's schema
-    private void createSchema() {
+    // Create the database's tables
+    private void createTables() {
 
         CSLogger.sharedLogger().fine("Creating schema for DB (\"" + dbName + "\")");
 
@@ -196,6 +197,42 @@ public class DataSource
             }
 
             CSLogger.sharedLogger().fine("Finished creating schema for DB (\"" + dbName + "\")");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
+    private void createIndexes() {
+
+        try {
+            PreparedStatement tilesIdIndex = connection.prepareStatement("CREATE INDEX tiles_id_idx ON tiles(id)");
+            tilesIdIndex.execute();
+            tilesIdIndex.close();
+            
+            PreparedStatement tilesXIndex = connection.prepareStatement("CREATE INDEX tiles_x_idx ON tiles(x)");
+            tilesXIndex.execute();
+            tilesXIndex.close();
+            
+            PreparedStatement tilesYIndex = connection.prepareStatement("CREATE INDEX tiles_y_idx ON tiles(y)");
+            tilesYIndex.execute();
+            tilesYIndex.close();
+
+            PreparedStatement zonesIdIndex = connection.prepareStatement("CREATE INDEX zones_id_idx ON zones(id)");
+            zonesIdIndex.execute();
+            zonesIdIndex.close();
+            
+            PreparedStatement zonesXIndex = connection.prepareStatement("CREATE INDEX zones_x_idx ON zones(x)");
+            zonesXIndex.execute();
+            zonesXIndex.close();
+            
+            PreparedStatement zonesYIndex = connection.prepareStatement("CREATE INDEX zones_y_idx ON zones(y)");
+            zonesYIndex.execute();
+            zonesYIndex.close();
+            
+            PreparedStatement zonesZoneIndex = connection.prepareStatement("CREATE INDEX zones_zone_idx ON zones(zone)");
+            zonesZoneIndex.execute();
+            zonesZoneIndex.close();
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -928,7 +965,7 @@ public class DataSource
                     Tile tile = (Tile)tiles.get(x).get(y);
                     int i = 1;
                     for (String param : Data.TABLES_MAPPING.get(Data.TILES)) {
-                        if (!param.equals(Data.TILES_ID)) {
+                        if (param != Data.TILES_ID) {
                             //                             System.out.println("param: " + param + " |  value: " + tile.get(param));
                             statement.setObject(i, tile.get(param));
                             i++;

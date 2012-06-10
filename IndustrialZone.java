@@ -60,18 +60,54 @@ public class IndustrialZone extends Zone
         int score = 0;
 
         // Check for police protection
-        score += this.policeProtection() > 0 ? 15 : -5;
+        Zone[] police = Data.sortedZonesInAreaOfZone(this, 20, PoliceStation.TYPE_ID);
+        if (police.length > 0) {
+            score += 15;
+        }
+        else {
+            score -= 5;
+        }
 
         // Check for fire protection
-        score += this.fireProtection() > 0 ? 15 : -5;
+        if (Data.zonesInAreaOfZone(this, 20, FireStation.TYPE_ID).length > 0) {
+            score += 15;
+        }
+        else {
+            score -= 5;
+        }
 
         // Accessibility to commercial zones
         score += Data.zonesInAreaOfZone(this, 20, CommercialZone.TYPE_ID).length * 20;
 
+        if (this.allocation() > 0) {
+            // Calculate crime levels
+            // < 6 - LOW
+            // 6 - 12 - MEDIUM
+            // > 12 - HIGH
+            int dP = 0;
+            if (police.length > 0) {
+                Point closetPolice = police[0].origin();
+                Point dToPolice = new Point(Math.abs(closetPolice.x - this.origin().x), Math.abs(closetPolice.y - this.origin().y));
+                dP = (dToPolice.x + dToPolice.y) / 2;
+            }
+            int crime = (int)(((this.allocation() / this.capacity()) * 100) / dP == 0 ? 2 : (20 - dP));
+            setCrime(crime);
+
+            if (crime < 6) {
+                score += 25;
+            }
+            else if (crime >= 6 & crime <= 12) {
+                score -= 35;
+            }
+            else {
+                score -= 50;
+            }
+        }
+
         if (this.score() > 0) {
             if ((((score / this.score()) * 100)-100) >= 25 && this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length) {
-                this.setStage(this.stage()+1);
                 this.setCapacity(Math.max((Greenfoot.getRandomNumber(IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + IndustrialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
+                this.incrementStage();
             }
         }
 

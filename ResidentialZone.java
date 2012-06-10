@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Collections;
+import java.awt.Point;
 
 /**
  * Write a description of class ResidentialZone here.
@@ -48,7 +49,6 @@ public class ResidentialZone extends Zone
             if (stage < 6) {
                 int y = 250;
                 for (int x = 0; x < stage; x++) {
-                    // Don't replace the 'R' tile with a house
                     stages[stage][x] = y;
                     y++;
                 }
@@ -70,11 +70,22 @@ public class ResidentialZone extends Zone
         // Start with a base score of 0
         int score = 0;
 
+        Zone[] police = Data.sortedZonesInAreaOfZone(this, 20, PoliceStation.TYPE_ID);
         // Check for police protection
-        score += this.policeProtection() > 0 ? 15 : -5;
+        if (police.length > 0) {
+            score += 15;
+        }
+        else {
+            score -= 5;
+        }
 
         // Check for fire protection
-        score += this.fireProtection() > 0 ? 15 : -5;
+        if (Data.zonesInAreaOfZone(this, 20, FireStation.TYPE_ID).length > 0) {
+            score += 15;
+        }
+        else {
+            score -= 5;
+        }
 
         // Check for nearby recreational areas
         if (Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "recreation > 0").length > 0) {
@@ -106,13 +117,48 @@ public class ResidentialZone extends Zone
 
         if (this.allocation() > 0) {
 
+            // Calculate crime levels
+            // < 6 - LOW
+            // 6 - 12 - MEDIUM
+            // > 12 - HIGH
+            int dP = 0;
+            if (police.length > 0) {
+                Point closetPolice = police[0].origin();
+                Point dToPolice = new Point(Math.abs(closetPolice.x - this.origin().x), Math.abs(closetPolice.y - this.origin().y));
+                dP = (dToPolice.x + dToPolice.y) / 2;
+            }
+            int crime = (int)(((this.allocation() / this.capacity()) * 100) / dP == 0 ? 2 : (20 - dP));
+            setCrime(crime);
+
+            if (crime < 6) {
+                score += 25;
+            }
+            else if (crime >= 6 & crime <= 12) {
+                score -= 35;
+            }
+            else {
+                score -= 50;
+            }
+
+            // Crime-related deaths
+            int crimeDeathsModifier = (crime > 12 ? 3 : (crime >= 6 ? 5 : (crime < 6 ? 7 : 0)));
+            int crimeDeaths = 0;
+            if (crimeDeathsModifier > 0) {
+                crimeDeaths = Greenfoot.getRandomNumber(Math.max(1, (int)(this.allocation()/crimeDeathsModifier)))+1;
+            }
+
+            if (crimeDeaths > 0) score -= 25;
+
+            deaths += crimeDeaths;
+
+            // Pollution deaths
             int pollutionDeathsModifier = (pollution > 40 ? 2 : (pollution >= 21 ? 3 : (pollution >= 1 ? 4 : 0)));          // Determines the modifer based on pollution levels
             int pollutionDeaths = 0;
             if (pollutionDeathsModifier > 0) {
                 pollutionDeaths = Greenfoot.getRandomNumber(Math.max(1, (int)(this.allocation()/pollutionDeathsModifier)))+1;              // Determine the number of pollution based deaths
             }
 
-            if (pollutionDeaths > 0) score -= 75;
+            if (pollutionDeaths > 0) score -= 25;
 
             deaths += pollutionDeaths;
 
@@ -132,7 +178,8 @@ public class ResidentialZone extends Zone
             }
 
             deaths += povertyDeaths;
-            this.setAllocation(this.allocation() - deaths);
+
+            this.setAllocation(this.allocation() - Math.min(deaths, this.allocation()-1));
         }
 
         // Births
@@ -175,8 +222,8 @@ public class ResidentialZone extends Zone
 
         if (this.score() > 0) {
             if ((((score / this.score()) * 100)-100) >= 50 && this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length) {
-                this.setStage(this.stage()+1);
                 this.setCapacity(Math.max((Greenfoot.getRandomNumber(ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)])+1), (int)(ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]/2)) + ResidentialZone.STAGE_MAXCAPACITY[Math.max(0, this.stage()-1)]);
+                this.incrementStage();
             }
         }
 

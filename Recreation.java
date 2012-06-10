@@ -5,6 +5,8 @@
  * 
  */
 
+import java.util.ArrayList;
+
 /**
  * Write a description of class Recreation here.
  * 
@@ -13,25 +15,37 @@
  */
 public class Recreation  
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    private static int pendingOp = 0;
+    private static int activeType = 0;
+    public static final String NAME = "Recreation";
 
-    /**
-     * Constructor for objects of class Recreation
-     */
-    public Recreation()
-    {
+    protected static void updateTile(Tile tile) {
+
+        Data.updateTile(tile);
     }
 
-    /**
-     * An example of a method - replace this comment with your own
-     * 
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
+    protected static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
+
+        Data.updateTiles(tiles);
+    }
+
+    /*
+     * ACCESSORS *
      */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+
+    public static int pendingOp() {
+        return pendingOp;
+    }
+
+    public static void setPendingOp(int value) {
+        pendingOp = value;
+    }
+
+    public static int activeType() {
+        return activeType;
+    }
+
+    public static void setActiveType(int value) {
+        activeType = value;
     }
 }

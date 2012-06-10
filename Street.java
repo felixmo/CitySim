@@ -18,10 +18,9 @@ import java.util.HashMap;
 public class Street extends Road
 {
     public static final int TYPE_ID = 1;
-//     public static final int[] MARKERS = { STREET_H, STREET_V, STREET_B_TR, STREET_B_BR, STREET_B_BL, STREET_B_TL, STREET_H_U, STREET_V_R, STREET_H_D, STREET_V_L, STREET_INTERSECTION };
     public static final int SIZE_WIDTH = 1;
     public static final int SIZE_HEIGHT = 1;
-    public static final String NAME = "Streets";
+    public static final String NAME = "Street";
     public static final int PRICE = 1;
 
     public static void buildStreet(Tile tile, int type) {

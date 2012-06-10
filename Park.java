@@ -13,25 +13,19 @@
  */
 public class Park extends Recreation
 {
-    // instance variables - replace the example below with your own
-    private int x;
-
-    /**
-     * Constructor for objects of class Park
-     */
-    public Park()
-    {
-    }
-
-    /**
-     * An example of a method - replace this comment with your own
-     * 
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    public static final int TYPE_ID = 1;
+    public static final int SIZE_WIDTH = 1;
+    public static final int SIZE_HEIGHT = 1;
+    public static final String NAME = "Park";
+    public static final int PRICE = 20;
+    
+    public static void build(Tile tile) {
+        
+        Cash.subtract(PRICE);
+        
+        tile.setRecreation(TYPE_ID);
+        tile.setType(Tile.PARK);
+        
+        Recreation.updateTile(tile);
     }
 }

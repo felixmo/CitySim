@@ -21,28 +21,28 @@ import java.util.Timer;
 public class Date  
 {
     // ---------------------------------------------------------------------------------------------------------------------
-
+    
     /*
      * REFERENCES *
      */
-    private Timer timer;
+    private static Timer timer;
 
     /*
      * INSTANCE VARIABLES *
      */
 
     // Date values
-    private int days;
-    private int months;
-    private int years;
+    private static int days;
+    private static int months;
+    private static int years;
 
     // ---------------------------------------------------------------------------------------------------------------------
 
-    public Date(int days, int months, int years) {
+    public static void set(int d, int m, int y) {
 
-        this.days = days;
-        this.months = months;
-        this.years = years;
+        days = d;
+        months = m;
+        years = y;
     }
 
     /*
@@ -50,7 +50,7 @@ public class Date
      */
     
     // Called to increment date by 1 day
-    public void increment() {
+    public static void increment() {
         days++;
 
         if (days == 31) {
@@ -71,15 +71,15 @@ public class Date
      */
     
     // Starts tracking time
-    public void start() {
+    public static void start() {
         CSLogger.sharedLogger().info("Timer has begun...");
 
         timer = new Timer();
-        timer.schedule(new DateIncrementor(this), 0, 1000);
+        timer.schedule(new DateIncrementor(), 0, 1000);
     }
 
     // Stops tracking time
-    public void stop() {
+    public static void stop() {
         CSLogger.sharedLogger().info("Timer has stopped.");
 
         timer.cancel();
@@ -90,30 +90,30 @@ public class Date
      * ACCESSORS *
      */
 
-    public int days() {
+    public static int days() {
         return days;
     }
 
-    public int months() {
+    public static int months() {
         return months;
     }
 
-    public int years() {
+    public static int years() {
         return years;
     }
 
     /**
      * Returns the days (seconds, in reality) since the CitySim epoch (day 0)
      */
-    public int timeSinceEpoch() {
+    public static int timeSinceEpoch() {
         
         return ((years * 12) * 31) + (months * 31) + days;        
     }
-    
+       
     // ---------------------------------------------------------------------------------------------------------------------
 
     // Returns a string representation of the date with the specified format
-    public String toString() {
+    public static String asString() {
 
         String daysString;
         String monthsString;

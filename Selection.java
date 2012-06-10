@@ -90,28 +90,38 @@ public class Selection extends Actor
                             CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
                         }
                     }
+                    if (Recreation.pendingOp() > 0) {
+                        if (size.getWidth() == 1 && size.getHeight() == 1) {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_RECREATION, activeTile));
+                        }
+                        else {
+                            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_RECREATION, selectedTiles()));   
+                        }
+                    }
                 }
             } 
+            /*
             else if (Greenfoot.mouseDragged(this)) {
 
-                if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
-                if (Tool.pendingOp() > 0) {
-                    if (size.getWidth() == 1 && size.getHeight() == 1) {
-                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_TOOL, activeTile));
-                    }
-                    else {
-                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
-                    }
-                }
-                if (PowerGrid.pendingOp() > 0) {
-                    if (size.getWidth() == 1 && size.getHeight() == 1) {
-                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_POWERGRID, activeTile));
-                    }
-                    else {
-                        CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
-                    }
-                }
+            if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
+            if (Tool.pendingOp() > 0) {
+            if (size.getWidth() == 1 && size.getHeight() == 1) {
+            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_TOOL, activeTile));
             }
+            else {
+            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
+            }
+            }
+            if (PowerGrid.pendingOp() > 0) {
+            if (size.getWidth() == 1 && size.getHeight() == 1) {
+            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_POWERGRID, activeTile));
+            }
+            else {
+            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
+            }
+            }
+            }
+             */
 
             // Increases (up key) and decreases (down key) the selection size
 
@@ -137,6 +147,7 @@ public class Selection extends Actor
                 Road.setPendingOp(0);
                 Tool.setPendingOp(0);
                 PowerGrid.setPendingOp(0);
+                Recreation.setPendingOp(0);
 
                 City.getInstance().removeHint();
             }

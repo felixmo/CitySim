@@ -32,6 +32,7 @@ public class Bulldozer extends Tool
         tile.setZoneID(-1);
         tile.setPowered(0);
         tile.setPowerGrid(0);
+        tile.setRecreation(0);
 
         Tool.updateTile(tile);
 

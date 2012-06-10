@@ -153,6 +153,10 @@ public class Zone
         return ((Integer)properties.get(Data.ZONES_CRIME)).intValue();
     }
 
+    public void setCrime(int value) {
+        properties.put(Data.ZONES_CRIME, new Integer(value));
+    }
+
     public int food() {
         return ((Integer)properties.get(Data.ZONES_FOOD)).intValue();
     }
@@ -185,9 +189,7 @@ public class Zone
         return ((Integer)properties.get(Data.ZONES_STAGE)).intValue();
     }
 
-    public void setStage(int value) {
-        properties.put(Data.ZONES_STAGE, new Integer(value));
-    }
+    //
 
     public void incrementStage() {
 
@@ -232,8 +234,8 @@ public class Zone
 
         Data.updateTiles(tiles);
 
-        setStage(stage);
-        new ZoneDBUpdateThread(this).start();
+        properties.put(Data.ZONES_STAGE, new Integer(stage));
+        //         new ZoneDBUpdateThread(this).start();
     }
 
     //
