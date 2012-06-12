@@ -13,6 +13,7 @@ import java.awt.FontMetrics;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.Color;
 
 /**
  * MenuBar
@@ -45,6 +46,9 @@ public class MenuBar extends Actor
 
     private final Rectangle frame = new Rectangle(512, 14, 1024, 28);
 
+    private boolean active = true;
+    private GreenfootImage activeImage;
+
     // ---------------------------------------------------------------------------------------------------------------------
 
     public MenuBar()
@@ -70,9 +74,9 @@ public class MenuBar extends Actor
         int x = 18;
 
         for (Object object : menuBarItems.values().toArray()) {
-            
+
             MenuBarItem menuBarItem = (MenuBarItem)object;
-            
+
             menuBarItem.setOrigin(new Point(x, 11));
             world.addObject(menuBarItem, menuBarItem.frame().x+(int)menuBarItem.frame().width/2, menuBarItem.frame().y);
             x += menuBarItem.frame().width + 18;
@@ -81,7 +85,7 @@ public class MenuBar extends Actor
 
     public void act() {
 
-        if (activeIndex < 0) return;
+        if (activeIndex < 0 || !this.active) return;
 
         Point mouse = null;
 
@@ -118,11 +122,11 @@ public class MenuBar extends Actor
 
         this.activeIndex = state ? menuBarItem.index() : -1;
     }
-    
+
     public void setMenuItemsForItem(String item, ArrayList<String> items) {
 
         MenuBarItem menuBarItem = menuBarItems.get(item);
-        
+
         Menu menu = new Menu(menuBarItem, items);
         menus.put(item, menu);
         menuBarItem.setMenu(menu);
@@ -132,17 +136,38 @@ public class MenuBar extends Actor
      * ACCESSORS *
      */
     public void setItems(ArrayList<String> values) {
-        
+
         items = new ArrayList<MenuBarItem>();
         int index = 0;
-        
+
         for (String item : values) {
             MenuBarItem menuBarItem = new MenuBarItem(item, index, this);
             menuBarItems.put(item, menuBarItem);
             items.add(menuBarItem);
             index++;
         }
-        
+
         draw();
+    }
+    
+    public boolean active() {
+        return this.active;
+    }
+
+    public void setActive(boolean state) {
+
+        this.active = state;
+
+        if (!this.active) {
+            activeImage = this.getImage();
+            GreenfootImage busyImage = new GreenfootImage((int)frame.getWidth(), (int)frame.getHeight());
+            busyImage.setTransparency(150);
+            busyImage.setColor(Color.BLACK);
+            busyImage.fillRect(0, 0, (int)frame.getWidth(), (int)frame.getHeight());
+            this.getImage().drawImage(busyImage, 0, -5);
+        }
+        else {
+            setImage(activeImage);
+        }
     }
 }

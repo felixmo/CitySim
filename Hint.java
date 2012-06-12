@@ -54,11 +54,17 @@ public class Hint extends Actor
     }
 
     public void act() {
-
+        /*
         if (fade) this.image.setTransparency(this.image.getTransparency()-1);    
         fade = !fade;
 
         if (this.image.getTransparency() == 0 || Greenfoot.mousePressed(this)) {
+        City.getInstance().removeObject(this);
+        }
+         */
+
+        if (Greenfoot.isKeyDown("escape")) {
+//             City.getInstance().menuBar().setActive(true);
             City.getInstance().removeObject(this);
         }
     }

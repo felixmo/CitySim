@@ -65,11 +65,27 @@ public class SelectionEventListener extends CSEventListener
         }
         else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_TOOL) {
 
-            Bulldozer.bulldoze(event.tile());
+            switch (Tool.pendingOp()) {
+                case Bulldozer.TYPE_ID: 
+                    Bulldozer.bulldoze(event.tile());
+                    break;
+                case Query.TYPE_ID: 
+                    Query.query(Data.zoneWithTile(event.tile()));
+                    break;
+                default: break;
+            }
         }
         else if (event.message() == SelectionEvent.TILES_SELECTED_FOR_TOOLS) {
 
-            Bulldozer.bulldoze(event.tiles());
+            switch (Tool.pendingOp()) {
+                case Bulldozer.TYPE_ID: 
+                    Bulldozer.bulldoze(event.tiles());
+                    break;
+                case Query.TYPE_ID: 
+                    Query.query(Data.zoneWithTile(event.tiles().get(0).get(0)));
+                    break;
+                default: break;
+            }
         }
         else if (event.message() == SelectionEvent.TILE_SELECTED_FOR_RECREATION) {
 

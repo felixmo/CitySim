@@ -39,10 +39,10 @@ public class HUD extends Actor {
      * LABEL RECTS. *
      */
 
-    private static final Rectangle CITYNAME_RECT = new Rectangle(450, 594, 300, 58);
-    private static final Rectangle POPNUM_RECT = new Rectangle(530, 650, 135, 48);
-    private static final Rectangle DATE_RECT = new Rectangle(320, 650, 135, 48);
-    private static final Rectangle CASH_RECT = new Rectangle(530, 695, 135, 48);
+    private static final Rectangle CITYNAME_RECT = new Rectangle(645, 594, 300, 58);
+    private static final Rectangle POPNUM_RECT = new Rectangle(415, 725, 135, 48);
+    private static final Rectangle DATE_RECT = new Rectangle(415, 665, 135, 48);
+    private static final Rectangle CASH_RECT = new Rectangle(830, 665, 135, 48);
 
     /*
      * IDENTIFIERS *

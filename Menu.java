@@ -32,7 +32,7 @@ public class Menu extends MenuElement
     private ArrayList<MenuItem> menuItems;  // The MenuItem actors that belong to the Menu
     private int activeIndex = -1;           // The index of the current active menu item (-1 = none)
     private MouseInfo mouseInfo;            // A reference to the MouseInfo object provided by the Greenfoot framework
-
+    
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * CONSTRUCTORS *

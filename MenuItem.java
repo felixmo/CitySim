@@ -52,6 +52,7 @@ public class MenuItem extends MenuElement
     }
 
     public void act() {
+        
         if (Greenfoot.mouseClicked(this)) {
             
             CSEventBus.post(new MenuItemEvent(this.title));

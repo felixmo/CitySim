@@ -53,7 +53,8 @@ public class Map extends Actor
     private MouseInfo mouseInfo = null;
 
     private Selection selection = new Selection(viewport.width, viewport.height);
-    
+    private Animation animation = new Animation(viewport.width, viewport.height);
+
     private boolean shouldUpdate = false;
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -94,6 +95,9 @@ public class Map extends Actor
     protected void addedToWorld(World world) {
         this.selection.setViewport(this.viewport);
         world.addObject(this.selection, 512, 333);
+
+        this.animation.setViewport(this.viewport);
+        world.addObject(this.animation, 512, 333);
     }
 
     // This method is called at every action step in the environment; frequently
@@ -103,7 +107,7 @@ public class Map extends Actor
             draw();
             this.shouldUpdate = false;
         }
-        
+
         // Listen for keystrokes and mouse movement and move accordingly, only if viewport is within bounds of map
 
         int offset_x = 0;
@@ -245,6 +249,7 @@ public class Map extends Actor
         if (getWorld() != null) ((City)getWorld()).didMoveMapTo(cell.x, cell.y);
 
         this.selection.setViewport(this.viewport);
+        this.animation.setViewport(this.viewport);
 
         draw();
     }
@@ -255,6 +260,7 @@ public class Map extends Actor
         viewport.setLocation(coordinateForCell(x), coordinateForCell(y));
 
         this.selection.setViewport(this.viewport);
+        this.animation.setViewport(this.viewport);
 
         draw();
     }
@@ -278,11 +284,11 @@ public class Map extends Actor
         for (int col = cell.x; col < numberOfTilesInWidth(viewport.width + viewport.x); col++) {
             for (int row = cell.y; row < numberOfTilesInWidth(viewport.height + viewport.y); row++) {
 
-//                 System.out.println(Math.min(col, SIZE_COLUMNS-1) + ", " + Math.min(row, SIZE_ROWS-1));
-                
+                //                 System.out.println(Math.min(col, SIZE_COLUMNS-1) + ", " + Math.min(row, SIZE_ROWS-1));
+
                 // Get the tile (if it is within the bounds of the map)
                 Tile tile = map.get(Math.min(col, SIZE_COLUMNS-1)).get(Math.min(row, SIZE_ROWS-1));
-                
+
                 // Draw the tile image onto the whole map image
                 view.drawImage(tile.image(), tile_x, tile_y-Tile.SIZE);
 
@@ -304,7 +310,7 @@ public class Map extends Actor
     public Selection selection() {
         return this.selection;
     }
-    
+
     public void setShouldUpdate(boolean value) {
         this.shouldUpdate = value;
     }

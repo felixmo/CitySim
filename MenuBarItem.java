@@ -26,7 +26,7 @@ public class MenuBarItem extends MenuElement
 {
 
     // ---------------------------------------------------------------------------------------------------------------------
-    
+
     /*
      * INSTANCE VARIABLES
      */
@@ -38,10 +38,10 @@ public class MenuBarItem extends MenuElement
     public MenuBarItem(String title, int index, MenuBar menuBar) {
 
         super(title, index);
-        
+
         this.menuBar = menuBar;
     }
-    
+
     private void draw() {
 
         // Create the image and draw title within it
@@ -52,6 +52,9 @@ public class MenuBarItem extends MenuElement
     }
 
     public void act() {
+
+        if (!this.menuBar.active()) return;
+
         if (Greenfoot.mouseClicked(this)) {
 
             menuBar.changeItemStateTo(this, !active);
@@ -110,7 +113,7 @@ public class MenuBarItem extends MenuElement
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
-    
+
     public MenuBar menuBar() {
         return this.menuBar;
     }

@@ -148,7 +148,12 @@ public class Street extends Road
 
                     // Straight (v)
                     if (up.powerGrid() == 0) {
-                        up.setType(Tile.STREET_V);
+                        if (up.type() == Tile.BRIDGE_V) {
+                            up.setType(Tile.BRIDGE_V);   
+                        }
+                        else {
+                            up.setType(Tile.STREET_V);
+                        }
                     }
                 }
             }
@@ -203,14 +208,21 @@ public class Street extends Road
                 else {
 
                     if (down.powerGrid() == 0) {
-                        // Straight (h)
-                        down.setType(Tile.STREET_V);
+                        if (down.type() == Tile.BRIDGE_V) {
+                            down.setType(Tile.BRIDGE_V);   
+                        }
+                        else {
+                            down.setType(Tile.STREET_V);
+                        }
                     }
                 }
             }
 
             if (tile.type() == Tile.POWERLINE_H || tile.type() == Tile.POWERLINE_ROAD_V) {
                 tile.setType(Tile.POWERLINE_ROAD_V);
+            }
+            else if (tile.type() == Tile.WATER) {
+                tile.setType(Tile.BRIDGE_V);
             }
             else {
                 // Straight (v)
@@ -261,8 +273,12 @@ public class Street extends Road
                 else {
 
                     if (left.powerGrid() == 0) {
-                        // Straight (h)
-                        left.setType(Tile.STREET_H);
+                        if (left.type() == Tile.BRIDGE_H) {
+                            left.setType(Tile.BRIDGE_H);   
+                        }
+                        else {
+                            left.setType(Tile.STREET_H);
+                        }
                     }
                 }
             }
@@ -310,14 +326,21 @@ public class Street extends Road
                 else {
 
                     if (right.powerGrid() == 0) {
-                        // Straight (h)
-                        right.setType(Tile.STREET_H);
+                        if (right.type() == Tile.BRIDGE_H) {
+                            right.setType(Tile.BRIDGE_H);   
+                        }
+                        else {
+                            right.setType(Tile.STREET_H);
+                        }
                     }
                 }
             }
 
             if (tile.type() == Tile.POWERLINE_V || tile.type() == Tile.POWERLINE_ROAD_H) {
                 tile.setType(Tile.POWERLINE_ROAD_H);
+            }
+            else if (tile.type() == Tile.WATER) {
+                tile.setType(Tile.BRIDGE_H);
             }
             else {
                 // Straight (h)
@@ -328,6 +351,9 @@ public class Street extends Road
 
             if (tile.type() == Tile.POWERLINE_V || tile.type() == Tile.POWERLINE_ROAD_H) {
                 tile.setType(Tile.POWERLINE_ROAD_H);
+            }
+            else if (tile.type() == Tile.WATER) {
+                tile.setType(Tile.BRIDGE_H);
             }
             else {
                 // Straight (h)

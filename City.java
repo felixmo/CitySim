@@ -77,7 +77,7 @@ public class City extends World
         CSLogger.sharedLogger().info("***** NEW SESSION *****");
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Map.class);
+        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, QueryModalWindow.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Animation.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
@@ -180,7 +180,7 @@ public class City extends World
         protectionItems.add(FireStation.NAME);
         protectionItems.add(PoliceStation.NAME);
         menuBar.setMenuItemsForItem(ProtectionZone.NAME, protectionItems);
-        
+
         // Recreation
         ArrayList<String> recreationItems = new ArrayList(2);
         recreationItems.add(Park.NAME);
@@ -188,8 +188,9 @@ public class City extends World
         menuBar.setMenuItemsForItem(Recreation.NAME, recreationItems);
 
         // -> Tools (last)
-        ArrayList<String> toolItems = new ArrayList(1);
+        ArrayList<String> toolItems = new ArrayList(2);
         toolItems.add(Bulldozer.NAME);
+        toolItems.add(Query.NAME);
         menuBar.setMenuItemsForItem(Tool.NAME, toolItems);
 
         // * END of menu items *
@@ -217,6 +218,8 @@ public class City extends World
 
         // TO DO: start timer when game has actually started (i.e. not in menu)
         Date.start();
+
+        //         new PowerGridEvaluationThread().start();
     }
 
     /**
@@ -274,8 +277,11 @@ public class City extends World
             Minimap.getInstance().setShouldUpdate(false);
         }
 
-        if (writeCountdown % 3 == 0 && PowerGrid.shouldEvaluate()) {
-            new PowerGridEvaluationThread().start();
+        if (writeCountdown % 3 == 0) {
+            if (PowerGrid.shouldEvaluate()) {
+                new PowerGridEvaluationThread().start();
+            }
+            Animation.getInstance().setZones(Data.zonesMatchingCriteria("powered = 0"));
         }
     }
 
@@ -414,5 +420,9 @@ public class City extends World
      */
     public static City getInstance() {
         return instance;
+    }
+    
+    public MenuBar menuBar() {
+        return this.menuBar;
     }
 }

@@ -59,6 +59,8 @@ public class Tile
     // D = down
     // L = left
     // R = right
+    public static final int BRIDGE_H = 65;
+    public static final int BRIDGE_V = 66;
     public static final int STREET_H = 67;
     public static final int STREET_V = 68;
     public static final int STREET_B_TR = 69;

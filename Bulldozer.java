@@ -26,7 +26,12 @@ public class Bulldozer extends Tool
 
         if (tile.road() == Street.TYPE_ID) Street.subtractFromCount(1);
 
-        tile.setType(Tile.GROUND);
+        if (tile.type() == Tile.BRIDGE_V || tile.type() == Tile.BRIDGE_H) {
+            tile.setType(Tile.WATER);
+        }
+        else {
+            tile.setType(Tile.GROUND);
+        }
         tile.setRoad(0);
         tile.setZone(0);
         tile.setZoneID(-1);
@@ -54,15 +59,22 @@ public class Bulldozer extends Tool
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
-                if (((Tile)tiles.get(i).get(j)).road() == Street.TYPE_ID) Street.subtractFromCount(1);
+                Tile tile = ((Tile)tiles.get(i).get(j));
 
-                ((Tile)tiles.get(i).get(j)).setType(Tile.GROUND);
-                ((Tile)tiles.get(i).get(j)).setZone(0);
-                ((Tile)tiles.get(i).get(j)).setZoneID(-1);
-                ((Tile)tiles.get(i).get(j)).setRoad(0);
-                ((Tile)tiles.get(i).get(j)).setPowered(0);
-                ((Tile)tiles.get(i).get(j)).setPowerGrid(0);
-                ((Tile)tiles.get(i).get(j)).setRecreation(0);
+                if (tile.road() == Street.TYPE_ID) Street.subtractFromCount(1);
+
+                if (tile.type() == Tile.BRIDGE_V || tile.type() == Tile.BRIDGE_H) {
+                    tile.setType(Tile.WATER);
+                }
+                else {
+                    tile.setType(Tile.GROUND);
+                }
+                tile.setRoad(0);
+                tile.setZone(0);
+                tile.setZoneID(-1);
+                tile.setPowered(0);
+                tile.setPowerGrid(0);
+                tile.setRecreation(0);
             }
         }
 
