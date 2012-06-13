@@ -23,11 +23,12 @@ public class Cash
     // ---------------------------------------------------------------------------------------------------------------------
 
     private static Integer value = 0;
+    private static int change = 0;
     
     /*
      * CONSTANTS *
      */
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,##0");
     
     // ---------------------------------------------------------------------------------------------------------------------
 
@@ -40,11 +41,14 @@ public class Cash
     }
 
     public static void subtract(int change) {
+        if ((value - change) < 0) {
+            new MessageDialog("Insufficient funds.");
+        }
         value -= change;
     }
 
     public static String asString() {
-        return decimalFormat.format(value).toString();
+        return DECIMAL_FORMAT.format(value).toString();
     }
     
     /*

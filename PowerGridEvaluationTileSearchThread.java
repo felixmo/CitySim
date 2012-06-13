@@ -14,13 +14,15 @@
 public class PowerGridEvaluationTileSearchThread extends CSThread
 {
     private Tile tile;
-
-    public PowerGridEvaluationTileSearchThread(Tile tile) {
+    private PowerGridZone plant;
+    
+    public PowerGridEvaluationTileSearchThread(Tile tile, PowerGridZone plant) {
         super("PowerGridEvaluationTileSearchThread");
         this.tile = tile;
+        this.plant = plant;
     }
     
     public void run() {
-        PowerGrid.searchTile(this.tile);
+        PowerGrid.searchTile(this.tile, this.plant);
     }
 }

@@ -60,7 +60,7 @@ public class Date
 
         if (months == 12) {
             years++;
-            months = 0;
+            months = 1;
             new FinancesThread().start();
         }
 

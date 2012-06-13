@@ -27,22 +27,24 @@ public class HUD extends Actor {
     // ---------------------------------------------------------------------------------------------------------------------
 
     private static HUD instance;
-    
+
     /*
      * INSTANCE VARIABLES
      */
 
     private HashMap labels = new HashMap(4);                                             // Holds references to all labels for easy access
     private Minimap minimap;                                                                        // The minimap
+    private int score = -1;
 
     /*
      * LABEL RECTS. *
      */
 
-    private static final Rectangle CITYNAME_RECT = new Rectangle(645, 594, 300, 58);
-    private static final Rectangle POPNUM_RECT = new Rectangle(415, 725, 135, 48);
-    private static final Rectangle DATE_RECT = new Rectangle(415, 665, 135, 48);
-    private static final Rectangle CASH_RECT = new Rectangle(830, 665, 135, 48);
+    private static final Rectangle CITYNAME_RECT = new Rectangle(632, 590, 300, 58);
+    private static final Rectangle POPNUM_RECT = new Rectangle(449, 744, 200, 50);
+    private static final Rectangle DATE_RECT = new Rectangle(415, 685, 135, 48);
+    private static final Rectangle CASH_RECT = new Rectangle(860, 685, 200, 48);
+    private static final Rectangle TAX_RECT = new Rectangle(930, 743, 200, 48);
 
     /*
      * IDENTIFIERS *
@@ -52,11 +54,13 @@ public class HUD extends Actor {
     public static final String POPULATION = "population";
     public static final String DATE = "date";
     public static final String CASH = "cash";
+    public static final String TAXRATE = "taxrate";
+    public static final String SCORE = "score";
 
     // ---------------------------------------------------------------------------------------------------------------------
 
     public HUD() {
-        
+
         HUD.instance = this;
 
         this.minimap = new Minimap();
@@ -68,6 +72,7 @@ public class HUD extends Actor {
         labels.put(POPULATION, new Label(POPNUM_RECT));
         labels.put(DATE, new Label(DATE_RECT));
         labels.put(CASH, new Label(CASH_RECT));
+        labels.put(TAXRATE, new Label(TAX_RECT));
     }
 
     // Override Greenfoot method to specify custom procedure when this 'Actor' is added to the 'World'
@@ -86,17 +91,42 @@ public class HUD extends Actor {
 
             String key = (String)iterator.next();
             Object object = values.get(key);
-            String className = object.getClass().getName();
-            String value = null;
+            if (object != null) {
 
-            if (className.equals("java.lang.String")) {
-                value = (String)object;   
-            }
-            else if (className.equals("java.lang.Integer")) {
-                value = Integer.toString((Integer)object);
-            }
+                if (key.equals(HUD.SCORE)) {
+                    int newScore = ((Integer)object).intValue();
+                    
+                    if (!((int)(this.score/20) == (int)(newScore/20))) {
+                        
+                        this.score = newScore;
+                        
+                        int x = 527;
+                        int y = 70;
 
-            refreshLabel(key, value);
+                        GreenfootImage image = this.getImage();
+                        image.clear();
+                        image.drawImage(new GreenfootImage("hud.png"), 0, 0);
+
+                        for (int i = 1; i <= (int)(score/20); i++) {
+                            image.drawImage(new GreenfootImage("star.png"), x+(25*(i-1)), y);
+                        }
+                    }
+                }
+                else {
+
+                    String className = object.getClass().getName();
+                    String value = null;
+
+                    if (className.equals("java.lang.String")) {
+                        value = (String)object;   
+                    }
+                    else if (className.equals("java.lang.Integer")) {
+                        value = Integer.toString((Integer)object);
+                    }
+
+                    refreshLabel(key, value);
+                }
+            }
         }
     }
 
@@ -121,7 +151,7 @@ public class HUD extends Actor {
     public Minimap minimap() {
         return minimap;
     }
-    
+
     public static HUD getInstance() {
         return instance;
     }

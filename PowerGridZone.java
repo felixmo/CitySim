@@ -27,7 +27,7 @@ public class PowerGridZone extends Zone
 
         // TODO: check if zone is powered and has water
         Tile center = (Tile)selectedTiles.get(0).get(0);
-        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, 1, 0);
+        Data.insertZone(zoneID, pendingOp, center.position().x, center.position().y, zoneID, (pendingOp == CoalPowerPlant.TYPE_ID ? CoalPowerPlant.CAPACITY : NuclearPowerPlant.CAPACITY));
 
         int width = selectedTiles.size();
         int height = ((ArrayList)selectedTiles.get(0)).size();
@@ -46,7 +46,7 @@ public class PowerGridZone extends Zone
                 zone.put(Data.ZONETILE_TILEID, ((Tile)selectedTiles.get(i).get(j)).dbID());
                 zoneTiles[count] = zone;
 
-                ((Tile)selectedTiles.get(i).get(j)).setPowered(1);
+                ((Tile)selectedTiles.get(i).get(j)).setPowered(zoneID);
                 ((Tile)selectedTiles.get(i).get(j)).setZone(pendingOp);
                 ((Tile)selectedTiles.get(i).get(j)).setZoneID(zoneID);
 
@@ -58,5 +58,9 @@ public class PowerGridZone extends Zone
         Data.updateTiles(selectedTiles);
 
         new PowerGridEvaluationThread().start();
+    }
+    
+    public int allocation() {
+        return DataSource.getInstance().allocationForPowerPlant(this);
     }
 }

@@ -61,59 +61,78 @@ public class ResidentialZone extends Zone
     }
 
     public void simulate() {
-        // Set zone score to 0 and do not simulate if no roads connect to zone
+        // Do not simulate if no roads connect to zone
         if (Data.tilesAroundZoneWithCriteria(this, "road > 0").length == 0) {
-            this.setScore(0);
+            //             this.setScore(0);
             return;
         }
 
-        // Start with a base score of 0
         int score = 0;
 
-        Zone[] police = Data.sortedZonesInAreaOfZone(this, 20, PoliceStation.TYPE_ID);
+        // Start with a score based upon the scores of nearby zones
+        //         Zone[] area = Data.zonesInAreaOfZone(this, 5, ResidentialZone.TYPE_ID, IndustrialZone.TYPE_ID, CommercialZone.TYPE_ID);
+        //         if (area.length > 0) {
+        //             int sSum = 0;
+        //             for (Zone z : area) {
+        //                 sSum += z.score();
+        //             }
+        //             int avg = (int)(sSum / area.length);
+        //             avg
+        //         }
+
+        Zone[] police = Data.sortedZonesInAreaOfZone(this, 15, PoliceStation.TYPE_ID);
         // Check for police protection
         if (police.length > 0) {
             score += 15;
         }
-        else {
-            score -= 5;
-        }
+        //         else {
+        //             score -= 10;
+        //         }
 
         // Check for fire protection
-        if (Data.zonesInAreaOfZone(this, 20, FireStation.TYPE_ID).length > 0) {
+        if (Data.zonesInAreaOfZone(this, 15, FireStation.TYPE_ID).length > 0) {
             score += 15;
         }
-        else {
-            score -= 5;
-        }
+        //         else {
+        //             score -= 10;
+        //         }
 
         // Check for nearby recreational areas
-        if (Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "recreation > 0").length > 0) {
+        Tile[] recTiles = Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "recreation = 1");
+        if (recTiles.length > 0) {
             score += 20;
         }
 
         Zone[] iZones = Data.zonesInAreaOfZone(this, 15, IndustrialZone.TYPE_ID);
-        Zone[] cZones = Data.zonesInAreaOfZone(this, 15, CommercialZone.TYPE_ID);
+        Zone[] cZones = Data.zonesInAreaOfZone(this, 10, CommercialZone.TYPE_ID);
 
         // Food
         if (cZones.length > 0) {
             this.setFood(1);
+            score += 20;
+        }
+        else {
+            score -= 10;
         }
 
         int deaths = 0;
 
         // Calculate pollution levels based on surroundings
         // 0     = NONE
-        // 1-20  = LOW
-        // 21-40 = MEDIUM
-        // 41+   = HIGH
+        // 1-30  = LOW
+        // 31-50 = MEDIUM
+        // 51+   = HIGH
+        // 100   = MAX
         int pollution = 0;  
         pollution += Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "road > 0").length * 2;                         // Roads (+2 / road)
-        pollution += Data.zonesInAreaOfZone(this, 15, IndustrialZone.TYPE_ID).length * 10;                                                                                // Industrial zones (+10 / zone)
-        pollution += Data.zonesInAreaOfZone(this, 15, CoalPowerPlant.TYPE_ID, NuclearPowerPlant.TYPE_ID).length * 20;   // Power plants (+20 / zone)
+        pollution += iZones.length * 10;                                                                                // Industrial zones (+10 / zone)
+        pollution += Data.zonesInAreaOfZone(this, 15, CoalPowerPlant.TYPE_ID).length * 25;   
+        pollution += Data.zonesInAreaOfZone(this, 10, NuclearPowerPlant.TYPE_ID).length * 15;
+        pollution = Math.min(100, pollution);
+
         this.setPollution(pollution);
 
-        score -= (int)pollution/3;
+        score -= (int)(pollution);
 
         if (this.allocation() > 0) {
 
@@ -131,13 +150,13 @@ public class ResidentialZone extends Zone
             setCrime(crime);
 
             if (crime < 6) {
-                score += 25;
+                score += 20;
             }
             else if (crime >= 6 & crime <= 12) {
-                score -= 35;
+                score -= 5;
             }
             else {
-                score -= 50;
+                score -= 10;
             }
 
             // Crime-related deaths
@@ -147,18 +166,18 @@ public class ResidentialZone extends Zone
                 crimeDeaths = Greenfoot.getRandomNumber(Math.max(1, (int)(this.allocation()/crimeDeathsModifier)))+1;
             }
 
-            if (crimeDeaths > 0) score -= 25;
+            //             if (crimeDeaths > 0) score -= 25;
 
             deaths += crimeDeaths;
 
             // Pollution deaths
-            int pollutionDeathsModifier = (pollution > 40 ? 2 : (pollution >= 21 ? 3 : (pollution >= 1 ? 4 : 0)));          // Determines the modifer based on pollution levels
+            int pollutionDeathsModifier = (pollution > 50 ? 2 : (pollution >= 31 ? 3 : (pollution >= 1 ? 4 : 0)));          // Determines the modifer based on pollution levels
             int pollutionDeaths = 0;
             if (pollutionDeathsModifier > 0) {
                 pollutionDeaths = Greenfoot.getRandomNumber(Math.max(1, (int)(this.allocation()/pollutionDeathsModifier)))+1;              // Determine the number of pollution based deaths
             }
 
-            if (pollutionDeaths > 0) score -= 25;
+            //             if (pollutionDeaths > 0) score -= 25;
 
             deaths += pollutionDeaths;
 
@@ -174,7 +193,6 @@ public class ResidentialZone extends Zone
             int povertyDeaths = 0;
             if (this.food() == 0 && this.allocation() - deaths > 0) {
                 povertyDeaths = Greenfoot.getRandomNumber(Math.max(1, (int)(this.allocation()-deaths/2)))+1;
-                score -= 50;
             }
 
             deaths += povertyDeaths;
@@ -185,7 +203,7 @@ public class ResidentialZone extends Zone
         // Births
 
         int births = 0;
-        if (this.allocation() != this.capacity() && this.powered() == 1 && this.food() == 1) {
+        if (this.allocation() != this.capacity() && this.powered() && this.food() == 1 && this.pollution() < 100) {
 
             if (this.allocation() == 0) {
 
@@ -193,41 +211,38 @@ public class ResidentialZone extends Zone
             }
             else {
 
-                births = (int)((this.capacity() - (this.allocation() - deaths))/3);
+                births = Greenfoot.getRandomNumber((this.capacity() - this.allocation()))+1;
             }
         }
 
-        if (births > 0) score += 50;
+        if (births > 0) score += 25;
 
         this.setAllocation(this.allocation() + births);
 
-        if (this.allocation() > 0) {
-
-            int avaliableWorkers = Employment.employResidents(this);
-
-            if (avaliableWorkers < this.allocation()) {
-                score += 50;
-            }
-            else {
-                score -= 50;
-            }
-        }
-
-        if (this.powered() == 1) {
-            score += 10;
+        if (this.powered()) {
+            score += 25;
         }
         else {
-            score -= 50;
+            score -= 25;
         }
 
-        if (this.score() > 0) {
-            if (((((score / this.score()) * 100)-100) >= 50 && this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0) {
-                this.setCapacity(Math.max((Greenfoot.getRandomNumber(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
-                this.incrementStage();
+        int density = 0;
+        if (this.allocation() > 0 && this.capacity() > 0) {
+            density = (int)((this.allocation() / this.capacity()) * 100);
+        }
+
+        if (this.score() > 0 && this.powered()) {
+            if (((((score / this.score()) * 100)-100) >= 50 && this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0 || (this.stage() < ResidentialZone.STAGE_MAXCAPACITY.length && (score >= 80 && density >= 85))) {
+                if (!(this.allocation() == 0 && this.stage() == 1) && (this.stage() == 0 || density >= 70)) {
+                    // Do not increment stage if the zone is unused and is at the first stage
+
+                    this.setCapacity(Math.max((Greenfoot.getRandomNumber(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + ResidentialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
+                    this.incrementStage();
+                }
             }
         }
 
-        this.setScore(Math.max(1, score));
+        this.setScore(score);   
 
         new ZoneDBUpdateThread(this).start();
     }

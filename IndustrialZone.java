@@ -54,14 +54,27 @@ public class IndustrialZone extends Zone
         // Set zone score to 0 and do not simulate if no roads connect to zone
         if (Data.tilesAroundZoneWithCriteria(this, "road > 0").length == 0) {
             CSLogger.sharedLogger().info("Zone (" + this.dbID() + ") is not connected to any roads!");
-            this.setScore(0);
+            //             this.setScore(0);
             return;
         }
 
         int score = 0;
 
+        // Start with a score based upon the scores of nearby zones
+        //         Zone[] area = Data.zonesInAreaOfZone(this, 5, ResidentialZone.TYPE_ID, IndustrialZone.TYPE_ID, CommercialZone.TYPE_ID);
+        //         if (area.length > 0) {
+        //             int sSum = 0;
+        //             for (Zone z : area) {
+        //                 sSum += z.score();
+        //             }
+        //             int avg = (int)(sSum / area.length);
+        //             //             if (avg > 0) {
+        //             score = (int)(avg/2);
+        //             //             }
+        //         }
+
         // Check for police protection
-        Zone[] police = Data.sortedZonesInAreaOfZone(this, 20, PoliceStation.TYPE_ID);
+        Zone[] police = Data.sortedZonesInAreaOfZone(this, 15, PoliceStation.TYPE_ID);
         if (police.length > 0) {
             score += 15;
         }
@@ -70,7 +83,7 @@ public class IndustrialZone extends Zone
         }
 
         // Check for fire protection
-        if (Data.zonesInAreaOfZone(this, 20, FireStation.TYPE_ID).length > 0) {
+        if (Data.zonesInAreaOfZone(this, 15, FireStation.TYPE_ID).length > 0) {
             score += 15;
         }
         else {
@@ -78,7 +91,25 @@ public class IndustrialZone extends Zone
         }
 
         // Accessibility to commercial zones
-        score += Data.zonesInAreaOfZone(this, 20, CommercialZone.TYPE_ID).length * 20;
+        score +=  Math.max(50, Data.zonesInAreaOfZone(this, 15, CommercialZone.TYPE_ID).length * 5);
+
+        // Calculate pollution levels based on surroundings
+        // 0     = NONE
+        // 1-30  = LOW
+        // 31-50 = MEDIUM
+        // 51+   = HIGH
+        // 100   = MAX
+        Zone[] iZones = Data.zonesInAreaOfZone(this, 15, IndustrialZone.TYPE_ID);
+        int pollution = 1;  
+        pollution += Data.tilesInRadiusOfZoneMatchingCriteria(this, 10, "road > 0").length * 2;                         // Roads (+2 / road)
+        pollution += iZones.length * 7;                                                                                // Industrial zones (+10 / zone)
+        pollution += Data.zonesInAreaOfZone(this, 15, CoalPowerPlant.TYPE_ID).length * 25;   
+        pollution += Data.zonesInAreaOfZone(this, 10, NuclearPowerPlant.TYPE_ID).length * 15;
+        pollution = Math.min(100, pollution);
+
+        this.setPollution(pollution);
+
+        score -= (int)(pollution/2);
 
         if (this.allocation() > 0) {
             // Calculate crime levels
@@ -98,22 +129,30 @@ public class IndustrialZone extends Zone
                 score += 25;
             }
             else if (crime >= 6 & crime <= 12) {
-                score -= 35;
+                score -= 5;
             }
             else {
-                score -= 50;
+                score -= 10;
             }
         }
 
-        if (this.score() > 0) {
-            if (((((score / this.score()) * 100)-100) >= 25 && this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0) {
-                this.setCapacity(Math.max((Greenfoot.getRandomNumber(IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
-                this.incrementStage();
+        int density = 0;
+        if (this.allocation() > 0 && this.capacity() > 0) {
+            density = (int)((this.allocation() / this.capacity()) * 100);
+        }
+
+        if (this.score() > 0 && this.powered()) {
+            if (((((score / this.score()) * 100)-100) >= 25 && this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length) || this.stage() == 0 || (this.stage() < IndustrialZone.STAGE_MAXCAPACITY.length && (score >= 70 && density >= 80))) {
+                if (!(this.allocation() == 0 && this.stage() == 1) && (this.stage() == 0 || density >= 70)) {
+
+                    this.setCapacity(Math.max((Greenfoot.getRandomNumber(IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)])+1), (int)(IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]/2)) + IndustrialZone.STAGE_MAXCAPACITY[Math.max(1, this.stage()-1)]);
+                    this.incrementStage();
+                }
             }
         }
 
         //         System.out.println(score);
-        this.setScore(Math.max(1, score)); 
+        this.setScore(score);   
 
         new ZoneDBUpdateThread(this).start();
     }

@@ -12,6 +12,9 @@ import java.awt.Color;
  */
 public class QueryModalWindow extends Actor
 {
+
+    private static QueryModalWindow activeWindow = null;
+
     /*
      * CONSTANTS *
      */
@@ -25,21 +28,33 @@ public class QueryModalWindow extends Actor
 
     public QueryModalWindow(Zone zone) {
 
-        CSLogger.sharedLogger().info("Querying zone (" + zone.dbID() + ")");
-        this.zone = zone;
+        if (QueryModalWindow.activeWindow == null && zone != null) {
 
-        GreenfootImage image = new GreenfootImage("images/modal_query.png");
-        image.setColor(FONTCOLOR);
-        this.setImage(image);
+            QueryModalWindow.activeWindow = this;
 
-        City.getInstance().addObject(this, 550, 290);
+            City.getInstance().enableOverlay();
 
-        draw();	
+            CSLogger.sharedLogger().info("Querying zone (" + zone.dbID() + ")");
+            this.zone = zone;
+
+            GreenfootImage image = new GreenfootImage("images/modal_query.png");
+            image.setColor(FONTCOLOR);
+            this.setImage(image);
+
+            City.getInstance().addObject(this, 550, 290);
+
+            draw(); 
+        }
+        else {
+            return;
+        }
     }
 
     public void act() {
 
         if (Greenfoot.mouseClicked(this) || Greenfoot.isKeyDown("escape")) {
+            QueryModalWindow.activeWindow = null;
+            City.getInstance().removeOverlay();
             City.getInstance().removeObject(this);
         }
     }
@@ -61,7 +76,11 @@ public class QueryModalWindow extends Actor
 
         // Density
         int d = 0;
-        if (zone.capacity() > 0) d = (int)((zone.allocation() / zone.capacity()) * 100);
+        if (!(zone.zone() == CoalPowerPlant.TYPE_ID || zone.zone() == NuclearPowerPlant.TYPE_ID)) {
+            if (zone.capacity() > 0 && zone.allocation() > 0) {
+                d = (int)((((float)zone.allocation()) / zone.capacity()) * 100);
+            }
+        }
         String density = "n/a";
         if (d > 0 && d <= 33) {
             density = "Low";
@@ -72,44 +91,79 @@ public class QueryModalWindow extends Actor
         else if (d > 66) {
             density = "High";
         }
-        density += (" (" + d + ")");
+//         density += (" (" + d + ")");
         image.drawString(density, infoOffset, 84);
 
         // Value
         int v = zone.score();
         String value = "n/a";
-        if (v > 0 && v <= 25) {
+        if (v > 0 && v <= 45) {
             value = "Low";
         }
-        else if (v > 25 && v <= 50) {
+        else if (v > 45 && v <= 90) {
             value = "Medium";
         }
-        else if (v > 50) {
+        else if (v > 90) {
             value = "High";
         }
-        value += (" (" + v + ")");
+//         value += (" (" + v + ")");
         image.drawString(value, infoOffset, 108);
 
         // Crime
         int c = zone.crime();
-        String crime = "n/a";
-        crime += (" (" + c + ")");
-        image.drawString(value, infoOffset, 133);
+        String crime = "Safe";
+        if (c >= 6 && c <= 12) {
+            crime = "Moderate";
+        }
+        else if (c > 12) {
+            crime = "High";
+        }
+//         crime += (" (" + c + ")");
+        image.drawString(crime, infoOffset, 133);
 
         // Pollution
         int p = zone.pollution();
-        String pollution = "n/a";
-        pollution += (" (" + p + ")");
+        String pollution = "None";
+        if (zone.zone() == PoliceStation.TYPE_ID || zone.zone() == FireStation.TYPE_ID || zone.zone() == Stadium.TYPE_ID) {
+            pollution = "n/a";
+        }
+        else if (zone.zone() == CoalPowerPlant.TYPE_ID) {
+            pollution = "High";
+        }
+        else if (zone.zone() == NuclearPowerPlant.TYPE_ID) {
+            pollution = "Medium";
+        }
+
+        if (p >= 1 && p <= 30) {
+            pollution = "Low";
+        }
+        else if (p >= 31 && p <= 50) {
+            pollution = "Medium";
+        }
+        else if (p >= 51 && p < 100) {
+            pollution = "High";
+        }
+        else if (p == 100) {
+            pollution = "Toxic";
+        }
+//         pollution += (" (" + p + ")");
         image.drawString(pollution, infoOffset, 155);
 
         // A / C
-        String ac = (zone.allocation() + " / " + zone.capacity());
+        String ac = "n/a";
+        //         System.out.println(PowerGrid.allocationForPlant(zone));
+        if (zone.zone() == CommercialZone.TYPE_ID || zone.zone() == IndustrialZone.TYPE_ID || zone.zone() == ResidentialZone.TYPE_ID) {
+            ac = (zone.allocation() + " / " + zone.capacity());
+        }
+        else if (zone.zone() == CoalPowerPlant.TYPE_ID || zone.zone() == NuclearPowerPlant.TYPE_ID) {
+            ac = (PowerGrid.allocationForPlant(zone) + " / " + zone.capacity());
+        }
         image.drawString(ac, infoOffset, 180);
     }
 
     private String stringForZone(Zone zone) {
-        System.out.println(zone.zone());
-        
+        //         System.out.println(zone.zone());
+
         switch (zone.zone()) {
             case CommercialZone.TYPE_ID: return "Commercial zone";
             case IndustrialZone.TYPE_ID: return "Industrial zone";

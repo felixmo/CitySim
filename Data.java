@@ -130,7 +130,10 @@ public class Data
     public static final String CITYSTATS_YEARS = "years";
     public static final String CITYSTATS_POPULATION = "population";
     public static final String CITYSTATS_CASH = "cash";
-    public static final String[] CITYSTATS_PARAMS = { CITYSTATS_DAYS, CITYSTATS_MONTHS, CITYSTATS_YEARS, CITYSTATS_POPULATION, CITYSTATS_CASH };
+    public static final String CITYSTATS_TAXRATE = "taxrate";
+    public static final String CITYSTATS_LAST_TAX_COLLECTION = "last_tax_collection";
+    public static final String CITYSTATS_SCORE = "score";
+    public static final String[] CITYSTATS_PARAMS = { CITYSTATS_DAYS, CITYSTATS_MONTHS, CITYSTATS_YEARS, CITYSTATS_POPULATION, CITYSTATS_CASH, CITYSTATS_TAXRATE, CITYSTATS_LAST_TAX_COLLECTION, CITYSTATS_SCORE };
 
     // --------------------------------------------------------------------------------------------------------------------
 
@@ -396,9 +399,9 @@ public class Data
         }
 
         // Re-draw map
-//         Map.getInstance().draw();
+        //         Map.getInstance().draw();
         Map.getInstance().setShouldUpdate(true);
-        
+
         // Tell minimap it should be updated
         Minimap.getInstance().setShouldUpdate(true);
 
@@ -476,6 +479,10 @@ public class Data
     public static IndustrialZone[] industrialZones() {
         return DataSource.getInstance().industrialZones();
     }
+    
+    public static PowerGridZone[] powerPlants() {
+        return DataSource.getInstance().powerPlants();
+    }
 
     public static Zone[] zonesMatchingCriteria(String criteria) {
         //         CSLogger.sharedLogger().fine("Running query for zones matching criteria (" + criteria + ")");
@@ -505,6 +512,11 @@ public class Data
     public static Zone[] zonesInAreaOfZone(Zone zone, int radius, int zone1, int zone2) {
         Point start = zone.origin();
         return zonesMatchingCriteria("x >= " + (start.x-radius-4) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius-4) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + ")");
+    }
+
+    public static Zone[] zonesInAreaOfZone(Zone zone, int radius, int zone1, int zone2, int zone3) {
+        Point start = zone.origin();
+        return zonesMatchingCriteria("x >= " + (start.x-radius-4) + " AND x <= " + (start.x+radius) + " AND y >= " + (start.y-radius-4) + " AND y <= " + (start.y+radius) + " AND (zone = " + zone1 + " OR zone = " + zone2 + " OR zone = " + zone3 + ")");
     }
 
     public static Zone[] zonesInArea(Point start, int radius, int zone1, int zone2) {

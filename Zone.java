@@ -111,13 +111,16 @@ public class Zone
         return ((Integer)properties.get(Data.ZONES_AGE)).intValue();
     }
 
-    public int powered() {
+    public boolean powered() {
+        return (Integer)properties.get(Data.ZONES_POWERED) > -1;
+    }
+
+    public int poweredBy() {
         return ((Integer)properties.get(Data.ZONES_POWERED)).intValue();
     }
 
-    public void setPowered(int value) {
-        properties.put(Data.ZONES_POWERED, new Integer(value));
-        //         DataSource.getInstance().powerZone(this);
+    public void setPoweredBy(Zone plant) {
+        properties.put(Data.ZONES_POWERED, new Integer(plant.dbID()));
         new PowerZoneDBUpdateThread(this).start();
     }
 

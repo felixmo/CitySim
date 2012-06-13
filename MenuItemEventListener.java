@@ -131,5 +131,12 @@ public class MenuItemEventListener extends CSEventListener
             Tool.setPendingOp(Query.TYPE_ID);
             City.getInstance().setHint(new Hint("Click on zones to query them. Click on the popup to dismiss it. Press 'ESC' when done."));
         }
+        // * DEBUG ITEMS * 
+        else if (event.message().equals("Test message dialog")) {
+            new MessageDialog("This is a test.");
+        }
+        else if (event.message().equals("Tax rate dialog")) {
+            Finances.showTaxRateDialog();
+        }
     }
 }

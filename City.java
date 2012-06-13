@@ -36,6 +36,8 @@ public class City extends World
     private final int INITIAL_DATE_DAYS = 1;         // number of days elasped in the inital date
     private final int INITIAL_DATE_MONTHS = 1;       // number of months elasped in the inital date
     private final int INITIAL_DATE_YEARS = 0;        // number of years elapsed in the inital date
+    private final int INITIAL_TAX_RATE = 10;
+    private final int INITIAL_SCORE = 100;
 
     // ---------------------------------------------------------------------------------------------------------------------
     /*
@@ -43,6 +45,7 @@ public class City extends World
      */
 
     private static City instance;                    // pointer to an instance of 'City'; to be used globally to access 'City'
+    private static final Overlay overlay = new Overlay();
 
     // ---------------------------------------------------------------------------------------------------------------------
     /*
@@ -60,6 +63,7 @@ public class City extends World
 
     private int writeCountdown = 0;                  // Countdown until updated data is written to DB
     private int lastZoneID = 0;                      // Keeps track of the last ID assigned to a zone; this value is incremented and assigned to new zones
+    private int score;
 
     // ---------------------------------------------------------------------------------------------------------------------
     /*
@@ -77,7 +81,7 @@ public class City extends World
         CSLogger.sharedLogger().info("***** NEW SESSION *****");
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, QueryModalWindow.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Animation.class, Map.class);
+        setPaintOrder(QueryModalWindow.class, Overlay.class, TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Animation.class, Map.class);
 
         // FOR TESTING ONLY 
         // Delete the DB so that map re-generates each run
@@ -95,13 +99,16 @@ public class City extends World
             Data.insertMapMetadata(mapMetadata);
 
             // - City stats -
-            HashMap cityStats = new HashMap(5);
+            HashMap cityStats = new HashMap(6);
             // Initial city stats.
             cityStats.put(Data.CITYSTATS_DAYS, INITIAL_DATE_DAYS);
             cityStats.put(Data.CITYSTATS_MONTHS, INITIAL_DATE_MONTHS);
             cityStats.put(Data.CITYSTATS_YEARS, INITIAL_DATE_YEARS);
             cityStats.put(Data.CITYSTATS_POPULATION, INITIAL_POP);
             cityStats.put(Data.CITYSTATS_CASH, INITIAL_CASH);
+            cityStats.put(Data.CITYSTATS_TAXRATE, INITIAL_TAX_RATE);
+            cityStats.put(Data.CITYSTATS_LAST_TAX_COLLECTION, 0);
+            cityStats.put(Data.CITYSTATS_SCORE, INITIAL_SCORE);
 
             Data.insertCityStats(cityStats);
 
@@ -123,8 +130,14 @@ public class City extends World
 
         // Resume tracking date from last saved date
         HashMap cityStats = Data.cityStats();
+        this.score = ((Integer)cityStats.get(Data.CITYSTATS_SCORE)).intValue();
         Date.set((Integer)cityStats.get(Data.CITYSTATS_DAYS), (Integer)cityStats.get(Data.CITYSTATS_MONTHS), (Integer)cityStats.get(Data.CITYSTATS_YEARS));
-        Population.set((Integer)cityStats.get(Data.CITYSTATS_POPULATION));
+        Population.initialSet((Integer)cityStats.get(Data.CITYSTATS_POPULATION));
+        // Initalize the cash store from the last known value in the DB
+        Cash.set(((Integer)cityStats.get(Data.CITYSTATS_CASH)));
+
+        Finances.setLastTaxCollection(((Integer)cityStats.get(Data.CITYSTATS_LAST_TAX_COLLECTION)));
+        Finances.setTaxRate(((Integer)cityStats.get(Data.CITYSTATS_TAXRATE)));
 
         // Create and add a new map for the city
         addObject(new Map(), 512, 333);
@@ -140,13 +153,14 @@ public class City extends World
         addObject(menuBar, 512, 14);
 
         // - Menu bar items -
-        ArrayList<String> menuBarItems = new ArrayList(6);
+        ArrayList<String> menuBarItems = new ArrayList(7);
         menuBarItems.add(Zone.NAME);
         menuBarItems.add(Road.NAME);
         menuBarItems.add(PowerGrid.NAME);
         menuBarItems.add(ProtectionZone.NAME);
         menuBarItems.add(Recreation.NAME);
         menuBarItems.add(Tool.NAME);
+        menuBarItems.add("*DEBUG*");
         menuBar.setItems(menuBarItems);
 
         // * Menu items * 
@@ -193,10 +207,13 @@ public class City extends World
         toolItems.add(Query.NAME);
         menuBar.setMenuItemsForItem(Tool.NAME, toolItems);
 
-        // * END of menu items *
+        // Debug menu
+        ArrayList<String> debugItems = new ArrayList(2);
+        debugItems.add("Test message dialog");
+        debugItems.add("Tax rate dialog");
+        menuBar.setMenuItemsForItem("*DEBUG*", debugItems);
 
-        // Initalize the cash store from the last known value in the DB
-        Cash.set(((Integer)cityStats.get(Data.CITYSTATS_CASH)));
+        // * END of menu items *
 
         instance = this;
     }
@@ -253,7 +270,7 @@ public class City extends World
         // Write to DB
         writeCountdown++;
 
-        if (writeCountdown % 5 == 0) {
+        if (writeCountdown % 7 == 0) {
             if (CSThread.count() == 0) {
                 new CitySimulationThread().start();
             }
@@ -281,7 +298,7 @@ public class City extends World
             if (PowerGrid.shouldEvaluate()) {
                 new PowerGridEvaluationThread().start();
             }
-            Animation.getInstance().setZones(Data.zonesMatchingCriteria("powered = 0"));
+            Animation.getInstance().setZones(Data.zonesMatchingCriteria("powered = -1"));
         }
     }
 
@@ -323,6 +340,14 @@ public class City extends World
      * MODAL VIEWS / DIALOGS *
      */
 
+    public void enableOverlay() {
+        addObject(City.overlay, 512, 384);
+    }
+
+    public void removeOverlay() {
+        removeObject(City.overlay);
+    }
+
     /**
      * Removes the active hint from view.
      */
@@ -346,12 +371,14 @@ public class City extends World
     // Returns formatted values for the HUD labels
     private HashMap valuesForHUD() {
 
-        HashMap values = new HashMap(4);
+        HashMap values = new HashMap(6);
 
         values.put(HUD.NAME, Population.category() + " of Toronto");  // TESTING
-        values.put(HUD.POPULATION, Population.size());    // TESTING
+        values.put(HUD.POPULATION, Population.asString());    // TESTING
         values.put(HUD.DATE, Date.asString());
         values.put(HUD.CASH, Cash.asString());
+        values.put(HUD.TAXRATE, Finances.taxRateString());
+        values.put(HUD.SCORE, this.score);
 
         return values;
     }
@@ -359,13 +386,16 @@ public class City extends World
     // Returns the city stats. w/o formatting (i.e. for writing the values to the DB)
     private HashMap currentCityStats() {
 
-        HashMap stats = new HashMap(5);
+        HashMap stats = new HashMap(8);
 
         stats.put(Data.CITYSTATS_DAYS, Date.days());
         stats.put(Data.CITYSTATS_MONTHS, Date.months());
         stats.put(Data.CITYSTATS_YEARS, Date.years());
         stats.put(Data.CITYSTATS_POPULATION, Population.size());
         stats.put(Data.CITYSTATS_CASH, Cash.value());
+        stats.put(Data.CITYSTATS_TAXRATE, Finances.taxRate());
+        stats.put(Data.CITYSTATS_LAST_TAX_COLLECTION, Finances.lastTaxCollection());
+        stats.put(Data.CITYSTATS_SCORE, this.score);
 
         return stats;
     }
@@ -421,7 +451,7 @@ public class City extends World
     public static City getInstance() {
         return instance;
     }
-    
+
     public MenuBar menuBar() {
         return this.menuBar;
     }

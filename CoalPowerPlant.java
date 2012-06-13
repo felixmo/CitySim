@@ -22,6 +22,7 @@ public class CoalPowerPlant extends PowerGridZone
     public static final int SIZE_HEIGHT = 4;
     public static final String NAME = "Coal power plant";
     public static final int PRICE = 3000;
+    public static final int CAPACITY = 50;
 
     public CoalPowerPlant(HashMap properties) {
         super(properties);

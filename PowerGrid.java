@@ -37,12 +37,15 @@ public class PowerGrid
         searchedZones.clear();
 
         // Search outward from the power lines leading from the power plants
-        for (Zone zone : Data.zonesMatchingCriteria("zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID)) {
+        PowerGridZone[] plants = Data.powerPlants();
+        for (PowerGridZone zone : plants) {
             for (Tile tile : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
-                new PowerGridEvaluationTileSearchThread(tile).start();
+                new PowerGridEvaluationTileSearchThread(tile, zone).start();
             }
             // TODO: search for zones touching power plants
         }
+
+        Data.updateZones(plants);
 
         setShouldEvaluate(false);
 
@@ -50,42 +53,52 @@ public class PowerGrid
         CSLogger.sharedLogger().info("Finished power grid evaluation (" + (endTime - startTime) + " ms).");
     }
 
-    public static void searchTile(Tile tile) {
+    public static void searchTile(Tile tile, PowerGridZone plant) {
 
         // Add tile to search history
         searched.add(new Integer(tile.dbID()));
 
         // Power the tile
-        tile.setPowered(1);
+        tile.setPowered(plant.dbID());
         Data.updateTileWithoutDraw(tile);
 
         // Power and search outward from surrounding zones
         for (Zone z : Data.zonesInArea(tile.position(), 1)) {
-            z.setPowered(1);
-            if (!searchedZones.contains(z.dbID())) {
-                searchedZones.add(z.dbID());
-                new PowerGridEvaluationZoneSearchThread(z).start();
+
+            System.out.println(plant);
+            if (plant.allocation() < plant.capacity()) {
+
+                z.setPoweredBy(plant);
+
+                if (!searchedZones.contains(z.dbID())) {
+                    searchedZones.add(z.dbID());
+                    new PowerGridEvaluationZoneSearchThread(z, plant).start();
+                }
             }
         }
 
         // Search outward from power lines & nodes
         for (Tile t : Data.tilesMatchingCriteriaAroundTile(tile, "powergrid = " + PowerLine.TYPE_ID)) {
-            if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
+            if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t, plant).start();
         }
     }
 
-    public static void searchZone(Zone zone) {
+    public static void searchZone(Zone zone, PowerGridZone plant) {
 
         for (Zone z : Data.zonesAroundZoneInclusive(zone)) {
-            z.setPowered(1);
 
-            for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
-                if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t).start();
-            }
+            if (plant.allocation() < plant.capacity()) {
 
-            if (!searchedZones.contains(z.dbID())) {
-                searchedZones.add(z.dbID());
-                new PowerGridEvaluationZoneSearchThread(z).start();
+                z.setPoweredBy(plant);
+
+                for (Tile t : Data.tilesAroundZoneWithCriteria(zone, "powergrid = " + PowerLine.TYPE_ID)) {
+                    if (!searched.contains(t.dbID())) new PowerGridEvaluationTileSearchThread(t, plant).start();
+                }
+
+                if (!searchedZones.contains(z.dbID())) {
+                    searchedZones.add(z.dbID());
+                    new PowerGridEvaluationZoneSearchThread(z, plant).start();
+                }
             }
         }
     }
@@ -100,6 +113,10 @@ public class PowerGrid
     protected static void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
 
         Data.updateTiles(tiles);
+    }
+
+    public static int allocationForPlant(Zone zone) {
+        return DataSource.getInstance().allocationForPowerPlant(zone);
     }
 
     /*

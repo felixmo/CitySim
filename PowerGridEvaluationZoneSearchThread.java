@@ -14,13 +14,15 @@
 public class PowerGridEvaluationZoneSearchThread extends CSThread
 {
     private Zone zone;
+    private PowerGridZone plant;
 
-    public PowerGridEvaluationZoneSearchThread(Zone zone) {
+    public PowerGridEvaluationZoneSearchThread(Zone zone, PowerGridZone plant) {
         super("PowerGridEvaluationZoneSearchThread");
         this.zone = zone;
+        this.plant = plant;
     }
         
     public void run() {
-        PowerGrid.searchZone(this.zone);
+        PowerGrid.searchZone(this.zone, this.plant);
     }
 }

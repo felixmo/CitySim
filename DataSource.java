@@ -463,6 +463,27 @@ public class DataSource
         return zones;
     }
 
+    public PowerGridZone[] powerPlants() {
+
+        List results = null;
+
+        try {
+            QueryRunner runner = new QueryRunner();
+            results = (List)runner.query(connection, "SELECT * FROM zones WHERE zone = 4 OR zone = 5", new MapListHandler());
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        PowerGridZone[] zones = new PowerGridZone[results.size()];
+
+        for (int i = 0; i < zones.length; i++) {
+            zones[i] = new PowerGridZone((HashMap)results.get(i));
+        }
+
+        return zones;
+    }
+
     public Zone[] zonesMatchingCriteria(String criteria) {
 
         CSLogger.sharedLogger().fine("Running query for zones with criteria (" + criteria + ")");
@@ -1195,8 +1216,8 @@ public class DataSource
         CSLogger.sharedLogger().fine("Killing power in the city");
 
         try {
-            new QueryRunner().update(connection, "UPDATE tiles SET powered = 0 WHERE NOT (zone = 4 OR zone = 5)");
-            new QueryRunner().update(connection, "UPDATE zones SET powered = 0 WHERE NOT (zone = 4 OR zone = 5)");
+            new QueryRunner().update(connection, "UPDATE tiles SET powered = -1 WHERE NOT (zone = 4 OR zone = 5)");
+            new QueryRunner().update(connection, "UPDATE zones SET powered = -1 WHERE NOT (zone = 4 OR zone = 5)");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -1207,12 +1228,29 @@ public class DataSource
         CSLogger.sharedLogger().fine("Powering zone (" + zone.dbID() + ")");
 
         try {
-            new QueryRunner().update(connection, "UPDATE tiles SET powered = 1 WHERE zone_id = " + zone.dbID());    
-            new QueryRunner().update(connection, "UPDATE zones SET powered = 1 WHERE id = " + zone.dbID());
+            new QueryRunner().update(connection, "UPDATE tiles SET powered = " + zone.poweredBy() + " WHERE zone_id = " + zone.dbID());    
+            new QueryRunner().update(connection, "UPDATE zones SET powered = " + zone.poweredBy() + " WHERE id = " + zone.dbID());
+            new QueryRunner().update(connection, "UPDATE zones SET allocation = (allocation + 1) WHERE id = " + zone.poweredBy());
         }
         catch (SQLException se) {
             se.printStackTrace();
         }
+    }
+
+    public int allocationForPowerPlant(Zone zone) {
+        try {
+            
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT powered FROM zones WHERE powered = " + zone.dbID(), new MapListHandler());
+            return results.size();
+
+            //             CSLogger.sharedLogger().fine("Completed query; got " +  results.size() + " zones matching criteria");
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return 0;
     }
 
     // SIMULATION

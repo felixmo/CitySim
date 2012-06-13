@@ -21,18 +21,19 @@ public class CitySimulationThread extends CSThread
     }
 
     public void run() {
-        CSLogger.sharedLogger().info("Began simulating the city...");
+        CSLogger.sharedLogger().fine("Began simulating the city...");
         long startTime = System.currentTimeMillis();
 
-        Employment.reset();
+        CommercialZone[] cZones = Data.commercialZones();
+        IndustrialZone[] iZones = Data.industrialZones();
 
         // Commercial zones
-        for (CommercialZone zone : Data.commercialZones()) {
+        for (CommercialZone zone : cZones) {
             new CommercialZoneSimulationThread(zone).start();
         }
 
         // Industrial zones
-        for (IndustrialZone zone : Data.industrialZones()) {
+        for (IndustrialZone zone : iZones) {
             new IndustrialZoneSimulationThread(zone).start();
         }
 
@@ -48,6 +49,8 @@ public class CitySimulationThread extends CSThread
         }
         Population.set(population);
 
-        CSLogger.sharedLogger().info("Finished simulating the city (" + (System.currentTimeMillis() - startTime) + " ms)");
+        Employment.simulate();
+        
+        CSLogger.sharedLogger().fine("Finished simulating the city (" + (System.currentTimeMillis() - startTime) + " ms)");
     }
 }

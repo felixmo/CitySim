@@ -22,13 +22,14 @@ public class NuclearPowerPlant extends PowerGridZone
     public static final int SIZE_HEIGHT = 4;
     public static final String NAME = "Nuclear power plant";
     public static final int PRICE = 5000;
+    public static final int CAPACITY = 150;
 
     public NuclearPowerPlant(HashMap properties) {
         super(properties);
     }
 
     public static void build(ArrayList<ArrayList<Tile>> selectedTiles) {
-        
+
         Cash.subtract(PRICE);
 
         int width = selectedTiles.size();

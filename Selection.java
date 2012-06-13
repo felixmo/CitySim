@@ -153,17 +153,17 @@ public class Selection extends Actor
             }
         }
         // FOR TESTING
-//         else {
-//             if (Greenfoot.mouseClicked(this)) {
-//                 if (size.width > 1) {
-//                     Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
-//                     System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity() + " | POWERED: " + (zone.powered() == 1 ? "YES" : "NO"));
-//                 }
-//                 else {
-//                     System.out.println("Type: " + this.activeTile.type() + " | Power grid type: " + this.activeTile.powerGrid() + " | Powered: " + this.activeTile.powered());
-//                 }
-//             }
-//         }
+        else {
+            if (Greenfoot.mouseClicked(this)) {
+                if (size.width > 1) {
+                    Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
+                    System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity() + " | POWERED: " + (zone.powered() ? "YES" : "NO"));
+                }
+                else {
+                    System.out.println("Type: " + this.activeTile.type() + " | Power grid type: " + this.activeTile.powerGrid() + " | Powered: " + this.activeTile.powered());
+                }
+            }
+        }
     }
 
     public ArrayList<ArrayList<Tile>> selectedTiles() {

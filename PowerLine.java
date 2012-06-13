@@ -23,6 +23,8 @@ public class PowerLine extends PowerGrid
     public static void buildPowerLine(Tile tile, int type) {
 
         CSLogger.sharedLogger().info("Building power line on tile (" + tile.dbID() + ")");
+        
+        Cash.subtract(PRICE);
 
         Tile up = null, down = null, left = null, right = null;
 

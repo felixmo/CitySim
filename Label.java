@@ -30,7 +30,8 @@ public class Label extends Actor
      */
 
     // Font and font properties
-    private static final Color FONTCOLOR = new Color(55, 55, 55);                  // Default font colour
+//     private static final Color FONTCOLOR = new Color(55, 55, 55);                  // Default font colour
+    private static final Color FONTCOLOR = Color.BLACK;                  // Default font colour
 
     // Label properties
     private Rectangle frame;    // Location and dimensions of the label
