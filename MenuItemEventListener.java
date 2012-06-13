@@ -138,5 +138,8 @@ public class MenuItemEventListener extends CSEventListener
         else if (event.message().equals("Tax rate dialog")) {
             Finances.showTaxRateDialog();
         }
+        else if (event.message().equals("Scoring")) {
+            Issues.dialog();
+        }
     }
 }

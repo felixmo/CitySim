@@ -51,6 +51,8 @@ public class CitySimulationThread extends CSThread
 
         Employment.simulate();
         
+        new IssuesSimulationThread().start();
+        
         CSLogger.sharedLogger().fine("Finished simulating the city (" + (System.currentTimeMillis() - startTime) + " ms)");
     }
 }

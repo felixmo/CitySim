@@ -211,6 +211,7 @@ public class City extends World
         ArrayList<String> debugItems = new ArrayList(2);
         debugItems.add("Test message dialog");
         debugItems.add("Tax rate dialog");
+        debugItems.add("Scoring");
         menuBar.setMenuItemsForItem("*DEBUG*", debugItems);
 
         // * END of menu items *
@@ -454,5 +455,19 @@ public class City extends World
 
     public MenuBar menuBar() {
         return this.menuBar;
+    }
+    
+    public int score() {
+        return this.score;
+    }
+    
+    public void setScore(int value) {
+        
+        CSLogger.sharedLogger().info("Setting city score to " + value);
+        
+        if (value <= 0) {
+            // Impeachment
+        }
+        this.score = Math.min(100, Math.max(0, value));
     }
 }

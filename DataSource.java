@@ -1239,7 +1239,7 @@ public class DataSource
 
     public int allocationForPowerPlant(Zone zone) {
         try {
-            
+
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT powered FROM zones WHERE powered = " + zone.dbID(), new MapListHandler());
             return results.size();
@@ -1310,6 +1310,26 @@ public class DataSource
         try {
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT SUM(capacity) AS capacity_sum FROM zones WHERE zone = " + CommercialZone.TYPE_ID, new MapListHandler());
+            HashMap map = (HashMap)results.listIterator().next();
+
+            if (map.get("capacity_sum") == null) {
+                return 0;
+            }
+
+            return ((Integer)map.get("capacity_sum")).intValue();
+        }
+        catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int totalPowerCapacity() {
+        
+        try {
+            QueryRunner runner = new QueryRunner();
+            List results = (List)runner.query(connection, "SELECT SUM(capacity) AS capacity_sum FROM zones WHERE zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID, new MapListHandler());
             HashMap map = (HashMap)results.listIterator().next();
 
             if (map.get("capacity_sum") == null) {
