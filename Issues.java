@@ -28,21 +28,21 @@ public class Issues
         int ratio = (int)(((float)iCount / cCount) * 100);
         if (ratio <= 75) {
             // Industrial zones > commercial zones
-            if (ratioImpact == -10) {
+            if (ratioImpact == -15) {
                 ratioImpact = 0;
             }
             else {
-                ratioImpact = -10;
+                ratioImpact = -15;
             }
         }
         else if (ratio >= 125) {
             // Commerical zones > Industrial zones
 
-            if (ratioImpact == -10) {
+            if (ratioImpact == -15) {
                 ratioImpact = 0;
             }
             else {
-                ratioImpact = -10;
+                ratioImpact = -15;
             }
         }
         else {
@@ -61,19 +61,19 @@ public class Issues
         //         int tlZones = Data.zones().length - Data.powerPlants().length;
         int unpowered = Data.zonesMatchingCriteria("powered = -1").length;
         if (unpowered > 0) {
-            if (powerImpact == -10) {
+            if (powerImpact == -20) {
                 powerImpact = 0;
             }
             else {
-                powerImpact = -10;
+                powerImpact = -20;
             }
         }
         else {
-            if (powerImpact == 10) {
+            if (powerImpact == 15) {
                 powerImpact = 0;
             }
             else {
-                powerImpact = 10;
+                powerImpact = 15;
             }
         }
 
@@ -84,20 +84,20 @@ public class Issues
         int unemploymentRate = (int)((unemployed / Population.size()) * 100);
         if (unemploymentRate >= 10) {
 
-            if (unemploymentImpact == -20) {
+            if (unemploymentImpact == -25) {
                 unemploymentImpact = 0;
             }
             else {
-                unemploymentImpact = -20;
+                unemploymentImpact = -25;
             }
         }
         else {
 
-            if (unemploymentImpact == 10) {
+            if (unemploymentImpact == 20) {
                 unemploymentImpact = 0;
             }
             else {
-                unemploymentImpact = 10;
+                unemploymentImpact = 20;
             }
         }
 
