@@ -35,6 +35,7 @@ public class HUD extends Actor {
     private HashMap labels = new HashMap(4);                                             // Holds references to all labels for easy access
     private Minimap minimap;                                                                        // The minimap
     private int score = -1;
+    private MouseInfo mouseInfo;
 
     /*
      * LABEL RECTS. *
@@ -45,7 +46,8 @@ public class HUD extends Actor {
     private static final Rectangle DATE_RECT = new Rectangle(415, 685, 135, 48);
     private static final Rectangle CASH_RECT = new Rectangle(860, 685, 200, 48);
     private static final Rectangle TAX_RECT = new Rectangle(930, 743, 200, 48);
-
+    private static final Rectangle RATING_RECT = new Rectangle(515, 610, 150, 20);
+    
     /*
      * IDENTIFIERS *
      */
@@ -82,6 +84,29 @@ public class HUD extends Actor {
         world.addObject(minimap, minimap.frame().x, minimap.frame().y);   
     }
 
+    public void act() {
+
+        // Update mouse info if mouse has moved
+        if (Greenfoot.getMouseInfo() != null) {
+            mouseInfo = Greenfoot.getMouseInfo();
+        }
+
+        if (Greenfoot.mouseClicked(null)) {
+            if (mouseInfo != null) {
+                Point pos = new Point(mouseInfo.getX(), mouseInfo.getY());
+                
+                // Rating
+                if (RATING_RECT.contains(pos)) {
+                    Issues.dialog();
+                }
+                // Tax rate
+                else if (pos.x >= 740 && pos.x <= 880 && pos.y >= 725 && pos.y <= 745) {
+                    Taxation.showDialog();
+                }
+            }
+        }
+    }
+
     // Refreshes the values on the HUD with the values provided
     public void refresh(HashMap values) {
 
@@ -95,11 +120,11 @@ public class HUD extends Actor {
 
                 if (key.equals(HUD.SCORE)) {
                     int newScore = ((Integer)object).intValue();
-                    
+
                     if (!((int)(this.score/20) == (int)(newScore/20))) {
-                        
+
                         this.score = newScore;
-                        
+
                         int x = 527;
                         int y = 70;
 

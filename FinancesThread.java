@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 /**
  * Write a description of class TaxCollectionThread here.
  * 
@@ -11,6 +18,6 @@ public class FinancesThread extends CSThread
     }
     
     public void run() {
-        Finances.collectTaxesAndDeductExpenses();
+        Taxation.collectTaxesAndDeductExpenses();
     }
 }

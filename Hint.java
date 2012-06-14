@@ -32,7 +32,7 @@ public class Hint extends Actor
 
     public Hint(String text) {
 
-        this.image = new GreenfootImage("images/notif.png");
+        this.image = new GreenfootImage("images/hint.png");
         setImage(this.image);
 
         this.label = new GreenfootImage(1024, 50);

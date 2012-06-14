@@ -65,7 +65,6 @@ public class PowerGrid
         // Power and search outward from surrounding zones
         for (Zone z : Data.zonesInArea(tile.position(), 1)) {
 
-            System.out.println(plant);
             if (plant.allocation() < plant.capacity()) {
 
                 z.setPoweredBy(plant);

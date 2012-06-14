@@ -1,9 +1,17 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import java.awt.Frame;
 import javax.swing.JOptionPane;
+import java.util.ArrayList;
 
 /**
  * Write a description of class Issues here.
@@ -17,117 +25,105 @@ public class Issues
     private static int powerImpact = 0;
     private static int unemploymentImpact = 0;
     private static int taxImpact = 0;
+    private static ArrayList<String> messages = null;
+    private static boolean cycle = false;
 
     public static void simulate() {
 
         int score = City.getInstance().score();
 
-        // Ratio of I to C
-        int iCount = Data.industrialZones().length;
-        int cCount = Data.commercialZones().length;
-        int ratio = (int)(((float)iCount / cCount) * 100);
-        if (ratio <= 75) {
-            // Industrial zones > commercial zones
-            if (ratioImpact == -15) {
-                ratioImpact = 0;
-            }
-            else {
-                ratioImpact = -15;
-            }
-        }
-        else if (ratio >= 125) {
-            // Commerical zones > Industrial zones
+        if (Date.months() <= 6 && Date.years() == 0 && Population.size() == 0) return;
 
-            if (ratioImpact == -15) {
-                ratioImpact = 0;
-            }
-            else {
-                ratioImpact = -15;
-            }
-        }
-        else {
-
-            if (ratioImpact == 10) {
-                ratioImpact = 0;
-            }
-            else {
-                ratioImpact = 10;
-            }
+        if (messages == null) {
+            messages = new ArrayList();
         }
 
-        score += ratioImpact;
+        if (!cycle) {
 
-        // No power
-        //         int tlZones = Data.zones().length - Data.powerPlants().length;
-        int unpowered = Data.zonesMatchingCriteria("powered = -1").length;
-        if (unpowered > 0) {
-            if (powerImpact == -20) {
-                powerImpact = 0;
+            messages.clear();
+            ratioImpact = 0;
+            powerImpact = 0;
+            unemploymentImpact = 0;
+            taxImpact = 0;
+
+            // Ratio of I to C
+            int iCount = Data.industrialZones().length;
+            int cCount = Data.commercialZones().length;
+            if (iCount == 0) {
+                messages.add("There aren't any commercial zones!");
             }
-            else {
+            if (cCount == 0) {
+                messages.add("There aren't any industrial zones!");
+            }
+
+            if (iCount > 0 && cCount > 0) {
+                
+                int ratio = (int)(((float)iCount / cCount) * 100);
+                if (ratio <= 75) {
+                    // Industrial zones > commercial zones
+                    ratioImpact = -15;
+                    messages.add("There aren't enough commercial zones for the industrial zones to supply.");
+                }
+                else if (ratio >= 125) {
+                    // Commerical zones > Industrial zones
+                    ratioImpact = -15;
+                    messages.add("There aren't enough industrial zones to supply the commerical zones.");
+                }
+                else {
+                    ratioImpact = 10;
+                }
+
+                score += ratioImpact;
+            }
+
+            // No power
+            int unpowered = Data.zonesMatchingCriteria("powered = -1").length;
+            if (unpowered > 0) {
                 powerImpact = -20;
-            }
-        }
-        else {
-            if (powerImpact == 15) {
-                powerImpact = 0;
+                messages.add("Some areas in your city do not have power. Check the power plants and power lines.");
             }
             else {
                 powerImpact = 15;
             }
-        }
 
-        score += powerImpact;
+            score += powerImpact;
 
-        // Unemployment
-        int unemployed = Population.size() - (DataSource.getInstance().totalIndustrialCapacity() + DataSource.getInstance().totalCommercialCapacity());
-        int unemploymentRate = (int)((unemployed / Population.size()) * 100);
-        if (unemploymentRate >= 10) {
+            // Unemployment
+            int unemployed = Population.size() - (DataSource.getInstance().totalIndustrialCapacity() + DataSource.getInstance().totalCommercialCapacity());
+            if (unemployed > 0) {
+                int unemploymentRate = (int)((unemployed / Population.size()) * 100);
+                if (unemploymentRate >= 10) {
 
-            if (unemploymentImpact == -25) {
-                unemploymentImpact = 0;
+                    unemploymentImpact = -25;
+                    messages.add("Many citizens are unemployed. Consider building more industrial or commerical zones.");
+                }
+                else {
+                    unemploymentImpact = 20;
+                }
+
+                score += unemploymentImpact;
             }
-            else {
-                unemploymentImpact = -25;
-            }
-        }
-        else {
 
-            if (unemploymentImpact == 20) {
-                unemploymentImpact = 0;
-            }
-            else {
-                unemploymentImpact = 20;
-            }
-        }
+            // High taxes (20% + )
+            if (Taxation.rate() >= 20) {
 
-        score += unemploymentImpact;
-
-        // High taxes (20% + )
-        if (Finances.taxRate() >= 20) {
-
-            if (taxImpact == -20) {
-                taxImpact = 0;
-            }
-            else {
                 taxImpact = -20;
-            }
-        }
-        else {
-            if (taxImpact == 10) {
-                taxImpact = 0;
+                messages.add("Citizens find the tax rate too high!");
             }
             else {
                 taxImpact = 10;
             }
+
+            score += taxImpact;
+
+            City.getInstance().setScore(score);
         }
 
-        score += taxImpact;
-
-        City.getInstance().setScore(score);
+        cycle = !cycle;
     }
 
     public static void dialog() {
+
         City.getInstance().enableOverlay();
 
         SwingUtilities.invokeLater( new Runnable() {
@@ -135,18 +131,18 @@ public class Issues
 
                     JPanel panel = new JPanel();
                     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-                    panel.add(new JLabel("Industrial / commercial impact: " + ratioImpact));
-                    panel.add(new JLabel("Power impact: " + powerImpact));
-                    panel.add(new JLabel("Unemployment impact: " + unemploymentImpact));
-                    panel.add(new JLabel("Tax impact: " + taxImpact));
-                    panel.add(new JLabel("Score: " + City.getInstance().score()));
 
-                    int selection = JOptionPane.showConfirmDialog(new Frame(), panel, "Scoring", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                    if (selection == JOptionPane.OK_OPTION) {
-
-                        City.getInstance().removeOverlay();
+                    if (messages != null) {
+                        for (String message : messages) {
+                            panel.add(new JLabel(message));
+                            panel.add(new JLabel(" "));
+                        }
                     }
-                    else {
+
+                    panel.add(new JLabel("Score: " + City.getInstance().score() + "%"));
+
+                    int selection = JOptionPane.showConfirmDialog(new Frame(), panel, "Score", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    if (selection == JOptionPane.OK_OPTION) {
                         City.getInstance().removeOverlay();
                     }
                 }

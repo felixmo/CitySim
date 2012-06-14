@@ -53,7 +53,7 @@ public class Map extends Actor
     private MouseInfo mouseInfo = null;
 
     private Selection selection = new Selection(viewport.width, viewport.height);
-    private Animation animation = new Animation(viewport.width, viewport.height);
+    private AnimationLayer animation = new AnimationLayer(viewport.width, viewport.height);
 
     private boolean shouldUpdate = false;
 

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import greenfoot.*;
 import java.util.HashMap;
 import java.awt.Rectangle;
@@ -9,10 +16,10 @@ import java.util.Iterator;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Animation extends Actor
+public class AnimationLayer extends Actor
 {
 
-    private static Animation instance;
+    private static AnimationLayer instance;
 
     //     public static final String NOPOWER = "NOPOWER";
     public static final GreenfootImage NOPOWER_IMG = new GreenfootImage("images/tiles/828.png");
@@ -25,9 +32,9 @@ public class Animation extends Actor
     private GreenfootImage image;
     private boolean needsUpdate = true;
 
-    public Animation(int width, int height) {
+    public AnimationLayer(int width, int height) {
 
-        Animation.instance = this;
+        AnimationLayer.instance = this;
 
         this.image = new GreenfootImage(width, height);
         setImage(this.image);
@@ -54,7 +61,7 @@ public class Animation extends Actor
             if (zone.zone() == Stadium.TYPE_ID) {
                 diff = 2;
             }
-            this.image.drawImage(Animation.NOPOWER_IMG, (((zone.origin().x + diff) * Tile.SIZE) - viewport.x),  (((zone.origin().y - diff) * Tile.SIZE) - viewport.y));
+            this.image.drawImage(AnimationLayer.NOPOWER_IMG, (((zone.origin().x + diff) * Tile.SIZE) - viewport.x),  (((zone.origin().y - diff) * Tile.SIZE) - viewport.y));
         }
 
         /*
@@ -75,7 +82,7 @@ public class Animation extends Actor
      * ACCESSORS *
      */
 
-    public static Animation getInstance() {
+    public static AnimationLayer getInstance() {
         return instance;
     }
 

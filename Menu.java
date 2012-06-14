@@ -16,7 +16,7 @@ import java.awt.Rectangle;
  * Menu view and view controller; extends MenuElement.
  * 
  * @author Felix Mo
- * @version v0.1
+ * @version v1.0
  * @since 2012-04-19
  */
 
@@ -177,14 +177,14 @@ public class Menu extends MenuElement
     public void setItems(ArrayList<String> items) {
 
         // Create frame based on dimensions derived from font metrics
-        FontMetrics fontMetrics = new GreenfootImage(512, 28).getAwtImage().getGraphics().getFontMetrics(FONT); 
+        FontMetrics fontMetrics = new GreenfootImage(1024, 768).getAwtImage().getGraphics().getFontMetrics(FONT); 
         int width = 0;
         int index = 0;
         
         // Find the widest menu item and use it's width + padding as the menu width
         for (String item : items) {
             if (fontMetrics.stringWidth(item) > width) {
-                width = fontMetrics.stringWidth(item)+28;
+                width = fontMetrics.stringWidth(item)+36;
             }
         }
 

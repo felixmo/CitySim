@@ -15,9 +15,9 @@ import java.util.Map;
 import java.lang.Integer;
 import org.apache.commons.dbutils.*;
 import org.apache.commons.dbutils.handlers.*;
+import org.sqlite.JDBC;
 import java.awt.Point;
 import java.util.concurrent.Callable;
-// import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -47,7 +47,7 @@ public class DataSource
      */
 
     // Database properties
-    private static String dbName;       // Database name
+    private static String dbPath;       // Database name
     private boolean dbIsNew;            // Specifies if database was just created
 
     private Connection connection;
@@ -63,38 +63,46 @@ public class DataSource
 
     // ---------------------------------------------------------------------------------------------------------------
 
-    public DataSource(String dbName) {
+    static {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public DataSource(String name, String path) {
 
         instance = this;
 
-        this.dbName = dbName;
+        this.dbPath = path.substring(5) + name + ".db";
 
-        // Check if the database and the "maps" directory exists; create them if they don't
-        if (new File(mapsDirectory).isDirectory()) {
-            CSLogger.sharedLogger().fine("Maps directory exists; checking if map exists...");
-            dbIsNew = !fileExists(mapsDirectory + "/" + this.dbName + ".db");
-        }
-        else {
-            CSLogger.sharedLogger().fine("Maps directory does not exist; creating it now...");
-            new File(mapsDirectory).mkdir();
-            dbIsNew = true;
-        }
+        dbIsNew = true;
 
-        openConnection(this.dbName);
+        openConnection();
 
-        // If the database was just created, create the schema for it
-        if (dbIsNew) {
-            createTables();
-            createIndexes();
-        }
+        createTables();
+        createIndexes();
+    }
+
+    public DataSource(String path) {
+
+        instance = this;
+
+        this.dbPath = path.substring(5);
+
+        dbIsNew = false;
+
+        openConnection();
     }
 
     /*
      * ACCESSORS *
      */
 
-    public String dbName() {
-        return dbName;
+    public String dbPath() {
+        return dbPath;
     }
 
     public boolean dbIsNew() {
@@ -125,23 +133,16 @@ public class DataSource
      */
 
     // Open a connection to the database; will create SQLite db file if necessary
-    private void openConnection(String dbName) {
+    private void openConnection() {
 
-        CSLogger.sharedLogger().fine("Opening connection to DB named: \"" + dbName + "\"...");
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        CSLogger.sharedLogger().info("Opening connection to DB at: \"" + this.dbPath + "\"...");
 
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
+            connection = DriverManager.getConnection("jdbc:sqlite:" + this.dbPath);
             connection.setAutoCommit(true);
             connectionIsOpen = true;
 
-            CSLogger.sharedLogger().fine("Connection to DB (\"" + dbName + "\") has been established.");
+            CSLogger.sharedLogger().fine("Connection to DB (\"" + this.dbPath + "\") has been established.");
         } 
         catch (SQLException se) {
             se.printStackTrace();
@@ -151,13 +152,13 @@ public class DataSource
     // Closes the connection to the database
     public void closeConnection() {
 
-        CSLogger.sharedLogger().fine("Closing connection to DB named: \"" + dbName + "\"...");
+        CSLogger.sharedLogger().fine("Closing connection to DB named: \"" + dbPath + "\"...");
 
         try {
             connection.close();
             connectionIsOpen = false;
 
-            CSLogger.sharedLogger().fine("Connection to DB (\"" + dbName + "\") has been closed.");
+            CSLogger.sharedLogger().fine("Connection to DB (\"" + dbPath + "\") has been closed.");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -167,7 +168,7 @@ public class DataSource
     // Resumes / re-opens the connection to the database
     public void resumeConnection() {
 
-        openConnection(dbName);
+        openConnection();
     }
 
     /*
@@ -179,7 +180,7 @@ public class DataSource
     // Create the database's tables
     private void createTables() {
 
-        CSLogger.sharedLogger().fine("Creating schema for DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Creating schema for DB (\"" + dbPath + "\")");
 
         try {
 
@@ -196,7 +197,7 @@ public class DataSource
                 statement.close();
             }
 
-            CSLogger.sharedLogger().fine("Finished creating schema for DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished creating schema for DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -247,14 +248,14 @@ public class DataSource
         // 1. rows
         // 2. columns
 
-        CSLogger.sharedLogger().fine("Retrieving map size from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving map size from DB (\"" + dbPath + "\")...");
 
         try {
 
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT * from map_size", new MapListHandler());
             HashMap mapSize = (HashMap)results.listIterator().next();
-            CSLogger.sharedLogger().fine("Finished retrieving map size from DB (\"" + dbName + "\"). Got map size of " + mapSize.get(Data.MAPSIZE_ROWS) + "x" + mapSize.get(Data.MAPSIZE_COLUMNS));
+            CSLogger.sharedLogger().fine("Finished retrieving map size from DB (\"" + dbPath + "\"). Got map size of " + mapSize.get(Data.MAPSIZE_ROWS) + "x" + mapSize.get(Data.MAPSIZE_COLUMNS));
             return mapSize;
         }
         catch (SQLException se) {
@@ -266,7 +267,7 @@ public class DataSource
 
     public void insertMapSize(HashMap mapSize) {
 
-        CSLogger.sharedLogger().fine("Inserting map size into DB (\"" + dbName + "\") of " + mapSize.get(Data.MAPSIZE_ROWS) + " x " + mapSize.get(Data.MAPSIZE_COLUMNS));
+        CSLogger.sharedLogger().fine("Inserting map size into DB (\"" + dbPath + "\") of " + mapSize.get(Data.MAPSIZE_ROWS) + " x " + mapSize.get(Data.MAPSIZE_COLUMNS));
         try {
 
             String statementString = "INSERT INTO " + Data.MAPSIZE + " VALUES (";
@@ -286,7 +287,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished inserting map size into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting map size into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -297,7 +298,7 @@ public class DataSource
 
     public HashMap mapMetadata() {
 
-        CSLogger.sharedLogger().fine("Retrieving map metadata from DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Retrieving map metadata from DB (\"" + dbPath + "\")");
 
         try {
 
@@ -306,7 +307,7 @@ public class DataSource
 
             HashMap mapMetadata = (HashMap)results.listIterator().next();
 
-            CSLogger.sharedLogger().fine("Finished retrieving map metadata from DB (\"" + dbName + "\")"); 
+            CSLogger.sharedLogger().fine("Finished retrieving map metadata from DB (\"" + dbPath + "\")"); 
 
             return mapMetadata;
         }
@@ -319,7 +320,7 @@ public class DataSource
 
     public void insertMapMetadata(HashMap mapMetadata) {
 
-        CSLogger.sharedLogger().fine("Inserting map metadata into DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Inserting map metadata into DB (\"" + dbPath + "\")");
 
         try {
 
@@ -341,7 +342,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished inserting map metadata into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting map metadata into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -350,7 +351,7 @@ public class DataSource
 
     public void updateMapMetadata(HashMap mapMetadata) {
 
-        CSLogger.sharedLogger().fine("Updating map metadata in DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Updating map metadata in DB (\"" + dbPath + "\")");
 
         try {
 
@@ -370,7 +371,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished updating map metadata in DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished updating map metadata in DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -511,7 +512,7 @@ public class DataSource
 
     public void insertZone(Zone zone) {
 
-        CSLogger.sharedLogger().fine("Inserting zone into DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Inserting zone into DB (\"" + dbPath + "\")");
 
         try {
 
@@ -539,7 +540,7 @@ public class DataSource
 
     public void updateZone(Zone zone) {
 
-        CSLogger.sharedLogger().fine("Updating zone in DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Updating zone in DB (\"" + dbPath + "\")");
 
         try {
 
@@ -574,7 +575,7 @@ public class DataSource
 
         try {
 
-            //             Connection dbConn = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbName + ".db");
+            //             Connection dbConn = DriverManager.getConnection("jdbc:sqlite:" + mapsDirectory + "/" + dbPath + ".db");
             connection.setAutoCommit(false);
 
             String statementString = "UPDATE " + Data.ZONES + " SET ";
@@ -617,7 +618,7 @@ public class DataSource
 
     public void increaseZoneAge(int age) {
 
-        CSLogger.sharedLogger().fine("Increasing zone ages (by " + age + ") in DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Increasing zone ages (by " + age + ") in DB (\"" + dbPath + "\")");
 
         try {
             new QueryRunner().update(connection, "UPDATE zones SET age = age + " + age);
@@ -629,7 +630,7 @@ public class DataSource
 
     public void deleteZoneWithID(int id) {
 
-        CSLogger.sharedLogger().fine("Deleting zone (" + id + ") from DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Deleting zone (" + id + ") from DB (\"" + dbPath + "\")");
 
         try {
             new QueryRunner().update(connection, "DELETE FROM zones WHERE id = " + id);
@@ -643,7 +644,7 @@ public class DataSource
 
     public int[] tilesInZoneWithID(int id) {
 
-        CSLogger.sharedLogger().fine("Retrieving tiles in zone with ID (" + id + ") from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving tiles in zone with ID (" + id + ") from DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -654,7 +655,7 @@ public class DataSource
                 Map row = (Map)results.get(i);
                 tiles[i] = ((Integer)row.get("tile_id")).intValue();
             }
-            CSLogger.sharedLogger().fine("Finished retrieving tiles in zone with ID (" + id + ") from DB (\"" + dbName + "\").");
+            CSLogger.sharedLogger().fine("Finished retrieving tiles in zone with ID (" + id + ") from DB (\"" + dbPath + "\").");
             return tiles;
         }
         catch (SQLException se) {
@@ -685,7 +686,7 @@ public class DataSource
 
     public void insertZoneTiles(HashMap[] zoneTiles) {
 
-        CSLogger.sharedLogger().fine("Inserting zone into DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Inserting zone into DB (\"" + dbPath + "\")");
 
         try {
 
@@ -713,7 +714,7 @@ public class DataSource
 
             connection.setAutoCommit(true);
 
-            CSLogger.sharedLogger().fine("Finished inserting zone into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting zone into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -722,14 +723,14 @@ public class DataSource
 
     public void deleteZoneTileWithID(int id) {
 
-        CSLogger.sharedLogger().fine("Deleting zone_tile with ID (" + id + ") from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Deleting zone_tile with ID (" + id + ") from DB (\"" + dbPath + "\")...");
 
         try {
 
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "DELETE FROM zone_tile WHERE zone_id = " + id);
 
-            CSLogger.sharedLogger().fine("Finished deleting zone from DB (\"" + dbName + "\").");
+            CSLogger.sharedLogger().fine("Finished deleting zone from DB (\"" + dbPath + "\").");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -739,14 +740,14 @@ public class DataSource
     // - ZONE STATS -
 
     public HashMap zoneStats() {
-        CSLogger.sharedLogger().fine("Retrieving zone stats from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving zone stats from DB (\"" + dbPath + "\")...");
 
         try {
 
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT * FROM zone_stats", new MapListHandler());
             HashMap zone = (HashMap)results.listIterator().next();
-            CSLogger.sharedLogger().fine("Finished retrieving zone stats from DB (\"" + dbName + "\").");
+            CSLogger.sharedLogger().fine("Finished retrieving zone stats from DB (\"" + dbPath + "\").");
             return zone;
         }
         catch (SQLException se) {
@@ -757,7 +758,7 @@ public class DataSource
     }
 
     public void insertZoneStats(HashMap stats) {
-        CSLogger.sharedLogger().fine("Inserting zone stats into DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Inserting zone stats into DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -778,7 +779,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished inserting zone stats into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting zone stats into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -786,7 +787,7 @@ public class DataSource
     }
 
     public void updateZoneStats(HashMap stats) {
-        CSLogger.sharedLogger().fine("Updating zone stats in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Updating zone stats in DB (\"" + dbPath + "\")...");
 
         try {
             String statementString = "UPDATE " + Data.ZONESTATS + " SET ";
@@ -804,7 +805,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished updating zone stats in DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished updating zone stats in DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -814,14 +815,14 @@ public class DataSource
     // - ROAD STATS -
 
     public HashMap roadStats() {
-        CSLogger.sharedLogger().fine("Retrieving road stats from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving road stats from DB (\"" + dbPath + "\")...");
 
         try {
 
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT * FROM road_stats", new MapListHandler());
             HashMap road = (HashMap)results.listIterator().next();
-            CSLogger.sharedLogger().fine("Finished retrieving road stats from DB (\"" + dbName + "\").");
+            CSLogger.sharedLogger().fine("Finished retrieving road stats from DB (\"" + dbPath + "\").");
             return road;
         }
         catch (SQLException se) {
@@ -832,7 +833,7 @@ public class DataSource
     }
 
     public void insertRoadStats(HashMap stats) {
-        CSLogger.sharedLogger().fine("Inserting road stats into DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Inserting road stats into DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -853,7 +854,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished inserting road stats into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting road stats into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -861,7 +862,7 @@ public class DataSource
     }
 
     public void updateRoadStats(HashMap stats) {
-        CSLogger.sharedLogger().fine("Updating road stats in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Updating road stats in DB (\"" + dbPath + "\")...");
 
         try {
             String statementString = "UPDATE " + Data.ROADSTATS + " SET ";
@@ -879,7 +880,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished updating road stats in DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished updating road stats in DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -892,7 +893,7 @@ public class DataSource
     // Should only be used after the inital map generation
     public void insertTiles(ArrayList<ArrayList<Tile>> tiles) {
 
-        CSLogger.sharedLogger().fine("Inserting map tiles into DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Inserting map tiles into DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -927,7 +928,7 @@ public class DataSource
 
             connection.setAutoCommit(true);
 
-            CSLogger.sharedLogger().fine("Finished inserting map tiles into DB (\"" + dbName + "\")...");
+            CSLogger.sharedLogger().fine("Finished inserting map tiles into DB (\"" + dbPath + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace(); 
@@ -936,7 +937,7 @@ public class DataSource
 
     public void updateTile(Tile tile) {
 
-        CSLogger.sharedLogger().fine("Updating tile in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Updating tile in DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -959,7 +960,7 @@ public class DataSource
             statement.executeUpdate();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished updating tile in DB (\"" + dbName + "\")...");
+            CSLogger.sharedLogger().fine("Finished updating tile in DB (\"" + dbPath + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -968,7 +969,7 @@ public class DataSource
 
     public void updateTiles(ArrayList<ArrayList<Tile>> tiles) {
 
-        CSLogger.sharedLogger().fine("Updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -1003,7 +1004,7 @@ public class DataSource
 
             connection.setAutoCommit(true);
 
-            CSLogger.sharedLogger().fine("Finished updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbName + "\")...");
+            CSLogger.sharedLogger().fine("Finished updating " + tiles.size() * tiles.get(0).size() + " tiles, in DB (\"" + dbPath + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -1012,7 +1013,7 @@ public class DataSource
 
     public void updateTiles(Tile[] tiles) {
 
-        CSLogger.sharedLogger().fine("Updating " + tiles.length + " tiles, in DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Updating " + tiles.length + " tiles, in DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -1048,7 +1049,7 @@ public class DataSource
 
             connection.setAutoCommit(true);
 
-            CSLogger.sharedLogger().fine("Finished updating " + tiles.length + " tiles, in DB (\"" + dbName + "\")...");
+            CSLogger.sharedLogger().fine("Finished updating " + tiles.length + " tiles, in DB (\"" + dbPath + "\")...");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -1057,7 +1058,7 @@ public class DataSource
 
     public ArrayList<ArrayList<Tile>> tiles() {
 
-        CSLogger.sharedLogger().fine("Retrieving map tiles from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving map tiles from DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -1080,7 +1081,7 @@ public class DataSource
                 tiles.get(pos.x).add(pos.y, new Tile(row));
             }
 
-            CSLogger.sharedLogger().fine("Finished retrieving map tiles from DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished retrieving map tiles from DB (\"" + dbPath + "\")");
 
             return tiles;
         }
@@ -1132,7 +1133,7 @@ public class DataSource
 
     public HashMap cityStats() {
 
-        CSLogger.sharedLogger().fine("Retrieving city stats from DB (\"" + dbName + "\")...");
+        CSLogger.sharedLogger().fine("Retrieving city stats from DB (\"" + dbPath + "\")...");
 
         try {
 
@@ -1141,7 +1142,7 @@ public class DataSource
 
             HashMap cityStats = (HashMap)results.listIterator().next();
 
-            CSLogger.sharedLogger().fine("Finished retrieving city stats from DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished retrieving city stats from DB (\"" + dbPath + "\")");
 
             return cityStats;
         }
@@ -1154,7 +1155,7 @@ public class DataSource
 
     public void insertCityStats(HashMap stats) {
 
-        CSLogger.sharedLogger().fine("Inserting city stats into DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Inserting city stats into DB (\"" + dbPath + "\")");
 
         try {
 
@@ -1175,7 +1176,7 @@ public class DataSource
             statement.executeBatch();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished inserting city stats into DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished inserting city stats into DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -1184,7 +1185,7 @@ public class DataSource
 
     public void updateCityStats(HashMap stats) {
 
-        CSLogger.sharedLogger().fine("Updating city stats in DB (\"" + dbName + "\")");
+        CSLogger.sharedLogger().fine("Updating city stats in DB (\"" + dbPath + "\")");
 
         try {
 
@@ -1202,7 +1203,7 @@ public class DataSource
             statement.executeUpdate();
             statement.close();
 
-            CSLogger.sharedLogger().fine("Finished updating city stats in DB (\"" + dbName + "\")");
+            CSLogger.sharedLogger().fine("Finished updating city stats in DB (\"" + dbPath + "\")");
         }
         catch (SQLException se) {
             se.printStackTrace();
@@ -1326,7 +1327,7 @@ public class DataSource
     }
 
     public int totalPowerCapacity() {
-        
+
         try {
             QueryRunner runner = new QueryRunner();
             List results = (List)runner.query(connection, "SELECT SUM(capacity) AS capacity_sum FROM zones WHERE zone = " + CoalPowerPlant.TYPE_ID + " OR zone = " + NuclearPowerPlant.TYPE_ID, new MapListHandler());

@@ -100,28 +100,6 @@ public class Selection extends Actor
                     }
                 }
             } 
-            /*
-            else if (Greenfoot.mouseDragged(this)) {
-
-            if (Road.pendingOp() > 0) CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_ROAD, activeTile));
-            if (Tool.pendingOp() > 0) {
-            if (size.getWidth() == 1 && size.getHeight() == 1) {
-            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_TOOL, activeTile));
-            }
-            else {
-            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_TOOLS, selectedTiles()));
-            }
-            }
-            if (PowerGrid.pendingOp() > 0) {
-            if (size.getWidth() == 1 && size.getHeight() == 1) {
-            CSEventBus.post(new SelectionEvent(SelectionEvent.TILE_SELECTED_FOR_POWERGRID, activeTile));
-            }
-            else {
-            CSEventBus.post(new SelectionEvent(SelectionEvent.TILES_SELECTED_FOR_POWERGRID, selectedTiles()));
-            }
-            }
-            }
-             */
 
             // Increases (up key) and decreases (down key) the selection size
 
@@ -152,15 +130,10 @@ public class Selection extends Actor
                 City.getInstance().removeHint();
             }
         }
-        // FOR TESTING
         else {
             if (Greenfoot.mouseClicked(this)) {
                 if (size.width > 1) {
-                    Zone zone = Data.zonesMatchingCriteria("id = " + this.activeTile.zoneID())[0];
-                    System.out.println("ZONE (" + zone.dbID() + ")" + " | SCORE: " + zone.score() + " | POLLUTION : " + zone.pollution() + " | A/C: " + zone.allocation() + "/" + zone.capacity() + " | POWERED: " + (zone.powered() ? "YES" : "NO"));
-                }
-                else {
-                    System.out.println("Type: " + this.activeTile.type() + " | Power grid type: " + this.activeTile.powerGrid() + " | Powered: " + this.activeTile.powered());
+                    Query.query(Data.zoneWithTile(this.activeTile()));
                 }
             }
         }

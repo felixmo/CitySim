@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2012 Felix Mo. All rights reserved.
+ * 
+ * CitySim is published under the terms of the MIT License. See the LICENSE file for more information.
+ * 
+ */
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -18,7 +25,7 @@ import java.text.DecimalFormat;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Finances 
+public class Taxation 
 {
 
     private static float rate = 1.10f; // Default rate of 10% tax
@@ -66,7 +73,7 @@ public class Finances
         lastTaxCollection = collected;
     }
 
-    public static void showTaxRateDialog() {
+    public static void showDialog() {
 
         City.getInstance().enableOverlay();
 
@@ -111,23 +118,23 @@ public class Finances
             });
     }
 
-    public static int taxRate() {
+    public static int rate() {
         return (int)((rate-1)*100);
     }
 
-    public static String taxRateString() {
+    public static String rateString() {
         return (int)((rate-1)*100) + "%";
     }
 
-    public static void setTaxRate(int value) {
+    public static void setRate(int value) {
         rate = (((float)value + 0.01f) / 100.0f) + 1.0f;
     }
 
-    public static int lastTaxCollection() {
+    public static int lastCollection() {
         return lastTaxCollection;
     }
 
-    public static void setLastTaxCollection(int amount) {
+    public static void setLastCollection(int amount) {
         lastTaxCollection = amount;
     }
 }

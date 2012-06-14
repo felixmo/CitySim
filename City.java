@@ -17,7 +17,7 @@ import java.lang.Thread;
  * 'City' acts as a container for all objects / "Actors" in the game (incl. map, HUD, etc.)
  * 
  * @author Felix Mo
- * @version v0.1
+ * @version v1.0
  * @since 2012-02-11
  */
 
@@ -54,7 +54,6 @@ public class City extends World
 
     private MenuBar menuBar;                        // Menu bar containing game controls
     private Hint hint;                              // Active hint
-    private TileSelector tileSelector;              // Active tile selector
 
     // ---------------------------------------------------------------------------------------------------------------------
     /*
@@ -73,7 +72,7 @@ public class City extends World
     /**
      * Constructs a City.
      */
-    public City() {
+    public City(String name, String path) {
 
         super(1024, 768, 1, false);     // Create a 1024 x 768 'World' with a cell size of 1px that does not restrict 'actors' to the world boundary
 
@@ -81,20 +80,22 @@ public class City extends World
         CSLogger.sharedLogger().info("***** NEW SESSION *****");
 
         // Set Greenfoot paint order to ensure that Actors are layered properly
-        setPaintOrder(QueryModalWindow.class, Overlay.class, TileSelectorItem.class, TileSelector.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, Animation.class, Map.class);
+        setPaintOrder(QueryModalWindow.class, Overlay.class, Hint.class, MenuItem.class, Menu.class, MenuBarItem.class, MenuBar.class, Label.class, MinimapViewport.class, Minimap.class, HUD.class, Selection.class, AnimationLayer.class, Map.class);
 
-        // FOR TESTING ONLY 
-        // Delete the DB so that map re-generates each run
-
-        //         new File("maps/test.db").delete();
+        if (name != null) {
+            Data.setNameAndPath(name, path);
+        }
+        else {
+            Data.setPath(path);
+        }
 
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
-        if (Data.dbIsNew()) {
+        if (name != null) {
 
             // - Metadata -
             HashMap mapMetadata = new HashMap(1);
             // Initial metadata
-            mapMetadata.put(Data.METADATA_NAME, "Toronto"); // FOR TESTING PURPOSES
+            mapMetadata.put(Data.METADATA_NAME, name); // FOR TESTING PURPOSES
 
             Data.insertMapMetadata(mapMetadata);
 
@@ -136,8 +137,8 @@ public class City extends World
         // Initalize the cash store from the last known value in the DB
         Cash.set(((Integer)cityStats.get(Data.CITYSTATS_CASH)));
 
-        Finances.setLastTaxCollection(((Integer)cityStats.get(Data.CITYSTATS_LAST_TAX_COLLECTION)));
-        Finances.setTaxRate(((Integer)cityStats.get(Data.CITYSTATS_TAXRATE)));
+        Taxation.setLastCollection(((Integer)cityStats.get(Data.CITYSTATS_LAST_TAX_COLLECTION)));
+        Taxation.setRate(((Integer)cityStats.get(Data.CITYSTATS_TAXRATE)));
 
         // Create and add a new map for the city
         addObject(new Map(), 512, 333);
@@ -160,7 +161,6 @@ public class City extends World
         menuBarItems.add(ProtectionZone.NAME);
         menuBarItems.add(Recreation.NAME);
         menuBarItems.add(Tool.NAME);
-        menuBarItems.add("*DEBUG*");
         menuBar.setItems(menuBarItems);
 
         // * Menu items * 
@@ -201,22 +201,18 @@ public class City extends World
         recreationItems.add(Stadium.NAME);
         menuBar.setMenuItemsForItem(Recreation.NAME, recreationItems);
 
-        // -> Tools (last)
+        // -> Tools
         ArrayList<String> toolItems = new ArrayList(2);
         toolItems.add(Bulldozer.NAME);
         toolItems.add(Query.NAME);
         menuBar.setMenuItemsForItem(Tool.NAME, toolItems);
 
-        // Debug menu
-        ArrayList<String> debugItems = new ArrayList(2);
-        debugItems.add("Test message dialog");
-        debugItems.add("Tax rate dialog");
-        debugItems.add("Scoring");
-        menuBar.setMenuItemsForItem("*DEBUG*", debugItems);
-
         // * END of menu items *
 
         instance = this;
+
+        Date.start();
+        SoundManager.playBackgroundMusic();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -234,10 +230,9 @@ public class City extends World
             Data.resumeConnection();
         }
 
-        // TO DO: start timer when game has actually started (i.e. not in menu)
         Date.start();
 
-        //         new PowerGridEvaluationThread().start();
+        SoundManager.playBackgroundMusic();
     }
 
     /**
@@ -250,6 +245,8 @@ public class City extends World
         Date.stop();
 
         Data.closeConnection();
+
+        SoundManager.pauseBackgroundMusic();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -299,7 +296,7 @@ public class City extends World
             if (PowerGrid.shouldEvaluate()) {
                 new PowerGridEvaluationThread().start();
             }
-            Animation.getInstance().setZones(Data.zonesMatchingCriteria("powered = -1"));
+            AnimationLayer.getInstance().setZones(Data.zonesMatchingCriteria("powered = -1"));
         }
     }
 
@@ -356,14 +353,6 @@ public class City extends World
         removeObject(this.hint);
     }
 
-    /**
-     * Removes the active tile selector from view.
-     */
-    public void removeTileSelector() {
-        removeObjects(Arrays.asList(this.tileSelector.items()));
-        removeObject(this.tileSelector);
-    }
-
     // ---------------------------------------------------------------------------------------------------------------------
     /*
      * HELPERS *
@@ -374,11 +363,11 @@ public class City extends World
 
         HashMap values = new HashMap(6);
 
-        values.put(HUD.NAME, Population.category() + " of Toronto");  // TESTING
-        values.put(HUD.POPULATION, Population.asString());    // TESTING
+        values.put(HUD.NAME, Population.category() + " of " + Data.mapMetadata().get(Data.METADATA_NAME));
+        values.put(HUD.POPULATION, Population.asString());    
         values.put(HUD.DATE, Date.asString());
         values.put(HUD.CASH, Cash.asString());
-        values.put(HUD.TAXRATE, Finances.taxRateString());
+        values.put(HUD.TAXRATE, Taxation.rateString());
         values.put(HUD.SCORE, this.score);
 
         return values;
@@ -394,8 +383,8 @@ public class City extends World
         stats.put(Data.CITYSTATS_YEARS, Date.years());
         stats.put(Data.CITYSTATS_POPULATION, Population.size());
         stats.put(Data.CITYSTATS_CASH, Cash.value());
-        stats.put(Data.CITYSTATS_TAXRATE, Finances.taxRate());
-        stats.put(Data.CITYSTATS_LAST_TAX_COLLECTION, Finances.lastTaxCollection());
+        stats.put(Data.CITYSTATS_TAXRATE, Taxation.rate());
+        stats.put(Data.CITYSTATS_LAST_TAX_COLLECTION, Taxation.lastCollection());
         stats.put(Data.CITYSTATS_SCORE, this.score);
 
         return stats;
@@ -426,25 +415,6 @@ public class City extends World
     }
 
     /**
-     * Returns the active {@link TileSelector}.
-     * 
-     * @return The active {@link TileSelector}.
-     */
-    public TileSelector tileSelector() {
-        return this.tileSelector;
-    }
-
-    /**
-     * Sets the active {@link TileSelector}.
-     * 
-     * @param tileSelector The {@link TileSelector} to be made active.
-     */
-    public void setTileSelector(TileSelector tileSelector) {
-        this.tileSelector = tileSelector;
-        addObject(this.tileSelector, TileSelector.ORIGIN_X, TileSelector.ORIGIN_Y);
-    }
-
-    /**
      * Returns an instance {@link City}.
      * 
      * @return An instance of City.
@@ -456,18 +426,24 @@ public class City extends World
     public MenuBar menuBar() {
         return this.menuBar;
     }
-    
+
     public int score() {
         return this.score;
     }
-    
+
     public void setScore(int value) {
-        
+
         CSLogger.sharedLogger().info("Setting city score to " + value);
-        
+
+        this.score = Math.min(100, Math.max(0, value));
+
         if (value <= 0) {
             // Impeachment
+
+            enableOverlay();
+            new MessageDialog("You have been impeached as mayor! Game over!");
+
+            // TODO: return to menu, delete DB
         }
-        this.score = Math.min(100, Math.max(0, value));
     }
 }

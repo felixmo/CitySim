@@ -148,10 +148,10 @@ public class Data
         TABLES_MAPPING.put(MAPSIZE, MAPSIZE_PARAMS);
         TABLES_MAPPING.put(METADATA, METADATA_PARAMS);
         TABLES_MAPPING.put(CITYSTATS, CITYSTATS_PARAMS);
-    }
-    
-    public static void setNameAndPath(String name, String path) {
-        dataSource = new DataSource(name, path);
+
+//         if (dataSource == null) {
+//             dataSource = new DataSource("test");
+//         }
     }
     
     public static void setPath(String path) {

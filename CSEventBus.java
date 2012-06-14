@@ -27,10 +27,8 @@ public class CSEventBus
             sharedEventBus = new EventBus("com.felixmo.CitySim.CSEventBus.EventBus");
             
             // Register listeners
-            sharedEventBus.register(new ButtonEventListener());
             sharedEventBus.register(new MenuItemEventListener());
             sharedEventBus.register(new SelectionEventListener());
-            sharedEventBus.register(new TileSelectorEventListener());
         }
     }
     

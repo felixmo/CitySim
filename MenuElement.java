@@ -13,7 +13,7 @@ import java.awt.Rectangle;
  * 'MenuElement' is an abstract class which provides a partial implementation of a menu UI element
  * 
  * @author Felix Mo
- * @version v0.1
+ * @version v1.0
  * @since 2012-05-01
  */
 
