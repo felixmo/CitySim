@@ -39,7 +39,7 @@ public class QueryModalWindow extends Actor
 
             QueryModalWindow.activeWindow = this;
 
-            City.getInstance().enableOverlay();
+            City.getInstance().showOverlay();
 
             CSLogger.sharedLogger().info("Querying zone (" + zone.dbID() + ")");
             this.zone = zone;
@@ -61,7 +61,7 @@ public class QueryModalWindow extends Actor
 
         if (Greenfoot.mouseClicked(this) || Greenfoot.isKeyDown("escape")) {
             QueryModalWindow.activeWindow = null;
-            City.getInstance().removeOverlay();
+            City.getInstance().hideOverlay();
             City.getInstance().removeObject(this);
         }
     }

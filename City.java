@@ -90,7 +90,7 @@ public class City extends World
         }
 
         // If the data source has just created a new DB (b/c it did not exist), seed it with initial stats. and metadata
-        if (name != null) {
+        if (name != null) {            
 
             // - Metadata -
             HashMap mapMetadata = new HashMap(1);
@@ -211,7 +211,10 @@ public class City extends World
 
         instance = this;
 
+        // Start tracking time
         Date.start();
+
+        // Start playing background music
         SoundManager.playBackgroundMusic();
     }
 
@@ -241,7 +244,6 @@ public class City extends World
     public void stopped() {
         CSLogger.sharedLogger().info("Game has stopped.");
 
-        // TO DO: pause timer when in menu
         Date.stop();
 
         Data.closeConnection();
@@ -293,7 +295,7 @@ public class City extends World
         }
 
         if (writeCountdown % 3 == 0) {
-            if (PowerGrid.shouldEvaluate()) {
+            if (PowerGrid.shouldEvaluate() && !Map.getInstance().selection().selectionMode()) {
                 new PowerGridEvaluationThread().start();
             }
             AnimationLayer.getInstance().setZones(Data.zonesMatchingCriteria("powered = -1"));
@@ -338,19 +340,30 @@ public class City extends World
      * MODAL VIEWS / DIALOGS *
      */
 
-    public void enableOverlay() {
-        addObject(City.overlay, 512, 384);
-    }
-
-    public void removeOverlay() {
-        removeObject(City.overlay);
-    }
-
     /**
      * Removes the active hint from view.
      */
     public void removeHint() {
         removeObject(this.hint);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    /*
+     * OVERLAY * 
+     */
+
+    /**
+     * Shows an overlay to fade out the screen.
+     */
+    public void showOverlay() {
+        addObject(City.overlay, 512, 384);
+    }
+
+    /**
+     * Hides the overlay.
+     */
+    public void hideOverlay() {
+        removeObject(City.overlay);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------
@@ -415,7 +428,7 @@ public class City extends World
     }
 
     /**
-     * Returns an instance {@link City}.
+     * Returns an instance of {@link City}.
      * 
      * @return An instance of City.
      */
@@ -423,27 +436,44 @@ public class City extends World
         return instance;
     }
 
+    /**
+     * Returns an instance of {@link MenuBar}.
+     * 
+     * @return An instance of MenuBar.
+     */
     public MenuBar menuBar() {
         return this.menuBar;
     }
 
+    /**
+     * Returns the city's current score.
+     * 
+     * @return The city's current score (0 - 100%).
+     */
     public int score() {
         return this.score;
     }
 
+    /**
+     * Sets the city's score. The score must be between 0 - 100.
+     * 
+     * @param An integer with the new score.
+     */
     public void setScore(int value) {
 
         CSLogger.sharedLogger().info("Setting city score to " + value);
 
+        // Bound score to limits
         this.score = Math.min(100, Math.max(0, value));
 
         if (value <= 0) {
-            // Impeachment
+            // Impeachment; game over.
 
-            enableOverlay();
-            new MessageDialog("You have been impeached as mayor! Game over!");
-
-            // TODO: return to menu, delete DB
+            // Show message imforming user of impeachment
+            showOverlay();
+            new MessageDialog("You have been impeached as mayor! Game over! Press \"reset\" to play again.");
+            
+            Greenfoot.stop();
         }
     }
 }

@@ -19,7 +19,7 @@ public class Population
     private static int change = 0;
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,##0");
-
+    
     public static int size() {
         return size;
     }

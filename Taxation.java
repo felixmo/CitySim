@@ -75,7 +75,7 @@ public class Taxation
 
     public static void showDialog() {
 
-        City.getInstance().enableOverlay();
+        City.getInstance().showOverlay();
 
         SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
@@ -105,14 +105,14 @@ public class Taxation
                     int selection = JOptionPane.showConfirmDialog(new Frame(), panel, "Tax rate", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                     if (selection == JOptionPane.OK_OPTION) {
 
-                        City.getInstance().removeOverlay();
+                        City.getInstance().hideOverlay();
 
                         float value = new Integer(model.getValue().toString()).floatValue() + 0.01f;
                         rate = (value / 100.0f) + 1.0f;
                         CSLogger.sharedLogger().info("Changed global tax rate to " + (int)((rate-1)*100) + "%");
                     }
                     else if (selection == JOptionPane.CANCEL_OPTION) {
-                        City.getInstance().removeOverlay();
+                        City.getInstance().hideOverlay();
                     }
                 }
             });

@@ -31,7 +31,7 @@ public class Cash
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,##0");
     
     // ---------------------------------------------------------------------------------------------------------------------
-
+    
     public static void set(int x) {
         value = x;
     }

@@ -33,15 +33,15 @@ Third-party libraries used, and packaged, by CitySim:
 
 	http://guava-libraries.googlecode.com
 
--> SQLiteJDBC
+-> Xerial SQLiteJDBC
 
 	Licensed under the terms of the Apache Software License, Version 2.0
-	Copyright (c) 2006 David Crawshaw.
+	Copyright (c) Taro L. Saito
 	All Rights Reserved.
 
 	org.sqlite.*
 
-	http://code.google.com/p/sqlite-jdbc/
+	http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC
 
 
 -- LINKS TO FULL TEXT OF MENTIONED LICENSES --

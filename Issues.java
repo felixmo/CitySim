@@ -57,7 +57,7 @@ public class Issues
             }
 
             if (iCount > 0 && cCount > 0) {
-                
+
                 int ratio = (int)(((float)iCount / cCount) * 100);
                 if (ratio <= 75) {
                     // Industrial zones > commercial zones
@@ -124,7 +124,7 @@ public class Issues
 
     public static void dialog() {
 
-        City.getInstance().enableOverlay();
+        City.getInstance().showOverlay();
 
         SwingUtilities.invokeLater( new Runnable() {
                 public void run() {
@@ -141,9 +141,12 @@ public class Issues
 
                     panel.add(new JLabel("Score: " + City.getInstance().score() + "%"));
 
-                    int selection = JOptionPane.showConfirmDialog(new Frame(), panel, "Score", JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE);
+                    int selection = JOptionPane.showConfirmDialog(new Frame(), panel, "Score", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                     if (selection == JOptionPane.OK_OPTION) {
-                        City.getInstance().removeOverlay();
+                        City.getInstance().hideOverlay();
+                    }
+                    else {
+                        City.getInstance().hideOverlay();
                     }
                 }
             });

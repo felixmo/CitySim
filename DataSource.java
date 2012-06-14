@@ -47,7 +47,7 @@ public class DataSource
      */
 
     // Database properties
-    private static String dbPath;       // Database name
+    private String dbPath;       // Database name
     private boolean dbIsNew;            // Specifies if database was just created
 
     private Connection connection;
