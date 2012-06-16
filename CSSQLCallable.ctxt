@@ -1,6 +1,0 @@
-#BlueJ class context
-comment0.params=connection
-comment0.target=CSSQLCallable(java.sql.Connection)
-comment1.params=connection\ sql
-comment1.target=CSSQLCallable(java.sql.Connection,\ java.lang.String)
-numComments=2

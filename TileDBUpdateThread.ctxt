@@ -1,8 +1,0 @@
-#BlueJ class context
-comment0.params=tile
-comment0.target=TileDBUpdateThread(Tile)
-comment1.params=tiles
-comment1.target=TileDBUpdateThread(Tile[])
-comment2.params=
-comment2.target=void\ run()
-numComments=3

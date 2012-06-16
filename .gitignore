@@ -1,0 +1,33 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+*.db
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Thumbs.db
+*.lock
+*.DS_Store
+*.swp
+*.out
+
+# Java junk #
+#############
+*.class
+
+# Greenfoot junk #
+##################
+*.ctxt

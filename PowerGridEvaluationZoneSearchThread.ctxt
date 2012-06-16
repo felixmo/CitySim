@@ -1,6 +1,0 @@
-#BlueJ class context
-comment0.params=zone\ plant
-comment0.target=PowerGridEvaluationZoneSearchThread(Zone,\ PowerGridZone)
-comment1.params=
-comment1.target=void\ run()
-numComments=2
