@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.params=title\ index\ menuBar
+comment0.target=MenuBarItem(java.lang.String,\ int,\ MenuBar)
+comment1.params=
+comment1.target=void\ draw()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=active
+comment3.target=void\ setActive(boolean)
+comment4.params=value
+comment4.target=void\ setOrigin(java.awt.Point)
+comment5.params=menu
+comment5.target=void\ setMenu(Menu)
+comment5.text=\n\ ACCESSORS\n
+comment6.params=
+comment6.target=MenuBar\ menuBar()
+numComments=7

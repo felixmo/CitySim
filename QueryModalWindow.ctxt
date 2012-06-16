@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=zone
+comment0.target=QueryModalWindow(Zone)
+comment1.params=
+comment1.target=void\ act()
+comment2.params=
+comment2.target=void\ draw()
+comment3.params=zone
+comment3.target=java.lang.String\ stringForZone(Zone)
+numComments=4

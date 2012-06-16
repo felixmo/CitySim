@@ -1,0 +1,26 @@
+#BlueJ class context
+comment0.params=menuBarItem\ items
+comment0.target=Menu(MenuBarItem,\ java.util.ArrayList)
+comment0.text=\n\ Constructs\ a\ Menu.\n\ \n\ @param\ menuBarItem\ The\ menu\ bar\ item\ that\ the\ menu\ belongs\ to.\n\ @param\ items\ The\ items\ in\ the\ menu\ (as\ {@link\ Strings})\n
+comment1.params=world
+comment1.target=void\ addedToWorld(greenfoot.World)
+comment1.text=\n\ Draws,\ and\ activates,\ the\ menu\ when\ it\ is\ added\ to\ the\ world.\n\ \n\ @param\ World\ The\ {@link\ World}\ the\ object\ was\ added\ to.\n
+comment2.params=
+comment2.target=void\ draw()
+comment2.text=\n\ The\ procedure\ to\ draw\ the\ menu\ and\ its\ menu\ items.\n
+comment3.params=
+comment3.target=void\ act()
+comment3.text=\n\ The\ procedure\ containing\ the\ menu's\ behaviour.\ The\ menu\ will\ highlight\ menu\ items\ as\ the\ cursor\ hovers\ over\ them.\n
+comment4.params=menuItem
+comment4.target=void\ didHoverOverMenuItem(MenuItem)
+comment4.text=\n\ Menu\ behaviour\ for\ hovering\ over\ a\ menu\ item.\n\ \n\ @param\ menuItem\ The\ menu\ item\ that\ the\ cursor\ is\ currently\ hovering\ over.\n
+comment5.params=
+comment5.target=java.util.ArrayList\ menuItems()
+comment5.text=\n\ Returns\ the\ {@link\ MenuItems}\ that\ belongs\ to\ the\ menu.\n\ \n\ @return\ The\ {@link\ MenuItems}\ belonging\ to\ the\ menu.\n
+comment6.params=items
+comment6.target=void\ setItems(java.util.ArrayList)
+comment6.text=\n\ Sets\ the\ items\ of\ the\ menu.\n\ \n\ @param\ items\ The\ titles\ (as\ {@link\ Strings})\ of\ the\ menu's\ items.\n
+comment7.params=state
+comment7.target=void\ setActive(boolean)
+comment7.text=\n\ Sets\ the\ state\ of\ the\ menu.\n\ \n\ @param\ The\ new\ state\ of\ the\ menu.\n
+numComments=8

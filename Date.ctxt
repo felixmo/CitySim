@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.params=d\ m\ y
+comment0.target=void\ set(int,\ int,\ int)
+comment1.params=
+comment1.target=void\ increment()
+comment1.text=\n\ PUBLIC\ METHODS\ *\n
+comment2.params=
+comment2.target=void\ start()
+comment2.text=\n\ TIME\ *\n
+comment3.params=
+comment3.target=void\ stop()
+comment4.params=
+comment4.target=int\ days()
+comment4.text=\n\ ACCESSORS\ *\n
+comment5.params=
+comment5.target=int\ months()
+comment6.params=
+comment6.target=int\ years()
+comment7.params=
+comment7.target=int\ timeSinceEpoch()
+comment7.text=\n\ Returns\ the\ days\ (seconds,\ in\ reality)\ since\ the\ CitySim\ epoch\ (day\ 0)\n
+comment8.params=
+comment8.target=java.lang.String\ asString()
+numComments=9

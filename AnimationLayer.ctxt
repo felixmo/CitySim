@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.params=width\ height
+comment0.target=AnimationLayer(int,\ int)
+comment1.params=
+comment1.target=void\ act()
+comment2.params=
+comment2.target=void\ draw()
+comment3.params=
+comment3.target=AnimationLayer\ getInstance()
+comment3.text=\n\ ACCESSORS\ *\n
+comment4.params=viewport
+comment4.target=void\ setViewport(java.awt.Rectangle)
+comment5.params=zones
+comment5.target=void\ setZones(Zone[])
+numComments=6

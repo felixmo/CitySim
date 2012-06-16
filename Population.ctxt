@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=
+comment0.target=int\ size()
+comment1.params=value
+comment1.target=void\ initialSet(int)
+comment2.params=value
+comment2.target=void\ set(int)
+comment3.params=
+comment3.target=java.lang.String\ asString()
+comment4.params=
+comment4.target=java.lang.String\ category()
+numComments=5
